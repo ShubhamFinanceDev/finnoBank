@@ -1,0 +1,296 @@
+package com.kemal.spring.web.controllers.viewControllers.administrativeController;
+
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.kemal.spring.domain.Activity;
+import com.kemal.spring.domain.User;
+import com.kemal.spring.domain.administrative.Agreement;
+import com.kemal.spring.service.ActivityDetailsService;
+import com.kemal.spring.service.UserService;
+import com.kemal.spring.service.administrativeDetails.AdministrativeDetailsService;
+
+@Controller
+@RequestMapping("")
+
+public class AdministratorAgreementController {
+	
+	private final UserService userService;
+	private final ActivityDetailsService activityService;
+	private final AdministrativeDetailsService administrativeDetailsService;
+
+	@Autowired
+	@Qualifier("jdbcTemplate2")
+	private JdbcTemplate osourceTemplate;
+	
+	public AdministratorAgreementController(AdministrativeDetailsService administrativeDetailsService,
+			UserService userService,ActivityDetailsService activityService) {
+		this.administrativeDetailsService = administrativeDetailsService;
+		this.userService = userService;
+		this.activityService=activityService;
+	}
+	
+	
+	// Get method for creating batch
+	@GetMapping("/agreement")
+	public ModelAndView agreement(HttpServletRequest request) {
+
+		ModelAndView modelAndView = new ModelAndView("administration/admin/agreementpage");
+
+		modelAndView.addObject("agreement", new Agreement());
+		modelAndView.addObject("agreementdetails", administrativeDetailsService.findAllAgreements());
+		
+		request.getSession().setAttribute("agreementdetails", administrativeDetailsService.findAllAgreements());
+		return modelAndView;
+	}
+	
+	
+	
+	@PostMapping("/saveagreement")
+	public String saveagreement(ModelAndView modelAndView, @ModelAttribute("agreement") Agreement agreement,
+			BindingResult bindingResult, HttpServletRequest request, Errors errors) {
+
+		modelAndView = new ModelAndView("administration/admin/agreementpage");
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName(); // get logged in username
+
+		User user = userService.findByUsername(name);
+		administrativeDetailsService.saveagreement(agreement);
+		Activity activity = new Activity();
+		activity.setType("Agreement");
+		activity.setUser(user);
+		
+		activity.setCreateon(new Date());
+		activity.setDescription("Agrrement data saved Successfully");
+		activityService.save(activity);
+		
+		agreement = new Agreement();
+		modelAndView.addObject("agreement", agreement);
+		return "redirect:/agreement";
+	}
+
+
+	// Get method for creating batch
+	/*@GetMapping("/pagesignout")
+	public ModelAndView signout() {
+
+		ModelAndView modelAndView = new ModelAndView("website/login");
+
+		// modelAndView.addObject("batchDto", new BatchDTO());
+		return modelAndView;
+	}
+
+	// Get method for creating batch
+	@GetMapping("/batchcreate")
+	public ModelAndView batchcreation(HttpServletRequest request) {
+
+		ModelAndView modelAndView = new ModelAndView("users/batchcreation");
+
+		modelAndView.addObject("batchDto", new BatchDTO());
+		request.getSession().setAttribute("batchdetails", new ArrayList<BatchDTO>());
+		return modelAndView;
+	}
+
+	// GET method for fetch
+
+	@PostMapping("/fetchloandata")
+	public ModelAndView fetch(ModelAndView modelAndView, @ModelAttribute("batchDto") BatchDTO batchDto,
+			BindingResult bindingResult, HttpServletRequest request, Errors errors) {
+		modelAndView = new ModelAndView("users/batchcreation");
+System.out.println("select * from BBPS_PAYMENT where LOAN_ACCOUNT_NUMBER like '%"+batchDto.getLoannumber()+"%' or APPLICATION_NUMBER like '%"+batchDto.getLoannumber()+"%'");
+		List<BatchDTO> strlist = osourceTemplate.query(
+				"select * from BBPS_PAYMENT where LOAN_ACCOUNT_NUMBER like '%"+batchDto.getLoannumber()+"%' or APPLICATION_NUMBER like '%"+batchDto.getLoannumber()+"%'",
+				//new Object[] { batchDto.getLoannumber(), batchDto.getLoannumber()},
+				new ResultSetExtractor<List<BatchDTO>>() {
+
+					@Override
+					public List<BatchDTO> extractData(ResultSet rs) throws SQLException, DataAccessException {
+						List<BatchDTO> list = new ArrayList<BatchDTO>();
+
+						while (rs.next()) {
+							BatchDTO valuation_Details_Form = new BatchDTO();
+							valuation_Details_Form.setLoannumber(rs.getString("LOAN_ACCOUNT_NUMBER"));
+							valuation_Details_Form.setCustomername(rs.getString("CUSTOMER_NAME"));
+							valuation_Details_Form
+									.setEmiamount(Double.parseDouble(rs.getString("NEXT INSTALLMENT AMOUNT")));
+
+							valuation_Details_Form.setTotalamount(Double.parseDouble(rs.getString("EMI_OVERDUE")));
+							list.add(valuation_Details_Form);
+						}
+
+						return list; // rs.next() ? rs.getString("APPLICATION_NUMBER") : null;
+					}
+				});
+
+		batchDto.setCustomername(strlist.get(0).getCustomername());
+		batchDto.setEmiamount(strlist.get(0).getEmiamount());
+		batchDto.setTotalamount(strlist.get(0).getTotalamount());
+		batchDto.setLoannumber(strlist.get(0).getLoannumber());
+		List<BatchDTO> batchdetails = (List<BatchDTO>) request.getSession().getAttribute("batchdetails");
+		modelAndView.addObject("batchdetails", batchdetails);
+		request.getSession().setAttribute("batchdetails", batchdetails);
+		modelAndView.addObject("batchDto", batchDto);
+		return modelAndView;
+	}
+
+	// GET method for add
+
+	@PostMapping("/adddata")
+	public ModelAndView add(ModelAndView modelAndView, @ModelAttribute("batchDto") BatchDTO batchDto,
+			BindingResult bindingResult, HttpServletRequest request, Errors errors) {
+
+		modelAndView = new ModelAndView("users/batchcreation");
+		List<BatchDTO> batchdetails = (List<BatchDTO>) request.getSession().getAttribute("batchdetails");
+		if (batchdetails == null || batchdetails.size() == 0) {
+			batchdetails = new ArrayList<>();
+		}
+		if (batchDto.getLoannumber() != null) {
+			batchdetails.add(batchDto);
+			modelAndView.addObject("batchdetails", batchdetails);
+			request.getSession().setAttribute("batchdetails", batchdetails);
+		}
+		batchDto = new BatchDTO();
+		modelAndView.addObject("batchDto", batchDto);
+		return modelAndView;
+	}
+
+	@PostMapping("/savebatch")
+	public String geaneratebatch(ModelAndView modelAndView, @ModelAttribute("batchDto") BatchDTO batchDto,
+			BindingResult bindingResult, HttpServletRequest request, Errors errors) {
+
+		modelAndView = new ModelAndView("users/batchcreation");
+		// Authentication auth = (Authentication)
+		// SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName(); // get logged in username
+
+		User user = userService.findByUsername(name);
+
+		List<BatchDTO> batchdetails = (List<BatchDTO>) request.getSession().getAttribute("batchdetails");
+
+		BatchDetails batch = new BatchDetails();
+
+		batch.setActive(1);
+		batch.setBatchnumber((new SimpleDateFormat("yyyymmddhhmmss")).format(new Date()));
+
+		batch.setCreatedby(user);
+		batch.setCreateon(new Date());
+		for (BatchDTO bt : batchdetails) {
+			batch.setTotalcollectedamount(batch.getTotalcollectedamount() + bt.getCollectedamount());
+		}
+
+		batch.setUserstatus("created");
+		
+		batch = batchService.save(batch);
+		// BatchDetails batch = (BatchDetails) batchService.findApplicationBybatchid();
+		for (BatchDTO bt : batchdetails) {
+
+			ApplicationDetails app = new ApplicationDetails();
+			app.setBatchDetails(batch);
+
+			app.setCustomername(bt.getCustomername());
+			app.setEmiamount(bt.getEmiamount());
+			app.setTotaldue(bt.getTotalamount());
+			app.setReciptnumber(bt.getReciptnumber());
+			app.setPaymentype(bt.getPaymentype());
+			app.setCollectedAmount(bt.getCollectedamount());
+			app.setLoannumber(bt.getLoannumber());
+			app.setCreatedby(user);
+			app.setCreateon(bt.getCreateon());
+			applicationService.save(app);
+		}
+
+		Activity activity = new Activity();
+		activity.setType("BATCH");
+		activity.setUser(user);
+		activity.setCreateon(new Date());
+		activity.setDescription("Batch created Successfully");
+		activityService.save(activity);
+		
+		batchDto = new BatchDTO();
+		modelAndView.addObject("batchDto", batchDto);
+		return "redirect:/batchcreate";
+	}
+
+	@GetMapping("/deletefetchdata/{id}")
+	public ModelAndView deletefetchdata(@PathVariable Integer id, ModelAndView modelAndView,
+			HttpServletRequest request) {
+		List<BatchDTO> batchdetails = (List<BatchDTO>) request.getSession().getAttribute("batchdetails");
+		modelAndView = new ModelAndView("users/batchcreation");
+		for (int i = 0; i < batchdetails.size(); i++) {
+			if (id.equals(i)) {
+	              // throws java.util.ConcurrentModificationException
+	              batchdetails.remove(batchdetails.get(i));
+	         }
+		}
+		
+		modelAndView.addObject("batchdetails", batchdetails);
+		System.out.println(batchdetails.size());
+		request.getSession().setAttribute("batchdetails", batchdetails);
+
+		BatchDTO batchDto = new BatchDTO();
+		modelAndView.addObject("batchDto", batchDto);
+		return modelAndView;
+
+	}
+
+	// Get method for payment update
+	@GetMapping("/updatepayment")
+	public ModelAndView paymentupdation(Model model) {
+		// using below lines we are populating list
+		ModelAndView modelAndView = new ModelAndView("users/paymentupdate");
+		model.addAttribute("batchdetails", batchService.findPendingApplicationBybatchid());
+		return modelAndView;
+
+	}
+
+	// Get method for payment update page
+	@GetMapping("/update/{id}")
+	public String batchupdate(@PathVariable String id) {
+
+		BatchDetails batch = batchService.findById(Long.parseLong(id));
+		// batch.setActive(0);
+		//batch.setUserstatus("updated");
+		batchService.save(batch);
+		// return modelAndView;
+		return "redirect:/updatepayment";
+
+	}
+
+	// Get method for batch delete
+	@GetMapping("/showdeletebatch")
+	public ModelAndView batchdelate(Model model) {
+		ModelAndView modelAndView = new ModelAndView("users/batchdelete");
+		model.addAttribute("batchdetails", batchService.findPendingApplicationBybatchid());
+		return modelAndView;
+
+	}
+
+	// Get method for delete page
+	@GetMapping("/deletebatch/{id}")
+	public String batchdelation(@PathVariable String id) {
+		BatchDetails batch = batchService.findById(Long.parseLong(id));
+		batch.setActive(0);
+		batchService.save(batch);
+		// return modelAndView;
+		return "redirect:/showdeletebatch";
+
+	}*/
+
+}

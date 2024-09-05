@@ -1,0 +1,36 @@
+package com.kemal.spring.service;
+
+import org.springframework.stereotype.Service;
+
+import com.kemal.spring.domain.BatchDetailsRepository;
+
+
+
+
+@Service
+public class BatchDetailsService {
+	
+	@SuppressWarnings("unused")
+	private BatchDetailsRepository  batchDetailsRepository ;
+
+    public BatchDetailsService(BatchDetailsRepository  batchDetailsRepository ) {
+        this.batchDetailsRepository = batchDetailsRepository;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+}

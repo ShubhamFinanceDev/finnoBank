@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<title>Administrative Dashboard</title>
+<!-- Favicon-->
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<!-- Google Fonts -->
+<link
+	th:href="@{https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext}"
+	rel="stylesheet" type="text/css" />
+<link
+	th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Bootstrap Core Css -->
+<link th:href="@{/plugins/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+
+<!-- Waves Effect Css -->
+<link th:href="@{/plugins/node-waves/waves.css}" rel="stylesheet" />
+
+<!-- Animation Css -->
+<link th:href="@{/plugins/animate-css/animate.css}" rel="stylesheet" />
+
+<!-- Morris Chart Css-->
+<link th:href="@{/plugins/morrisjs/morris.css}" rel="stylesheet" />
+
+<!-- Custom Css -->
+<link th:href="@{/css/homestyle.css}" rel="stylesheet" />
+
+<!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+<link th:href="@{/css/themes/all-themes.css}" rel="stylesheet" />
+<style>
+.btn {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.btn-app {
+	color: white;
+	box-shadow: none;
+	border-radius: 3px;
+	position: relative;
+	padding: 10px 15px;
+	margin: 0;
+	min-width: 60px;
+	max-width: 80px;
+	text-align: center;
+	border: 1px solid #ddd;
+	background-color: #f4f4f4;
+	font-size: 12px;
+	transition: all .2s;
+	background-color: steelblue !important;
+}
+
+.btn-app>.fa, .btn-app>.glyphicon, .btn-app>.ion {
+	font-size: 30px;
+	display: block;
+}
+
+.btn-app:hover {
+	border-color: #aaa;
+	transform: scale(1.1);
+}
+
+.pdf {
+	background-color: #dc2f2f !important;
+}
+
+.excel {
+	background-color: #3ca23c !important;
+}
+
+.csv {
+	background-color: #e86c3a !important;
+}
+
+.imprimir {
+	background-color: #8766b1 !important;
+}
+
+/*
+Esto es opcional pero sirve para que todos los botones de exportacion se distribuyan de manera equitativa usando flexbox
+
+.flexcontent {
+    display: flex;
+    justify-content: space-around;
+}
+*/
+.selectTable {
+	height: 40px;
+	float: right;
+}
+
+div.dataTables_wrapper div.dataTables_filter {
+	text-align: left;
+	margin-top: 15px;
+}
+
+.btn-secondary {
+	color: #fff;
+	background-color: #4682b4;
+	border-color: #4682b4;
+}
+
+.btn-secondary:hover {
+	color: #fff;
+	background-color: #315f86;
+	border-color: #545b62;
+}
+
+.titulo-tabla {
+	color: #606263;
+	text-align: center;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+.inline {
+	display: inline-block;
+	padding: 0;
+}
+
+.dataTables_filter {
+	float: right;
+}
+
+.table-hover>tbody>tr:hover {
+	background-color: lighten(cyan, 40%);
+}
+
+//
+important if we want to add ellipsis //to cells with content longer than width
+.table {@media only screen and (min-width: 768px) {table-layout: fixed 
+	 ; //this declaration overwrites //the default plugin style
+    max-width: 100 % !important ;
+	
+}
+
+}
+thead {
+	background: #F44336;
+	color: white;
+}
+
+.table td:nth-child(2) {
+	overflow: hidden; //
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.highlight {
+	background: lighten(yellow, 30%);
+}
+
+@media only screen and (max-width: 767px) {
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block;
+	}
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr, tfoot tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	td {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50% !important;
+	}
+	td:before {
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+	}
+	.table td:nth-child(1) {
+		background: #ccc;
+		height: 100%;
+		top: 0;
+		left: 0;
+		font-weight: bold;
+	}
+	/*
+	Label the data
+	*/
+	td:nth-of-type(1):before {
+		content: "Batch Number";
+	}
+	td:nth-of-type(2):before {
+		content: "FinnoBank Number";
+	}
+	td:nth-of-type(3):before {
+		content: "Status";
+	}
+	td:nth-of-type(4):before {
+		content: "Total Collected Amount";
+	}
+	td:nth-of-type(5):before {
+		content: "Branch Name";
+	}
+	td:nth-of-type(6):before {
+		content: "Created By";
+	}
+	td:nth-of-type(7):before {
+		content: "Created On";
+	}
+	td:nth-of-type(8):before {
+		content: "Deposit On";
+	}
+	td:nth-of-type(9):before {
+		content: "Loan Number";
+	}
+	td:nth-of-type(10):before {
+		content: "CUSTOMER NAME";
+	}
+	td:nth-of-type(11):before {
+		content: "EMI Amount";
+	}
+	td:nth-of-type(12):before {
+		content: "Total Dues";
+	}
+	td:nth-of-type(13):before {
+		content: "Collected Amount";
+	}
+	td:nth-of-type(14):before {
+		content: "Receipt Number";
+	}
+	td:nth-of-type(15):before {
+		content: "Employee Code";
+	}
+	td:nth-of-type(16):before {
+		content: "Receipt Purpose";
+	}
+	.dataTables_length {
+		display: none;
+	}
+}
+</style>
+</head>
+
+<body class="theme-red">
+	<!-- Page Loader -->
+	<div class="page-loader-wrapper">
+		<div class="loader">
+			<div class="preloader">
+				<div class="spinner-layer pl-red">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+			<p>Please wait...</p>
+		</div>
+	</div>
+	<!-- #END# Page Loader -->
+	<!-- Overlay For Sidebars -->
+	<div class="overlay"></div>
+	<!-- #END# Overlay For Sidebars -->
+
+	<!-- Top Bar -->
+	<nav class="navbar">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="javascript:void(0);" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar-collapse"
+					aria-expanded="false"></a> <a href="javascript:void(0);"
+					class="bars"></a>
+				<ul class="navbar-brand">Administrative Dashboard</ul>
+
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse"></div>
+		</div>
+	</nav>
+	<!-- #Top Bar -->
+	<section>
+		<!-- Left Sidebar -->
+		<aside id="leftsidebar" class="sidebar">
+			<!-- User Info -->
+			<div class="user-info">
+				<div class="image">
+					<img src="images/user.png" width="48" height="48" alt="User" />
+				</div>
+			
+				<div class="info-container">
+					<div class="name" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false" style="font-size: 20px">
+						<b>Admin Portal</b>
+					</div>
+
+					<!-- <div class="email">collections@shubham.co</div> -->
+					<div class="btn-group user-helper-dropdown"></div>
+				</div>
+			</div>
+			
+			<!-- #User Info -->
+			<!-- Menu -->
+	  <div class="menu">
+                <ul class="list">
+                    <li class="header">MAIN NAVIGATION</li>
+                 
+                 
+                     <li><a href="/dashboard"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">home</i> <span> home</span></a></li>
+                 
+                    
+                       
+                
+                    <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">widgets</i>
+                            <span>Digital Register</span>
+                        </a>
+                        <ul class="ml-menu">
+                           <li><a href="/outwaardregister"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Outward Register</span></a></li>
+                           
+                           
+                           
+                            <li><a href="/inwardregister"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Inward Register</span></a></li>
+                           
+                       
+                              
+                            </li>
+                            
+                        </ul>
+                    </li>
+                    
+                    
+                  <li><a href="/pettycash"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Petty Cash</span></a></li>
+                   
+                   
+
+                    <li><a href="/agreement"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span>Agreement Details</span></a></li>
+                 
+                    
+                   
+                </ul>
+            </div>
+			<!-- #Menu -->
+			<!-- Footer -->
+			<div class="legal">
+				<div class="copyright">&copy; 2022-2023 Shubham IT Team</div>
+				<div class="version">
+					<b>Version: </b> 1.0
+				</div>
+			</div>
+			<!-- #Footer -->
+		</aside>
+		<!-- #END# Left Sidebar -->
+		<!-- Right Sidebar -->
+
+		<!-- #END# Right Sidebar -->
+	</section>
+
+	  <section class="content">
+        <div class="container-fluid">
+            <div class="block-header">
+                <h2>Agreement Page</h2>
+            </div>
+            <!-- Input -->
+            
+            <div class="row clearfix">
+				<form autocomplete="off" action="#" th:action="@{/saveagreement}"
+					th:object="${agreement}" method="post" class="form-horizontal"
+					role="form">
+					
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="card"> 
+						
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                    
+                            
+
+                            <div class="row clearfix">
+                                <div class="col-lg-12 col-md-12 ">
+                                   
+
+                                        <div class="body">
+                                            <div class="row clearfix">
+                                                <div class="col-xs-4">
+                                                    <h2 class="card-inside-title">Cities</h2>
+                                                    <div class="form-group">
+                                                        <div class="form-line" >
+                                                        
+                                                            <input type="text" id="cities" th:field="*{cities}" class="form-control" placeholder="Please Enter Number of Cities">
+                                                        </div>
+                                                    </div>
+                                           </div>
+
+
+                                           
+                                            
+                                               <div class="col-xs-4">
+                                                    <h2 class="card-inside-title">Branch Code</h2>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            <input type="text" id="branchcode" th:field="*{branchcode}" class="form-control" placeholder="Please Enter Branch Code">
+                                                        </div>
+                                                    </div>
+                                                 </div>
+
+
+
+                                           
+                                              <div class="col-xs-4">
+                                                <h2 class="card-inside-title">Location</h2>
+                                                <select class="form-control show-tick" id="location" th:field="*{location}">
+                                                    <option value="">Please select</option>
+                                                     <option value="0">Gurgaon</option>
+                                                          <option value="1">Delhi</option>
+                                        
+                                                     </select>
+                                          </div>
+
+
+                                       
+                                                   <div class="col-xs-4">
+                                            <h2 class="card-inside-title">Branch Name</h2>
+                                            <div class="form-group">
+                                                <div class="form-line">
+                                                    <input type="text"  th:field="*{branchname}" id="branchname" class="form-control" placeholder="Please Enter Branch Name">
+                                                </div>
+                                            </div>
+                                             </div>
+
+
+
+                                   
+                                                       <div class="col-xs-4">
+                                                 <h2 class="card-inside-title">State</h2>
+                                                 <div class="form-group">
+                                                   <div class="form-line">
+                                            <input type="text" th:field="*{state}" id="state" class="form-control" placeholder="Please Enter State Name">
+                                                  </div>
+                                                </div>
+                                                  </div>
+
+                          
+                           
+                                                  <div class="col-xs-4">
+                                                   <h2 class="card-inside-title">Shift/Closed/Active/Closed</h2>
+                                                 <select class="form-control show-tick"  th:field="*{shiftclosedactiveclosed}">
+                                              <option value="">Please select</option>
+                                               <option value="0">Active</option>
+                                                    <option value="1">Inactive</option>
+                                  
+                                               </select>
+                                                     </div>
+                                                     
+                                                     
+                                                       <div class="col-xs-4">
+                                                        <h2 class="card-inside-title">Branch OpenOn</h2>
+                                                        <div class="form-group">
+                                                            <div class="form-line" id="bs_datepicker_container">
+                                                                <input type="text" id="seValidFrom" th:field="*{branchopenon}" class="form-control" placeholder="Please choose S&E Valid From Date">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-4">
+                                                            <h2 class="card-inside-title">Branch open Date as per NHB</h2>
+                                                            <div class="form-group">
+                                                                <div class="form-line" id="bs_datepicker_container">
+                                                                    <input type="text" id="branchopendateasperNHB"  th:field="*{branchopendateasperNHB}"  class="form-control" placeholder="Please choose Branch open Date as per NHB">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                           <div class="col-xs-4">
+                                                            <h2 class="card-inside-title">  NHB Intimation Date</h2>
+                                                            <div class="form-group">
+                                                                <div class="form-line" >
+                                                                    <input type="text"  id="nhbintimationdate" th:field="*{nhbintimationdate}" class="datepicker form-control" placeholder="Please Enter  NHB Intimation Date">
+                                                                </div>
+                                                            </div></div>
+                                                            
+                                                              <div class="col-xs-4">
+                                                            <h2 class="card-inside-title"> Agreement From</h2>
+                                                            <div class="form-group">
+                                                                <div class="form-line" >
+                                                                    <input type="text"  id="agreementfrom" th:field="*{agreementfrom}" class="datepicker form-control" placeholder="Please Enter  NHB Intimation Date">
+                                                                </div>
+                                                            </div></div>
+                                                            
+                                                             <div class="col-xs-4">
+                                                                    <h2 class="card-inside-title"> Branch Closing / Agreement Valid Till</h2>
+                                                                    <div class="form-group">
+                                                                        <div class="form-line" >
+                                                                            <input type="text" id="branchclosingagreementvalidtill" th:field="*{branchclosingagreementvalidtill}" class="datepicker form-control" placeholder="Please Enter  Branch Closing / Agreement Valid Till">
+                                                                        </div>
+                                                                    </div></div>
+                                                     
+                                                     <div class="col-xs-4">
+                                                        <h2 class="card-inside-title">Agreement for</h2>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                <input type="text" id="agreementfor"  th:field="*{agreementfor}" class="form-control" placeholder="Please Enter Agreement Duration">
+                                                            </div>
+                                                        </div>
+                                                        </div>
+
+
+                                                        <div class="col-xs-4">
+                                                            <h2 class="card-inside-title">Flag</h2>
+                                                          <select class="form-control show-tick" th:field="*{flag}">
+                                                       <option value="">Please select</option>
+                                                        <option value="0">True</option>
+                                                             <option value="1">False</option>
+                                           
+                                                        </select>
+                                                              </div>
+
+
+
+                                                              <div class="col-xs-4">
+                                                                <h2 class="card-inside-title">Complete Address of Current Location</h2>
+                                                                <div class="form-group">
+                                                                    <div class="form-line">
+                                                                        <input type="text"id="completeAddressofCurrentLocation"  th:field="*{completeAddressofCurrentLocation}" class="form-control" placeholder="Please Enter Complete Address of Current Location">
+                                                                    </div>
+                                                                </div>
+                                                                </div>
+
+
+
+                                                                <div class="col-xs-4">
+                                                                    <h2 class="card-inside-title">PIN Code</h2>
+                                                                    <div class="form-group">
+                                                                        <div class="form-line">
+                                                                            <input type="text"  id="pincode" th:field="*{pincode}" class="form-control" placeholder="Please Enter PIN Code">
+                                                                        </div>
+                                                                    </div>
+                                                                    </div>
+
+
+
+                                                                    <div class="col-xs-4">
+                                                                        <h2 class="card-inside-title">Geo TAG</h2>
+                                                                        <div class="form-group">
+                                                                            <div class="form-line">
+                                                                                <input type="text" id="geotag" th:field="*{geotag}"class="form-control" placeholder="Please Enter Geo TAG">
+                                                                            </div>
+                                                                        </div>
+                                                                        </div>
+
+
+                                                                        <div class="col-xs-4">
+                                                                            <h2 class="card-inside-title">Carpet Area</h2>
+                                                                            <div class="form-group">
+                                                                                <div class="form-line">
+                                                                                    <input type="text" id="carpetarea" th:field="*{carpetarea}"class="form-control" placeholder="Please Enter Carpet Area">
+                                                                                </div>
+                                                                            </div>
+                                                                            </div>
+
+
+
+
+
+                                                                            <div class="col-xs-4">
+                                                                                <h2 class="card-inside-title">AC's </h2>
+                                                                                <div class="form-group">
+                                                                                    <div class="form-line">
+                                                                                        <input type="text" id="ac" th:field="*{ac}"class="form-control" placeholder="Please Enter number of AC's ">
+                                                                                    </div>
+                                                                                </div>
+                                                                                </div>
+
+
+
+
+                                                                                <div class="col-xs-4">
+                                                                                    <h2 class="card-inside-title">Electricity Via Direct/Sub</h2>
+                                                                                    <div class="form-group">
+                                                                                        <div class="form-line">
+                                                                                            <input type="text" id="electricityviadirectsub" th:field="*{electricityviadirectsub}" class="form-control" placeholder="Please Enter Electricity Via Direct/Sub">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    </div>
+
+
+
+
+                                                                                    <div class="col-xs-4">
+                                                                                        <h2 class="card-inside-title">Rate Per Units</h2>
+                                                                                        <div class="form-group">
+                                                                                            <div class="form-line">
+                                                                                                <input type="text" id="rateperunits" th:field="*{rateperunits}" class="form-control" placeholder="Please Enter Rate Per Units">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        </div>
+
+
+
+                                                                                        <div class="col-xs-4">
+                                                                                            <h2 class="card-inside-title">Work Station</h2>
+                                                                                            <div class="form-group">
+                                                                                                <div class="form-line">
+                                                                                                    <input type="text"  id="workstation" th:field="*{workstation}" class="form-control" placeholder="Please Enter Work Station">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            </div>
+
+
+                                                                                            <div class="col-xs-4">
+                                                                                                <h2 class="card-inside-title">Cubical</h2>
+                                                                                                <div class="form-group">
+                                                                                                    <div class="form-line">
+                                                                                                        <input type="text" id=cubical th:field="*{cubical}" class="form-control" placeholder="Please Enter Cubical">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                </div>
+
+
+
+                                                                                                <div class="col-xs-4">
+                                                                                                    <h2 class="card-inside-title">Meeting Room</h2>
+                                                                                                    <div class="form-group">
+                                                                                                        <div class="form-line">
+                                                                                                            <input type="text" id="meetingroom" th:field="*{meetingroom}" class="form-control" placeholder="Please Enter Meeting Room">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    </div>
+
+
+
+
+
+
+                                                                                                    
+                                                                                                <div class="col-xs-4">
+                                                                                                    <h2 class="card-inside-title">Cabin</h2>
+                                                                                                    <div class="form-group">
+                                                                                                        <div class="form-line">
+                                                                                                            <input type="text"  id="cabin" th:field="*{cabin}" class="form-control" placeholder="Please Enter number of Cabin">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    </div>
+
+
+
+
+                                                                                                    
+                                                                                                <div class="col-xs-4">
+                                                                                                    <h2 class="card-inside-title">Landlord Name</h2>
+                                                                                                    <div class="form-group">
+                                                                                                        <div class="form-line">
+                                                                                                            <input type="text" id="landlordname" th:field="*{landlordname}" class="form-control" placeholder="Please Enter Landlord Name">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    </div>
+
+
+
+                                                                                                    
+                                                                                                <div class="col-xs-4">
+                                                                                                    <h2 class="card-inside-title">SD Amounts</h2>
+                                                                                                    <div class="form-group">
+                                                                                                        <div class="form-line">
+                                                                                                            <input type="text"  id="sdamounts" th:field="*{sdamounts}" class="form-control" placeholder="Please Enter SD Amounts">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    </div>
+
+
+
+
+
+                                                                                                    <div class="col-xs-4">
+                                                                                                        <h2 class="card-inside-title">Rent</h2>
+                                                                                                        <div class="form-group">
+                                                                                                            <div class="form-line">
+                                                                                                                <input type="text" id="rent" th:field="*{rent}" class="form-control" placeholder="Please Enter Rent Amounts">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        </div>
+
+
+
+
+                                                                                                        <div class="col-xs-4">
+                                                                                                            <h2 class="card-inside-title">Maintenance Amounts</h2>
+                                                                                                            <div class="form-group">
+                                                                                                                <div class="form-line">
+                                                                                                                    <input type="text"  id="maintenance"th:field="*{maintenance}" class="form-control" placeholder="Please Enter Maintenance Amounts">
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            </div>
+
+
+
+
+                                                                                                            <div class="col-xs-4">
+                                                                                                                <h2 class="card-inside-title">Esclation</h2>
+                                                                                                                <div class="form-group">
+                                                                                                                    <div class="form-line">
+                                                                                                                        <input type="text" id="esclation"  th:field="*{esclation}" class="form-control" placeholder="Please Enter Esclation">
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                                </div>
+
+
+
+                                                                                                                <div class="col-xs-4">
+                                                                                                                    <h2 class="card-inside-title">Stamp Duty</h2>
+                                                                                                                    <div class="form-group">
+                                                                                                                        <div class="form-line">
+                                                                                                                            <input type="text" id=stampduty th:field="*{stampduty}"  class="form-control" placeholder="Please Enter Stamp Duty">
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    </div>
+
+
+                                                                                                                    <div class="col-xs-4">
+                                                                                                                        <h2 class="card-inside-title">Contact person</h2>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <div class="form-line">
+                                                                                                                                <input type="text"  id="contactperson" th:field="*{contactperson}" class="form-control" placeholder="Please Enter Contact person Name">
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                        </div>
+
+
+
+                                                                                                                        <div class="col-xs-4">
+                                                                                                                            <h2 class="card-inside-title">Contact Number</h2>
+                                                                                                                            <div class="form-group">
+                                                                                                                                <div class="form-line">
+                                                                                                                                    <input type="text"  id="contactnumber" th:field="*{contactnumber}" class="form-control" placeholder="Please Enter Contact Number">
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            </div>
+
+
+
+                                                                                                                            <div class="col-xs-4">
+                                                                                                                                <h2 class="card-inside-title">E Mail ID</h2>
+                                                                                                                                <div class="form-group">
+                                                                                                                                    <div class="form-line">
+                                                                                                                                        <input type="text" id="emailid"  th:field="*{emailid}" class="form-control" placeholder="Please Enter E Mail ID">
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                </div>
+
+
+                                                                                                                                <div class="col-xs-4">
+                                                                                                                                    <h2 class="card-inside-title">Shop ace Certificane No</h2>
+                                                                                                                                    <div class="form-group">
+                                                                                                                                        <div class="form-line">
+                                                                                                                                            <input type="text"  id="shopacecertificaneno" th:field="*{shopacecertificaneno}" class="form-control" placeholder="Please Enter Shop ace Certificane No">
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                    </div>
+
+
+                                                                                                                                   
+                                                     <div class="col-xs-4">
+                                                        <h2 class="card-inside-title">Opt on</h2>
+                                                        <div class="form-group">
+                                                            <div class="form-line" id="bs_datepicker_container">
+                                                                <input type="text" id="opton" th:field="*{opton}" class="form-control" placeholder="Please choose Opt on Date">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <div class="col-xs-4">
+                                                        <h2 class="card-inside-title">S&E Valid From</h2>
+                                                        <div class="form-group">
+                                                            <div class="form-line" id="bs_datepicker_container">
+                                                                <input type="text" id="sevalidfrom" th:field="*{sevalidfrom}" class="form-control" placeholder="Please choose S&E Valid From Date">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                                    <div class="col-xs-4">
+                                                        <h2 class="card-inside-title">S&E Valid Till</h2>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                <input type="text" id="sevalidtill" th:field="*{sevalidtill}" class="form-control" placeholder="Please Enter S&E Valid Till">
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                       
+                                                       
+                                                     <!--    <div class="col-xs-4">
+                                                            <h2 class="card-inside-title">Flag</h2>
+                                                          <select class="form-control show-tick">
+                                                       <option value="">Please select</option>
+                                                        <option value="0">True</option>
+                                                             <option value="1">False</option>
+                                           
+                                                        </select>
+                                                              </div> -->
+
+
+                                                                    <div class="col-xs-4">
+                                                                        <h2 class="card-inside-title"> REMARK</h2>
+                                                                        <div class="form-group">
+                                                                            <div class="form-line">
+                                                                                <input type="text"  id="remarks" th:field="*{remarks}" class="form-control" placeholder="Please Enter REMARK">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                               </div>
+                                                                                           
+
+                                </div>    
+                            
+                             <button type="submit" class="btn btn-info waves-effect">Submit</button>
+                            
+                            
+                            
+                            </div>              
+
+
+                     </div>   
+                </div>           
+                            
+                           
+            </div>
+            </div>
+
+</div>
+					</div>
+				</form>
+
+
+			</div>
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                             Agreement Details
+                            </h2>
+                         
+                        </div>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                                    <thead>
+                                        <tr>
+                                        <th></th>
+                                            <th>Cities</th>
+                                            <th>Branch Code</th>
+                                            <th>Location</th>
+                                            <th>Branch Name</th>
+                                            <th>State</th>
+                                            <th>Shift/Closed/Active/Closed</th>
+                                            <th>Branch Open On</th>
+                                            <th>Branch open as per NHB</th>
+                                            <th>NHB Intimation Date</th>
+                                            <th>Agreement  from</th>
+                                            <th>Branch Closing / Agreement Valid Till</th>
+                                            <th>Agreement for</th>
+                                            <th>Flag</th>
+                                            <th>Complete Address of Current Location</th>
+                                            <th>PIN Code</th>
+                                            <th>Geo TAG</th>
+                                            <th>Carpet Area</th>
+                                            <th>AC's </th>
+                                            <th>Electricity Via Direct/Sub</th>
+                                            <th>Rate Per Units</th>
+                                            <th>Work Station</th>
+                                            <th>Cubical</th>
+                                            <th>Meeting Room</th>
+                                            <th>Cabin</th>
+                                            <th>Landlord Name</th>
+                                            <th>SD Amounts</th>
+                                            <th>Rent</th>
+                                            <th>Maintenance</th>
+                                            <th>Esclation</th>
+                                            <th>Stamp Duty</th>
+                                            <th>Contact person</th>
+                                            <th>ContactNumber</th>
+                                            <th>E Mail ID</th> 
+                                            <th>Shop ace Certificane No</th>
+                                            <th>Opt on</th>
+                                            <th>S&E Valid From</th>
+                                            <th>S&E Valid Till</th>
+                                           <!--  <th>Flag</th> -->
+                                            <th>Remarks</th>
+    
+    
+    
+                                        </tr>
+                                    </thead>
+                                   <!--  <tfoot>
+                                        <tr>
+                                        
+                                            <th>Cities</th>
+                                            <th>Branch Code</th>
+                                            <th>Location</th>
+                                            <th>Branch Name</th>
+                                            <th>State</th>
+                                            <th>Shift/Closed/Active/Closed</th>
+                                            <th>Branch Open On</th>
+                                            <th>Branch open as per NHB</th>
+                                            <th>NHB Intimation Date</th>
+                                            <th>Agreement  from</th>
+                                            <th>Branch Closing / Agreement Valid Till</th>
+                                            <th>Agreement for</th>
+                                            <th>Flag</th>
+                                            <th>Complete Address of Current Location</th>
+                                            <th>PIN Code</th>
+                                            <th>Geo TAG</th>
+                                            <th>Carpet Area</th>
+
+                                            <th>AC's </th>
+                                            <th>Electricity Via Direct/Sub</th>
+                                            <th>Rate Per Units</th>
+                                            <th>Work Station</th>
+                                            <th>Cubical</th>
+                                            <th>Meeting Room</th>
+                                            <th>Cabin</th>
+                                            <th>Landlord Name</th>
+                                            <th>SD Amounts</th>
+                                            <th>Rent</th>
+                                            <th>Maintenance</th>
+                                            <th>Esclation</th>
+                                            <th>Stamp Duty</th>
+                                            <th>Contact person</th>
+                                            <th>ContactNumber</th>
+                                            <th>E Mail ID</th> 
+                                            <th>Shop ace Certificane No</th>
+                                            <th>Opt on</th>
+                                            <th>S&E Valid From</th>
+                                            <th>S&E Valid Till</th>
+                                            <th>Flag</th>
+                                            <th>Remarks</th>
+    
+                                        </tr>
+                                    </tfoot> -->
+                                    <tbody>
+                                       
+                                       <tr class="details" th:each="user : ${agreementdetails}">
+                                             <td></td>
+											<td	th:text="${user.cities}">cities</td>
+											<td	th:text="${user.branchcode}">branchcode</td>
+											<td th:text="${user.location}">location</td>
+											<td th:text="${user.branchname}">branchname</td>
+											<td th:text="${user.state}">state</td>
+											<td th:text="${user.shiftclosedactiveclosed}">shiftclosedactiveclosed</td>
+											<td th:text="${user.branchopenon}">branchopenon</td>
+											<td th:text="${user.branchopendateasperNHB}">branchopendateasperNHB</td>
+											<td th:text="${user.nhbintimationdate}">nhbintimationdate</td>
+											<td th:text="${user.agreementfrom}">agreementfrom</td>
+											<td th:text="${user.branchclosingagreementvalidtill}">branchclosingagreementvalidtill</td>
+											<td th:text="${user.agreementfor}">agreementfor</td>
+											<td th:text="${user.flag}">flag</td>
+											<td th:text="${user.completeAddressofCurrentLocation}">completeAddressofCurrentLocation</td>
+											<td th:text="${user.pincode}">pincode</td>
+											<td th:text="${user.geotag}">geotag</td>
+											<td th:text="${user.carpetarea}">carpetarea</td>
+											<td th:text="${user.ac}">ac</td>
+											<td th:text="${user.electricityviadirectsub}">electricityviadirectsub</td>
+											<td th:text="${user.rateperunits}">rateperunits</td>
+											<td th:text="${user.workstation}">workstation</td>
+											<td th:text="${user.cubical}">cubical</td>
+											<td th:text="${user.meetingroom}">meetingroom</td>
+											<td th:text="${user.cabin}">cabin</td>
+											<td th:text="${user.landlordname}">landlordname</td>
+											<td th:text="${user.sdamounts}">sdamounts</td>
+											<td th:text="${user.rent}">rent</td>
+											<td th:text="${user.maintenance}">maintenance</td>
+											<td th:text="${user.esclation}">esclation</td>
+											<td th:text="${user.stampduty}">stampduty</td>
+											<td th:text="${user.contactperson}">contactperson</td>
+											<td th:text="${user.contactnumber}">contactnumber</td>
+											<td th:text="${user.emailid}">emailid</td>
+											<td th:text="${user.shopacecertificaneno}">shopacecertificaneno</td>
+											<td th:text="${user.opton}">opton</td>
+											<td th:text="${user.sevalidfrom}">sevalidfrom</td>
+											<td th:text="${user.sevalidtill}">sevalidtill</td>
+											<td th:text="${user.remarks}">remarks</td>
+											
+											
+											</tr>
+                                       
+                                       
+                                       
+                                       
+                                    <!--     <tr>
+                                          
+                                            <td> 11</td>
+                                            <td>HO</td>
+                                            <td>Gurgaon-Ho</td>
+                                            <td>HO</td>
+                                            <td>Haryana</td>
+                                            <td>Active</td>
+                                            <td>25-10-2010</td>
+                                            <td>10-04-2011</td>
+                                            <td>08-04-2011</td>
+                                            <td>31-01-2022</td>
+                                            <td>30-12-2022</td>
+                                            <td>1</td>
+                                            <td>TRUE</td>
+                                            <td>K-1248,1ST FLOOR, OPPOSITE SANJAY GANDHI HOSPITAL.MANGOLPURI,NEW DELHI-110083</td>
+                                            <td>110083</td>
+                                            <td>28.6934528,77.0819997</td>
+    
+                                            <td>1100</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+    
+                                            <td>Sanjay Goel</td>
+                                            <td>45000</td>
+                                            <td>42998</td>
+                                            <td></td>
+                                            <td>5%</td>
+                                            <td>100</td>
+                                            <td>Dharam Pal</td>
+                                            <td>NA</td>
+    
+                                            <td>sanjaygoel0480@gmail.com</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>04-05-2011</td>
+                                            <td>Life time</td>
+                                            <td>TRUE</td>
+                                            <td></td>
+                                            
+                                        </tr> -->
+                                    
+                                       
+                                       
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+	<!-- Jquery Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery/jquery.min.js}"></script>
+
+	<!-- Bootstrap Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+
+	<!-- Select Plugin Js -->
+	<!--<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script> -->
+
+	<!-- Slimscroll Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-slimscroll/jquery.slimscroll.js}"></script>
+
+	<!-- Waves Effect Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/node-waves/waves.js}"></script>
+
+
+<!-- Moment Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/momentjs/moment.js}"></script>
+
+	<!-- Bootstrap Material Datetime Picker Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js}"></script>
+
+	<!-- Bootstrap Datepicker Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+
+
+
+
+
+
+	<!-- Jquery DataTable Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/jquery.dataTables.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.flash.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/jszip.min.js}"></script>
+	<!-- <script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/pdfmake.min.js}"></script> -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/vfs_fonts.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.html5.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.print.min.js}"></script>
+	<script th:src="@{/js/pages/ui/modals.js}"></script>
+	<!-- Custom Js -->
+	<script type="text/javascript" th:src="@{/js/admin.js}"></script>
+
+	<script th:src="@{/js/pages/tables/jquery-datatable.js}"></script>
+	<!-- Demo Js -->
+	<script type="text/javascript" th:src="@{/js/demo.js}"></script>
+
+</body>
+
+</html>

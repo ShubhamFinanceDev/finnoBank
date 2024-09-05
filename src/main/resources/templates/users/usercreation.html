@@ -1,0 +1,815 @@
+﻿
+<!DOCTYPE html>
+<html lang="en" class="body-full-height"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<title>Finno Bank Dashboard</title>
+<!-- Favicon-->
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<!-- Google Fonts -->
+<link
+	th:href="@{https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext}"
+	rel="stylesheet" type="text/css" />
+<link
+	th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Bootstrap Core Css -->
+<link th:href="@{/plugins/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+
+<!-- Waves Effect Css -->
+<link th:href="@{/plugins/node-waves/waves.css}" rel="stylesheet" />
+
+<!-- Animation Css -->
+<link th:href="@{/plugins/animate-css/animate.css}" rel="stylesheet" />
+
+<!-- Morris Chart Css-->
+<link th:href="@{/plugins/morrisjs/morris.css}" rel="stylesheet" />
+
+<!-- Bootstrap Select Css -->
+<link th:href="@{/plugins/bootstrap-select/css/bootstrap-select.css}"
+	rel="stylesheet" />
+
+<!-- Custom Css -->
+<link th:href="@{/css/homestyle.css}" rel="stylesheet" />
+
+<!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+<link th:href="@{/css/themes/all-themes.css}" rel="stylesheet" />
+<style>
+.btn {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.btn-app {
+	color: white;
+	box-shadow: none;
+	border-radius: 3px;
+	position: relative;
+	padding: 10px 15px;
+	margin: 0;
+	min-width: 60px;
+	max-width: 80px;
+	text-align: center;
+	border: 1px solid #ddd;
+	background-color: #f4f4f4;
+	font-size: 12px;
+	transition: all .2s;
+	background-color: steelblue !important;
+}
+
+.btn-app>.fa, .btn-app>.glyphicon, .btn-app>.ion {
+	font-size: 30px;
+	display: block;
+}
+
+.btn-app:hover {
+	border-color: #aaa;
+	transform: scale(1.1);
+}
+
+.pdf {
+	background-color: #dc2f2f !important;
+}
+
+.excel {
+	background-color: #3ca23c !important;
+}
+
+.csv {
+	background-color: #e86c3a !important;
+}
+
+.imprimir {
+	background-color: #8766b1 !important;
+}
+
+/*
+Esto es opcional pero sirve para que todos los botones de exportacion se distribuyan de manera equitativa usando flexbox
+
+.flexcontent {
+    display: flex;
+    justify-content: space-around;
+}
+*/
+.selectTable {
+	height: 40px;
+	float: right;
+}
+
+div.dataTables_wrapper div.dataTables_filter {
+	text-align: left;
+	margin-top: 15px;
+}
+
+.btn-secondary {
+	color: #fff;
+	background-color: #4682b4;
+	border-color: #4682b4;
+}
+
+.btn-secondary:hover {
+	color: #fff;
+	background-color: #315f86;
+	border-color: #545b62;
+}
+
+.titulo-tabla {
+	color: #606263;
+	text-align: center;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+.inline {
+	display: inline-block;
+	padding: 0;
+}
+
+.dataTables_filter {
+	float: right;
+}
+
+.table-hover>tbody>tr:hover {
+	background-color: lighten(cyan, 40%);
+}
+
+//
+important if we want to add ellipsis //to cells with content longer than width
+.table {@media only screen and (min-width: 768px) {table-layout: fixed 
+	 ; //this declaration overwrites //the default plugin style
+    max-width: 100% !important ;
+	
+}
+
+}
+thead {
+	background: #F44336;
+	color: white;
+}
+
+.table td:nth-child(2) {
+	overflow: hidden; //
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.highlight {
+	background: lighten(yellow, 30%);
+}
+
+@media only screen and (max-width: 767px) {
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block;
+	}
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr, tfoot tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	td {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50% !important;
+	}
+	td:before {
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+	}
+	.table td:nth-child(1) {
+		background: #ccc;
+		height: 100%;
+		top: 0;
+		left: 0;
+		font-weight: bold;
+	}
+	/*
+	Label the data
+	*/
+	td:nth-of-type(1):before {
+		content: "Batch Number";
+	}
+	td:nth-of-type(2):before {
+		content: "FinnoBank Number";
+	}
+	td:nth-of-type(3):before {
+		content: "Status";
+	}
+	td:nth-of-type(4):before {
+		content: "Total Collected Amount";
+	}
+	td:nth-of-type(5):before {
+		content: "Branch Name";
+	}
+	td:nth-of-type(6):before {
+		content: "Created By";
+	}
+	td:nth-of-type(7):before {
+		content: "Created On";
+	}
+	td:nth-of-type(8):before {
+		content: "Deposit On";
+	}
+	td:nth-of-type(9):before {
+		content: "Loan Number";
+	}
+	td:nth-of-type(10):before {
+		content: "CUSTOMER NAME";
+	}
+	td:nth-of-type(11):before {
+		content: "EMI Amount";
+	}
+	td:nth-of-type(12):before {
+		content: "Total Dues";
+	}
+	td:nth-of-type(13):before {
+		content: "Collected Amount";
+	}
+	td:nth-of-type(14):before {
+		content: "Receipt Number";
+	}
+	td:nth-of-type(15):before {
+		content: "Employee Code";
+	}
+	td:nth-of-type(16):before {
+		content: "Receipt Purpose";
+	}
+	.dataTables_length {
+		display: none;
+	}
+}
+</style>
+</head>
+
+<body class="theme-red">
+	<!-- Page Loader -->
+	<div class="page-loader-wrapper">
+		<div class="loader">
+			<div class="preloader">
+				<div class="spinner-layer pl-red">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+			<p>Please wait...</p>
+		</div>
+	</div>
+	<!-- #END# Page Loader -->
+	<!-- Overlay For Sidebars -->
+	<div class="overlay"></div>
+	<!-- #END# Overlay For Sidebars -->
+	<!-- Search Bar -->
+	<div class="search-bar">
+		<div class="search-icon">
+			<i class="material-icons">search</i>
+		</div>
+		<input type="text" placeholder="START TYPING...">
+		<div class="close-search">
+			<i class="material-icons">close</i>
+		</div>
+	</div>
+	<!-- #END# Search Bar -->
+	<!-- Top Bar -->
+	<nav class="navbar">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="javascript:void(0);" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar-collapse"
+					aria-expanded="false"></a> <a href="javascript:void(0);"
+					class="bars"></a>
+				<ul class="navbar-brand">FINOBANK Web Portal
+				</ul>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse"></div>
+		</div>
+	</nav>
+	<!-- #Top Bar -->
+	<section>
+		<!-- Left Sidebar -->
+		<aside id="leftsidebar" class="sidebar">
+			<!-- User Info -->
+			<div class="user-info">
+				<div class="image">
+
+					<img th:src="@{/images/user.png}" width="48" height="48" alt="User" />
+				</div>
+				<div class="info-container">
+					<div class="name" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false">Collection Desk</div>
+					<!--  <div class="email">collections@shubham.co</div> -->
+
+				</div>
+			</div>
+			<!-- #User Info -->
+			<!-- Menu -->
+			<div class="menu">
+
+				<ul class="list">
+					<li class="header">MAIN NAVIGATION</li>
+
+					<!-- <li><a href="/dashboard"><span class=""></span> <span
+							class="xn-text">Home</span></a></li> -->
+
+
+					<li><a href="/dashboard"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">home</i> <span> Dashboard</span></a></li>
+					<li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"><a
+						href="/batchcreate" class="toggled waves-effect waves-block">
+							<i class="material-icons">description</i> <span> Batch
+								Create</span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_USER')"><a
+						href="/updatepayment" class="toggled waves-effect waves-block">
+							<i class="material-icons">layers</i> <span>Payment Update</span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
+						href="/showdeletebatch" class="toggled waves-effect waves-block">
+							<i class="material-icons">layers</i> <span>Batch Delete</span>
+					</a></li>
+					<li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"><a
+						href="/airtelbatchcreate" class="toggled waves-effect waves-block">
+							<i class="material-icons">description</i> <span>Airtel
+								Batch Create</span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_USER')"><a
+						href="/airtelupdatepayment"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">layers</i> <span>Airtel Payment
+								Update</span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
+						href="/airtelshowdeletebatch"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">layers</i> <span>Airtel Batch
+								Delete</span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
+						href="/users/newUser" class="toggled waves-effect waves-block">
+							<i class="material-icons">layers</i> <span>User Management</span>
+					</a></li>
+
+					<li><a href="javascript: document.logoutForm.submit()"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">input</i> <span>Sign Out</span>
+					</a>
+						<form name="logoutForm" th:action="@{/logout}" method="post"
+							th:hidden="true">
+							<input hidden type="submit" value="Sign Out" />
+						</form></li>
+
+				</ul>
+			</div>
+
+
+
+			<!-- #Menu -->
+			<!-- Footer -->
+			<div class="legal">
+				<div class="copyright">&copy; 2022-2023 Shubham IT Team</div>
+				<div class="version">
+					<b>Version: </b> 1.0
+				</div>
+			</div>
+			<!-- #Footer -->
+		</aside>
+		<!-- #END# Left Sidebar -->
+		<!-- Right Sidebar -->
+		<!-- #END# Right Sidebar -->
+	</section>
+
+	<section class="content">
+		<div class="container-fluid">
+			<div class="block-header">
+				<h2>User Creation</h2>
+			</div>
+			<form autocomplete="off" action="#" th:action="@{/users/newUser}"
+				th:object="${userDto}" method="post" class="form-horizontal"
+				role="form" id="formsubmit">
+				<!-- Input -->
+				<div class="row clearfix">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="card">
+							<div class="body">
+								<div class="row clearfix">
+									<div class="col-md-6">
+										<b>First Name</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{name}" class="form-control"
+													placeholder="First Name" />
+											</div>
+
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<b>Last Name</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{surname}" class="form-control"
+													placeholder="Last Name" />
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+								<div class="row clearfix">
+									<div class="col-md-6">
+										<b>Email</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{email}" class="form-control"
+													placeholder="Email" />
+											</div>
+
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<b>Contact</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{empcontactno}" class="form-control"
+													placeholder="Contact" />
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+								<div class="row clearfix">
+									<div class="col-md-6">
+										<b>Branch</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<select th:field="*{empbranch}"
+													class="form-control show-tick">
+
+													<option value="Agra">Agra</option>
+													<option value="Agra-Fatehabad Road">Agra-Fatehabad
+														Road</option>
+													<option value="Ahmedabad">Ahmedabad</option>
+													<option value="Ahmedabad-Narol">Ahmedabad-Narol</option>
+													<option value="Ahmednagar">Ahmednagar</option>
+													<option value="Ajmer">Ajmer</option>
+													<option value="Akola">Akola</option>
+													<option value="Aligarh">Aligarh</option>
+													<option value="Allahabad">Allahabad</option>
+													<option value="Ambala">Ambala</option>
+													<option value="Amritsar">Amritsar</option>
+													<option value="Aurangabad">Aurangabad</option>
+													<option value="Badarpur">Badarpur</option>
+													<option value="BADLAPUR">BADLAPUR</option>
+													<option value="Baramati">Baramati</option>
+													<option value="Belapur">Belapur</option>
+													<option value="Bhatinda">Bhatinda</option>
+													<option value="Bhilwara">Bhilwara</option>
+													<option value="Bhopal">Bhopal</option>
+													<option value="Bulandshahr">Bulandshahr</option>
+													<option value="Burari">Burari</option>
+													<option value="Chandrapur">Chandrapur</option>
+													<option value="Chhattarpur">Chhattarpur</option>
+													<option value="Dehradun">Dehradun</option>
+													<option value="Delhi-Bhogal">Delhi-Bhogal</option>
+													<option value="Delhi-Dwarka More">Delhi-Dwarka
+														More</option>
+													<option value="Delhi-Jhandewalan">Delhi-Jhandewalan</option>
+													<option value="Delhi-Kapashera">Delhi-Kapashera</option>
+													<option value="Delhi-Mayur Vihar">Delhi-Mayur
+														Vihar</option>
+													<option value="Delhi-Naraina">Delhi-Naraina</option>
+													<option value="Delhi-Yamuna Vihar">Delhi-Yamuna
+														Vihar</option>
+													<option value="Dhule">Dhule</option>
+													<option value="Dombivali">Dombivali</option>
+													<option value="Faridabad">Faridabad</option>
+													<option value="Ghaziabad">Ghaziabad</option>
+													<option value="GURGAON">GURGAON</option>
+													<option value="Gurugram">Gurugram</option>
+													<option value="GWALIOR">GWALIOR</option>
+													<option value="HO">HO</option>
+													<option value="Hyderabad">Hyderabad</option>
+													<option value="Indore">Indore</option>
+													<option value="Indore-Annapurna roa">Indore-Annapurna
+														roa</option>
+													<option value="Jabalpur">Jabalpur</option>
+													<option value="JAGATPURA">JAGATPURA</option>
+													<option value="Jaipur">Jaipur</option>
+													<option value="Jaipur-Bagru">Jaipur-Bagru</option>
+													<option value="Jalandhar">Jalandhar</option>
+													<option value="Jalgaon">Jalgaon</option>
+													<option value="Jamnagar">Jamnagar</option>
+													<option value="Jhansi">Jhansi</option>
+													<option value="Jodhpur">Jodhpur</option>
+													<option value="Junagadh">Junagadh</option>
+													<option value="Kalkaji">Kalkaji</option>
+													<option value="Kalyan">Kalyan</option>
+													<option value="Kanpur">Kanpur</option>
+													<option value="Karampura">Karampura</option>
+													<option value="Karnal">Karnal</option>
+													<option value="Keshavnagar">Keshavnagar</option>
+													<option value="Kota">Kota</option>
+													<option value="Latur">Latur</option>
+													<option value="Lucknow">Lucknow</option>
+													<option value="Lucknow -Ayodhya Road">Lucknow
+														-Ayodhya Road</option>
+													<option value="Lucknow-2">Lucknow-2</option>
+													<option value="Lucknow-Ayodhya Road">Lucknow-Ayodhya
+														Road</option>
+													<option value="Lucknow-IIM Road">Lucknow-IIM Road</option>
+													<option value="Ludhiana">Ludhiana</option>
+													<option value="Mahavir Enclave">Mahavir Enclave</option>
+													<option value="MangolPuri">MangolPuri</option>
+													<option value="Mangolpuri Branch">Mangolpuri
+														Branch</option>
+													<option value="Mathura">Mathura</option>
+													<option value="Meerut">Meerut</option>
+													<option value="Mohali">Mohali</option>
+													<option value="Moradabad">Moradabad</option>
+													<option value="Nagpur">Nagpur</option>
+													<option value="Nagpur-Nelson Square">Nagpur-Nelson
+														Square</option>
+													<option value="Nagpur-Trimurty Nagr">Nagpur-Trimurty
+														Nagr</option>
+													<option value="Naigaon">Naigaon</option>
+													<option value="Nanded">Nanded</option>
+													<option value="Nashik">Nashik</option>
+													<option value="Nehru place">Nehru place</option>
+													<option value="Noida">Noida</option>
+													<option value="Palghar">Palghar</option>
+													<option value="Panipat">Panipat</option>
+													<option value="Panvel">Panvel</option>
+													<option value="Parbhani">Parbhani</option>
+													<option value="Patiala">Patiala</option>
+													<option value="PIMPRI CHINWAD">PIMPRI CHINWAD</option>
+													<option value="Preet Vihar">Preet Vihar</option>
+													<option value="Pune">Pune</option>
+													<option value="Rajkot">Rajkot</option>
+													<option value="Ratlam">Ratlam</option>
+													<option value="Rewari">Rewari</option>
+													<option value="Rohtak">Rohtak</option>
+													<option value="Roorkee">Roorkee</option>
+													<option value="Sagar">Sagar</option>
+													<option value="Saharanpur">Saharanpur</option>
+													<option value="Satara">Satara</option>
+													<option value="Shahdra">Shahdra</option>
+													<option value="Shrirampur">Shrirampur</option>
+													<option value="Sikar">Sikar</option>
+													<option value="Solapur">Solapur</option>
+													<option value="Sonipat">Sonipat</option>
+													<option value="Surat">Surat</option>
+													<option value="Surat Kadodara">Surat Kadodara</option>
+													<option value="Udaipur">Udaipur</option>
+													<option value="UP Lucknow">UP Lucknow</option>
+													<option value="Varanasi">Varanasi</option>
+													<option value="Vasai">Vasai</option>
+													<option value="Vidhyadhar Nagar">Vidhyadhar Nagar</option>
+													<option value="Virar">Virar</option>
+													<option value="Wapi">Wapi</option>
+													<option value="Wardha">Wardha</option>
+													<option value="West">West</option>
+													<option value="Yamuna Vihar">Yamuna Vihar</option>
+
+												</select>
+											</div>
+
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<b>Department</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<select th:field="*{empdepartment}"
+													class="form-control show-tick">
+													<option value="Branch Credit Manager">Branch
+														Credit Manager</option>
+													<option value="Collection">Collection</option>
+													<option value="Credit Manager">Credit Manager</option>
+													<option value="Credit Officer">Credit Officer</option>
+													<option value="Customer Care">Customer Care</option>
+													<option value="Credit">Credit</option>
+													<option value="DO">DO</option>
+													<option value="Disbursement Manager">Disbursement
+														Manager</option>
+													<option value="Disbursement Officer">Disbursement
+														Officer</option>
+													<option value="Executive Trainee">Executive
+														Trainee</option>
+													<option value="HO and Payment Ops">HO and Payment
+														Ops</option>
+													<option value="HO and Collection">HO and
+														Collection</option>
+													<option value="Operation">Operation</option>
+													<option value="Sales">Sales</option>
+
+												</select>
+
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+								<div class="row clearfix">
+									<div class="col-md-6">
+										<b>Role</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<select th:field="*{userrole}"
+													class="form-control show-tick">
+													<option value="ROLE_COLLECTION">Collection</option>
+													<option value="ROLE_USER">Collection User</option>
+													<option value="ROLE_ADMIN">Collection Admin</option>
+													<option value="ROLE_SUD_ADMIN">SUD Admin</option>
+													<option value="ROLE_SUD_USER">SUD User</option>
+													<option value="ROLE_SURVEY_ADMIN">Survey Admin</option>
+													<option value="ROLE_SURVEY_CUSTOMER">Survey Customer</option>
+													<option value="ROLE_SURVEY_USER">Survey User</option>
+												</select>
+											</div>
+
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<b>Employee Code</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{empcode}" class="form-control"
+													placeholder="Employee Code"/>
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="body">
+								<div class="button-demo">
+									<button type="submit" class="btn btn-primary waves-effect"
+										id="addbatch">Submit</button>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+
+		<!-- #END# Input -->
+		<div class="row clearfix" th:if="${not #lists.isEmpty(users)}">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<div class="card">
+					<div class="header">
+						<h2>
+							Users TABLES <small></small>
+						</h2>
+
+					</div>
+					<div class="body table-responsive">
+						<div id="no-more-tables">
+							<table
+								class="table table-bordered table-striped table-hover dataTable js-exportable">
+
+								<thead class="cf">
+									<tr>
+										<th>ID</th>
+										<th>First Name</th>
+										<th>Last Name</th>
+										<th>Contact Number</th>
+										<th>Employee Code</th>
+										<th>Email</th>
+										<th>Branch</th>
+										<th>Department</th>
+
+
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="details" th:each="user,iter : ${users}">
+										<td data-title="ID" th:text="${user.id}">id</td>
+										<td data-title="First Name" th:text="${user.name}">name</td>
+										<td data-title="Last Name" th:text="${user.surname}">surname</td>
+										<td data-title="Contact Number" th:text="${user.empcontactno}">empcontactno</td>
+										<td data-title="Employee Code" th:text="${user.empcode}">empcode</td>
+										<td data-title="Email" th:text="${user.email}">email</td>
+										<td data-title="Branch" th:text="${user.empbranch}">empbranch</td>
+										<td data-title="Department" th:text="${user.empdepartment}">empdepartment</td>
+
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+
+				</div>
+
+
+
+				<!-- Textarea -->
+
+				<!--#END# Switch Button -->
+			</div>
+
+		</div>
+	</section>
+
+	<!-- Jquery Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery/jquery.min.js}"></script>
+
+	<!-- Bootstrap Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+
+	<!-- Select Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script>
+
+	<!-- Slimscroll Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-slimscroll/jquery.slimscroll.js}"></script>
+
+	<!-- Waves Effect Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/node-waves/waves.js}"></script>
+
+
+
+
+
+
+
+
+
+	<!-- Jquery DataTable Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/jquery.dataTables.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.flash.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/jszip.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/pdfmake.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/vfs_fonts.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.html5.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.print.min.js}"></script>
+
+	<!-- Custom Js -->
+	<script type="text/javascript" th:src="@{/js/admin.js}"></script>
+
+	<script th:src="@{/js/pages/tables/jquery-datatable.js}"></script>
+	<!-- Demo Js -->
+
+
+</body>
+
+</html>

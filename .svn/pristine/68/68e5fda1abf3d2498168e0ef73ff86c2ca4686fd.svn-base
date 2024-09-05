@@ -1,0 +1,22 @@
+package com.kemal.spring.service.administrativeDetails;
+
+import org.springframework.stereotype.Service;
+
+import com.kemal.spring.domain.Activity;
+import com.kemal.spring.domain.ActivityRepository;
+
+@Service
+public class AdministrativeDetailsService {
+
+	private ActivityRepository activityRepository;
+
+	public AdministrativeDetailsService(ActivityRepository activityRepository) {
+
+		this.activityRepository = activityRepository;
+	}
+
+	public void save(Activity app) {
+		// TODO Auto-generated method stub
+		activityRepository.save(app);
+	}
+}

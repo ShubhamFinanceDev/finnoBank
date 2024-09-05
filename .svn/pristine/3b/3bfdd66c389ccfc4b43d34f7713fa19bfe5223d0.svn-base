@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<title>Admin Dashboard</title>
+<!-- Favicon-->
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<!-- Google Fonts -->
+<link
+	th:href="@{https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext}"
+	rel="stylesheet" type="text/css" />
+<link
+	th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Bootstrap Core Css -->
+<link th:href="@{/plugins/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+
+<!-- Waves Effect Css -->
+<link th:href="@{/plugins/node-waves/waves.css}" rel="stylesheet" />
+
+<!-- Animation Css -->
+<link th:href="@{/plugins/animate-css/animate.css}" rel="stylesheet" />
+
+<!-- Morris Chart Css-->
+<link th:href="@{/plugins/morrisjs/morris.css}" rel="stylesheet" />
+
+<!-- Custom Css -->
+<link th:href="@{/css/homestyle.css}" rel="stylesheet" />
+
+<!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+<link th:href="@{/css/themes/all-themes.css}" rel="stylesheet" />
+<style>
+.btn {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.btn-app {
+	color: white;
+	box-shadow: none;
+	border-radius: 3px;
+	position: relative;
+	padding: 10px 15px;
+	margin: 0;
+	min-width: 60px;
+	max-width: 80px;
+	text-align: center;
+	border: 1px solid #ddd;
+	background-color: #f4f4f4;
+	font-size: 12px;
+	transition: all .2s;
+	background-color: steelblue !important;
+}
+
+.btn-app>.fa, .btn-app>.glyphicon, .btn-app>.ion {
+	font-size: 30px;
+	display: block;
+}
+
+.btn-app:hover {
+	border-color: #aaa;
+	transform: scale(1.1);
+}
+
+.highlight {
+	background: lighten(yellow, 30%);
+}
+
+@media only screen and (max-width: 767px) {
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block;
+	}
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr, tfoot tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	td {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50% !important;
+	}
+	td:before {
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+	}
+	.table td:nth-child(1) {
+		background: #ccc;
+		height: 100%;
+		top: 0;
+		left: 0;
+		font-weight: bold;
+	}
+	/*
+	Label the data
+	*/
+}
+</style>
+</head>
+
+<body class="theme-red">
+	<!-- Page Loader -->
+	<div class="page-loader-wrapper">
+		<div class="loader">
+			<div class="preloader">
+				<div class="spinner-layer pl-red">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+			<p>Please wait...</p>
+		</div>
+	</div>
+	<!-- #END# Page Loader -->
+	<!-- Overlay For Sidebars -->
+	<div class="overlay"></div>
+	<!-- #END# Overlay For Sidebars -->
+
+	<!-- Top Bar -->
+	<nav class="navbar">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="javascript:void(0);" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar-collapse"
+					aria-expanded="false"></a> <a href="javascript:void(0);"
+					class="bars"></a>
+				<ul class="navbar-brand">Adminstartor Desk</ul>
+
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse"></div>
+		</div>
+	</nav>
+	<!-- #Top Bar -->
+	<section>
+		<!-- Left Sidebar -->
+		<aside id="leftsidebar" class="sidebar">
+			<!-- User Info -->
+			<div class="user-info">
+				<div class="image">
+					<img src="images/user.png" width="48" height="48" alt="User" />
+				</div>
+
+
+
+
+
+				<div th:if="${lisrRoles!=null and !lisrRoles.empty}">
+					<form autocomplete="off" action="#" th:action="@{/dashboard}"
+						th:object="${adminbranchdto}" method="post"
+						class="form-horizontal" role="form" id="formmastersubmit">
+
+					</form>
+				</div>
+				<div class="info-container">
+					<div class="name" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false" style="font-size: 20px">
+						<b>Admin Desk</b>
+					</div>
+
+					<!-- <div class="email">collections@shubham.co</div> -->
+					<div class="btn-group user-helper-dropdown"></div>
+				</div>
+			</div>
+			<!-- #User Info -->
+			<!-- Menu -->
+			<div class="menu">
+                <ul class="list">
+                    <li class="header">MAIN NAVIGATION</li>
+                  <li ><a href="/dashboard"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">home</i> <span> Home</span></a></li>
+                
+                    <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">widgets</i>
+                            <span>Digital Register</span>
+                        </a>
+                        <ul class="ml-menu">
+                           <li ><a href="/outwaardregister"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Outward Register</span></a></li>
+                            <li ><a href="/inwardregister"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Inward Register</span></a></li></ul>
+                          
+                            
+                  <li sec:authorize="hasRole('ROLE_ADMINISTRATOR_ADMIN')"><a href="/pettycash"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Petty Cash</span></a></li>
+                   
+                  <li sec:authorize="hasRole('ROLE_ADMINISTRATOR_ADMIN')"><a href="/agreement"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span>Agreement Details</span></a></li>
+						
+							<li><a href="javascript: document.logoutForm.submit()"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">input</i> <span>Sign Out</span>
+					</a>
+						<form name="logoutForm" th:action="@{/logout}" method="post"
+							th:hidden="true">
+							<input hidden type="submit" value="Sign Out" />
+						</form></li>
+                    
+                   <li sec:authorize="hasRole('ROLE_ADMINISTRATOR_ADMIN')" >Masters</li>
+					
+					
+					<li class="active" sec:authorize="hasRole('ROLE_ADMINISTRATOR_ADMIN')" ><a href="/adminmaster"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons"> assignment</i> <span>Master </span></a></li>
+                </ul>
+            </div>
+			<!-- #Menu -->
+			<!-- Footer -->
+			<div class="legal">
+				<div class="copyright">&copy; 2022-2023 Shubham IT Team</div>
+				<div class="version">
+					<b>Version: </b> 1.0
+				</div>
+			</div>
+			<!-- #Footer -->
+		</aside>
+		<!-- #END# Left Sidebar -->
+		<!-- Right Sidebar -->
+
+		<!-- #END# Right Sidebar -->
+	</section>
+
+	<section class="content">
+		<div class="container-fluid">
+			<div class="block-header">
+				<h2>Adminstrator Desk</h2>
+			</div>
+			<div class="row clearfix">
+				<div class="page-content-wrap">
+					<div class="row">
+						<div class="col-md-12">
+							<div th:text="${successMessage}"
+								style="background-color: green; color: white; font-size: 20px; align-content: center;"></div>
+							<div th:text="${errorMessage}"
+								style="background-color: red; color: white; font-size: 20px; align-content: center;"></div>
+						</div>
+					</div>
+
+
+
+				</div>
+			</div>
+			<!-- Vertical Layout -->
+			<div class="row clearfix">
+
+
+
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>Department</h2>
+
+						</div>
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{savedepartment}"
+								th:object="${admindepatmentdto}" method="post"
+								class="form-horizontal" role="form" id="formdepartmentsubmit">
+								<label for="department">Department</label>
+								<div class="form-group">
+									<div class="form-line">
+										<input type="hidden" id="departmentNameid" th:field="*{id}">
+										<input type="text" id="departmentName"
+											th:field="*{departmentName}" class="form-control"
+											placeholder="Enter department ">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>Department</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Department</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+										<tr th:each="user : ${departmentlist}">
+											<td th:text="${user.departmentName}">departmentName</td>
+											<td><button th:data-parameter1="${user.id}"
+													th:data-parameter2="${user.departmentName}"
+													th:onclick="editdepartment(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"
+													th:data-parameter2="${user.departmentName}"
+													th:onclick="editdepartment(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+										</tr>
+
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>Item</h2>
+
+						</div>
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{/saveitem}"
+								th:object="${adminitemdto}" method="post"
+								class="form-horizontal" role="form" id="formitemsubmit">
+								<label for="item">Item</label>
+								<div class="form-group">
+									<div class="form-line">
+										<input type="hidden" id="itemNameid" th:field="*{id}">
+										<input type="text" id="itemName" th:field="*{itemName}"
+											class="form-control" placeholder="Enter Item Name ">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>Item</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Item</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+										<tr th:each="user : ${itemlist}">
+											<td th:text="${user.itemName}">itemName</td>
+											<td><button th:data-parameter1="${user.id}"
+													th:data-parameter2="${user.itemName}"
+													th:onclick="edititem(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"
+													th:data-parameter2="${user.itemName}"
+													th:onclick="edititem(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+										</tr>
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>Courier Partner</h2>
+
+						</div>
+
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{/savecourier}"
+								th:object="${admincourierdto}" method="post"
+								class="form-horizontal" role="form" id="formcouriersubmit">
+								<label for="courier_partner">Courier Partner</label>
+								<div class="form-group">
+									<div class="form-line">
+										<input type="hidden" id="courierNameid" th:field="*{id}">
+										<input type="text" id="courierName" th:field="*{courierName}"
+											class="form-control" placeholder="Enter Courier Name ">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>Courier Partner</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Courier Partner</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+
+
+
+										<tr th:each="user : ${courierlist}">
+											<td th:text="${user.courierName}">courierName</td>
+											<td><button th:data-parameter1="${user.id}"
+													th:data-parameter2="${user.courierName}"
+													th:onclick="editcourier(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"
+													th:data-parameter2="${user.courierName}"
+													th:onclick="editcourier(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+										</tr>
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>Branch Master</h2>
+
+						</div>
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{/savebranch}"
+								th:object="${adminbranchdto}" method="post"
+								class="form-horizontal" role="form" id="formbranchsubmit">
+								<label for="branch_name">Branch</label>
+								<div class="form-group">
+									<div class="form-line">
+										<input type="hidden" id="branchNameid" th:field="*{id}">
+										<input type="text" id="branchName" th:field="*{branchName}"
+											class="form-control" placeholder="Enter branch name">
+
+
+
+									</div>
+
+								</div>
+								<label for="branch_name">Branch Code</label>
+								<div class="form-group">
+									<div class="form-line">
+										<input type="text" id="branchCode" th:field="*{branchCode}"
+											class="form-control" placeholder="Enter branch code">
+
+
+
+									</div>
+
+								</div>
+								<label for="branch_name">Location</label>
+								<div class="form-group">
+									<div class="form-line">
+										<input type="text" id="location" th:field="*{location}"
+											class="form-control" placeholder="Enter location">
+
+
+
+									</div>
+
+								</div>
+								<label for="branch_name">State</label>
+								<div class="form-group">
+									<div class="form-line">
+										<input type="text" id="state" th:field="*{state}"
+											class="form-control" placeholder="Enter state">
+
+
+
+									</div>
+
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>Branch name</th>
+											<th> Location</th>
+											<th>Branch Code</th>
+											<th>State</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Branch Name</th>
+											<th>Location</th>
+											<th>Branch Code</th>
+											<th>State</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+										<tr th:each="user : ${branchlist}">
+											<td th:text="${user.branchName}">branchName</td>
+											<td th:text="${user.location}">location</td>
+											<td th:text="${user.branchCode}">branchCode</td>
+											<td th:text="${user.state}">state</td>
+											<td><button th:data-parameter1="${user.id}"
+													th:data-parameter2="${user.branchName}"
+													th:data-parameter3="${user.location}"
+													th:data-parameter4="${user.branchCode}"
+													th:data-parameter5="${user.state}"
+													th:onclick="editbranch(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'),this.getAttribute('data-parameter3'),this.getAttribute('data-parameter4'),this.getAttribute('data-parameter5'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"
+													th:data-parameter2="${user.branchName}"
+													th:onclick="editbranch(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+										</tr>
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+
+
+			</div>
+		</div>
+
+	</section>
+
+	<!-- Jquery Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery/jquery.min.js}"></script>
+
+	<!-- Bootstrap Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+
+	<!-- Select Plugin Js -->
+	<!--<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script> -->
+
+	<!-- Slimscroll Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-slimscroll/jquery.slimscroll.js}"></script>
+
+	<!-- Waves Effect Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/node-waves/waves.js}"></script>
+	
+	<script
+		th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+
+
+
+
+
+	<!-- Jquery DataTable Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/jquery.dataTables.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.flash.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/jszip.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/pdfmake.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/vfs_fonts.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.html5.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.print.min.js}"></script>
+	<script th:src="@{/js/pages/ui/modals.js}"></script>
+	<!-- Custom Js -->
+	<script type="text/javascript" th:src="@{/js/admin.js}"></script>
+
+
+	<!-- Demo Js <script th:src="@{/js/pages/tables/jquery-datatable.js}"></script>-->
+	<script type="text/javascript" th:src="@{/js/demo.js}"></script>
+	<script type="text/javascript">
+		$(function() {
+
+			$('.js-basic-example').DataTable({
+				responsive : false,
+				"pageLength" : 5,
+				"iDisplayLength" : 5
+
+			});
+
+		});
+
+		function editbranch(id, name,location,state,state) {
+			$("#branchNameid").val(id);
+			if (name != null) {
+				$("#branchName").val(name);
+				$("#location").val(location);
+				$("#branchCode").val(state);
+				
+				$("#state").val(state);
+				
+			} else {
+				$('#formbranchsubmit').attr('action', "/deletebranch").submit();
+			}
+		}
+
+		function editdepartment(id, name) {
+			$("#departmentNameid").val(id);
+			if (name != null) {
+				$("#departmentName").val(name);
+			} else {
+				$('#formdepartmentsubmit').attr('action', "/deletedepartment")
+						.submit();
+			}
+		}
+		function edititem(id, name) {
+			$("#itemNameid").val(id);
+			if (name != null) {
+				$("#itemName").val(name);
+			} else {
+				$('#formitemsubmit').attr('action', "/deleteitem").submit();
+			}
+		}
+
+		function editcourier(id, name) {
+			$("#courierNameid").val(id);
+			if (name != null) {
+				$("#courierName").val(name);
+			} else {
+				$('#formcouriersubmit').attr('action', "/deletecourier")
+						.submit();
+			}
+		}
+	</script>
+</body>
+</html>
+

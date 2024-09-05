@@ -1,0 +1,102 @@
+package com.kemal.spring.web.controllers.viewControllers.adminControllers;
+
+import javax.validation.Valid;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.kemal.spring.domain.Role;
+import com.kemal.spring.web.dto.BatchDTO;
+import com.kemal.spring.web.dto.RoleDto;
+
+@Controller
+@RequestMapping("")
+public class BatchController {
+
+	//Get method for creating batch
+	@GetMapping("/batchcreate")
+    public ModelAndView batchcreation() {
+		
+		
+        ModelAndView modelAndView = new ModelAndView("users/batch creation");
+       
+        modelAndView.addObject("batchDto", new BatchDTO());
+        return modelAndView;}
+	
+	
+	//GET method for fetch
+	
+	@GetMapping("/fetchdata")
+    public ModelAndView fetch() {
+	
+        ModelAndView modelAndView = new ModelAndView();
+       
+        modelAndView.addObject("batchDto", new BatchDTO());
+        return modelAndView;}
+	
+	
+	
+	//GET method for add
+	
+	@GetMapping("/adddata")
+    public ModelAndView add() {
+		
+		
+        ModelAndView modelAndView = new ModelAndView();
+       
+        modelAndView.addObject("batchDto", new BatchDTO()); 
+        return modelAndView;}
+	
+	//save method for create batch
+        
+        
+       /* @PostMapping("/saveaddbatch")
+        public String saveaddbatch(@ModelAttribute("batchDto") @Valid final BatchDTO batchDto,
+                                  BindingResult bindingResult,
+                                  RedirectAttributes redirectAttributes) {
+            boolean roleNameAlreadyExists = roleService.findByName(newRole.getName()) != null;
+            boolean hasErrors = roleNameAlreadyExists || bindingResult.hasErrors();
+            String formWithErrors = "adminPage/role/newRole";
+
+            if (roleNameAlreadyExists) bindingResult.rejectValue("name", "roleNameAlreadyExists");
+            if (hasErrors) return formWithErrors;
+
+            roleService.save(newRole);
+            redirectAttributes.addFlashAttribute("roleHasBeenSaved", true);
+            return REDIRECT_ADMIN_PAGE_ROLES;
+        }
+	
+        }*/
+	
+	//Get method for payment update
+	@GetMapping("/updatepayment")
+    public ModelAndView paymentupdation() {
+        ModelAndView modelAndView = new ModelAndView("users/payment update");
+       
+      
+        return modelAndView;
+
+	
+	}
+	
+	//Get method for batch delete
+		@GetMapping("/deletebatch")
+	    public ModelAndView batchdelation() {
+	        ModelAndView modelAndView = new ModelAndView("users/batch delete");
+	       
+	      
+	        return modelAndView;
+
+		
+		}
+	
+	
+
+}

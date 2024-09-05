@@ -1,0 +1,93 @@
+package com.kemal.spring.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.stereotype.Service;
+
+import com.kemal.spring.domain.SurveryCustomerDetailsRepository;
+import com.kemal.spring.domain.SurveryCustomerRepository;
+import com.kemal.spring.domain.SurveyCustomer;
+import com.kemal.spring.domain.SurveyCustomerDetails;
+import com.kemal.spring.web.dto.SurveyCustomerDto;
+
+@Service
+public class CustomerSurveryService {
+
+	private SurveryCustomerDetailsRepository surveryCustomerDetailsRepository;
+	private SurveryCustomerRepository surveryCustomerRepository;
+
+	String[] colors = new String[] { /*
+										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
+										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
+										 */
+			"#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
+			"#DEB887", "#FF69B4" };
+
+	public CustomerSurveryService(SurveryCustomerDetailsRepository surveryCustomerDetailsRepository,
+			SurveryCustomerRepository surveryCustomerRepository) {
+		this.surveryCustomerDetailsRepository = surveryCustomerDetailsRepository;
+		this.surveryCustomerRepository = surveryCustomerRepository;
+
+	}
+
+	public static int randInt(int min, int max) {
+		Random rand = new Random();
+		int randomNum = rand.nextInt((max - min) + 1) + min;
+
+		return randomNum;
+	}
+
+	public List<SurveyCustomerDto> findSurveyCustomerList() {
+		// TODO Auto-generated method stub
+
+		List<SurveyCustomerDto> returnlist = new ArrayList<SurveyCustomerDto>();
+		List<SurveyCustomer> customerList = surveryCustomerRepository.findAll();
+
+		for (SurveyCustomer customer : customerList) {
+			String color = colors[randInt(0, colors.length - 1)];
+			SurveyCustomerDto dto = new SurveyCustomerDto();
+			dto.setApplicationnumber(customer.getApplicationnumber());
+			dto.setApplicantname(customer.getApplicantname());
+			dto.setEmailid(customer.getEmailid());
+			dto.setMobileno(customer.getMobileno());
+			dto.setRowColor(color);
+			List<SurveyCustomerDetails> list = surveryCustomerDetailsRepository
+					.findCustomerSurveryDetails(customer.getId());// sudMonitoringRepository.findSudMonitoringList();
+			for (int i = 0; i < list.size(); i++) {
+				if (i == 0) {
+					dto.setQuestion1(list.get(i).getQuestionid().getQuestion());
+					dto.setAnswers1(list.get(i).getAnswerid().getAnswers());
+				}
+				if (i == 1) {
+					dto.setQuestion2(list.get(i).getQuestionid().getQuestion());
+					dto.setAnswers2(list.get(i).getAnswerid().getAnswers());
+				}
+				if (i == 2) {
+					dto.setQuestion3(list.get(i).getQuestionid().getQuestion());
+					dto.setAnswers3(list.get(i).getAnswerid().getAnswers());
+				}
+				if (i == 3) {
+					dto.setQuestion4(list.get(i).getQuestionid().getQuestion());
+					dto.setAnswers4(list.get(i).getAnswerid().getAnswers());
+				}
+				if (i == 4) {
+					dto.setQuestion5(list.get(i).getQuestionid().getQuestion());
+					dto.setAnswers5(list.get(i).getAnswerid().getAnswers());
+				}
+
+			}
+			returnlist.add(dto);
+
+		}
+		return returnlist;
+	}
+
+	public SurveyCustomer findCustomerById(int customerId) {
+		// TODO Auto-generated method stub
+		return surveryCustomerRepository.findById(customerId).get();
+
+	}
+
+}

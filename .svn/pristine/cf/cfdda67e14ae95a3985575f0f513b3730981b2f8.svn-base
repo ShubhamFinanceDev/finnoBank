@@ -1,0 +1,61 @@
+package com.kemal.spring.web.dto;
+
+public class BatchDTO {
+	
+	private String loannumber;
+
+	private String customername;
+	
+	private String branchname;
+
+	private int emiamount;
+
+	private int collectedamount; 
+
+	public String getLoannumber() {
+		return loannumber;
+	}
+
+	public void setLoannumber(String loannumber) {
+		this.loannumber = loannumber;
+	}
+
+	public String getCustomername() {
+		return customername;
+	}
+
+	public void setCustomername(String customername) {
+		this.customername = customername;
+	}
+
+	public String getBranchname() {
+		return branchname;
+	}
+
+	public void setBranchname(String branchname) {
+		this.branchname = branchname;
+	}
+
+	public int getEmiamount() {
+		return emiamount;
+	}
+
+	public void setEmiamount(int emiamount) {
+		this.emiamount = emiamount;
+	}
+
+	public int getCollectedamount() {
+		return collectedamount;
+	}
+
+	public void setCollectedamount(int collectedamount) {
+		this.collectedamount = collectedamount;
+	}
+
+
+	
+	
+	
+	
+
+}

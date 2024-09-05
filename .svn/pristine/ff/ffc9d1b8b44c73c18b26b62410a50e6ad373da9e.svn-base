@@ -1,0 +1,88 @@
+package com.kemal.spring.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+import com.kemal.spring.domain.ApplicationDetails;
+import com.kemal.spring.domain.ApplicationDetailsRepository;
+import com.kemal.spring.domain.BatchDetails;
+import com.kemal.spring.domain.BatchDetailsRepository;
+import com.kemal.spring.web.dto.batchpagingDto;
+
+@Service
+public class BatchDetailsService {
+
+	private BatchDetailsRepository batchDetailsRepository;
+
+	private ApplicationDetailsRepository applicationDetailsRepository;
+
+	public BatchDetailsService(BatchDetailsRepository batchDetailsRepository,
+			ApplicationDetailsRepository applicationDetailsRepository) {
+		this.batchDetailsRepository = batchDetailsRepository;
+		this.applicationDetailsRepository = applicationDetailsRepository;
+	}
+
+	
+	public List<batchpagingDto> findApplicationBybatchid() {
+		// TODO Auto-generated method stub
+		List<batchpagingDto> returnlist = new ArrayList<batchpagingDto>();
+
+		List<BatchDetails> list = batchDetailsRepository.findAll();
+		
+		
+		if (list != null && list.size() > 0) {
+			int index = 1;
+			for (BatchDetails batch : list) {
+
+				List<ApplicationDetails> batchlist = applicationDetailsRepository
+						.findApplicationBybatchid(batch.getId());
+				if (batchlist != null && batchlist.size() > 0) {
+					int batchindex = 1;
+					for (ApplicationDetails app : batchlist) {
+						System.out.println(index + "<===============================================>" + batchindex);
+						batchpagingDto batches = new batchpagingDto();
+						batches.setId(index);
+						if (batchindex == 1) {
+							// add batch data here (add those fields which is repeated)
+							// get from batch
+							// app unique get values
+							// batches set
+							// batches.setId(batch.getId());
+							batches.setCreatedby(batch.getCreatedby().getName());
+							batches.setCreateon(batch.getCreateon());
+
+							batches.setBatchnumber(batch.getBatchnumber());
+							batches.setFinobankacknumber(batch.getFinobankacknumber());
+							batches.setPaymentdate(batch.getPaymentdate());
+							batches.setTotalcollectedamount(batch.getTotalcollectedamount());
+							batches.setEmpcode(batch.getEmpcode());
+							batches.setFinobankacknumber(batch.getFinobankacknumber());
+							batches.setReciptnumber(batch.getReciptnumber());
+							batches.setPaymentype(batch.getPaymentype());
+							batches.setBranchname(batch.getCreatedby().getEmpbranch());
+							batches.setTotaldue(batch.getTotaldue());
+							batches.setDepositon(batch.getDepositon());
+							batches.setUserstatus(batch.getUserstatus());
+
+						}
+
+						// add application data here (add those fields which is not repeating)
+
+						batches.setLoannumber(app.getLoannumber());
+						batches.setCustomername(app.getCustomername());
+						batches.setEmiamount(app.getEmiamount());
+						batches.setCollectedamount(app.getCollectedAmount());
+
+						index++;
+						batchindex = batchindex + 1;
+						returnlist.add(batches);
+					}
+				}
+			}
+		}
+		return returnlist;
+	}
+}

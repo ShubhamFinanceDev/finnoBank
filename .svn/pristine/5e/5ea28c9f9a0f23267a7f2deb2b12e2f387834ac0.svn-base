@@ -1,0 +1,28 @@
+package com.kemal.spring.domain;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.kemal.spring.web.dto.SudMonitoringDto;
+
+@Repository
+public interface SudMonitoringRepository extends JpaRepository<SudMonitoring, Integer> {
+
+	@Query("select c from SudMonitoring c")
+	List<SudMonitoring> findSudMonitoringList();
+
+	@Query("select c from SudMonitoring c where c.branchname=:branchname")
+	List<SudMonitoring> findAllByBranch(@Param("branchname") String branchname);
+	
+	
+	 @Query(value = "SELECT `APP_ID` id, `REGION` region, `PRODUCT` product, `SCHEME` scheme, `ROI` roi, `TAT` tat, `application_number` applicationnumber, `customer_name` customername, `branch_name` branchname,  `relationship_manager` relationshipmanager , `current_status` currentstatus, `login_date` logindate, `sanction_date` sanctiondate, `sanction_loan_amount` sanctionloanamount,   `sanctioned_by` sanctionby, `disbursal_amount` disbursalamount, `distatus_id` distatus,  distatus_name distatusname,`docketstatus_id` docketstatus,docketstatus_name docketstatusname,   `finalstatus_id` finalstatus, finalstatus_name finalstatusname,  `legalstatus_id` legalstatus,legal_status_name legalstatusname, `pastatus_id` pastatus,pa_status_name pastatusname, `technicalstatus_id` technicalstatus, technical_status_name technicalstatusname,case when date(`CREATEDON`) > DATE(`updatedon`) then 'YES' when `updatedon` IS NULL then 'YES' ELSE 'NO' END updateRequired,didateifdoable,additionalremarks,`updatedon`  FROM sud_monitoring LEFT JOIN sud_distatus ON (sud_monitoring.distatus_id=sud_distatus.id)  LEFT JOIN sud_docketstatus ON (sud_monitoring.docketstatus_id=sud_docketstatus.id)  LEFT JOIN sud_finalstatus ON (sud_monitoring.finalstatus_id=sud_finalstatus.id)  LEFT JOIN sud_legalstatus ON (sud_monitoring.legalstatus_id=sud_legalstatus.id)  LEFT JOIN sud_pastatus ON (sud_monitoring.pastatus_id=sud_pastatus.id)  LEFT JOIN sud_technicalstatus ON (sud_monitoring.technicalstatus_id=sud_technicalstatus.id) where sanction_date BETWEEN DATE_SUB(NOW(), INTERVAL 100 DAY) AND NOW() and `branch_name`=:branchname", nativeQuery = true)
+	 List<Object[]> findAllByBranchNative(@Param("branchname") String branchname);
+	 
+	 @Query(value = "SELECT `APP_ID` id, `REGION` region, `PRODUCT` product, `SCHEME` scheme, `ROI` roi, `TAT` tat, `application_number` applicationnumber, `customer_name` customername, `branch_name` branchname,  `relationship_manager` relationshipmanager , `current_status` currentstatus, `login_date` logindate, `sanction_date` sanctiondate, `sanction_loan_amount` sanctionloanamount,   `sanctioned_by` sanctionby, `disbursal_amount` disbursalamount, `distatus_id` distatus,  distatus_name distatusname,`docketstatus_id` docketstatus,docketstatus_name docketstatusname,   `finalstatus_id` finalstatus, finalstatus_name finalstatusname,  `legalstatus_id` legalstatus,legal_status_name legalstatusname, `pastatus_id` pastatus,pa_status_name pastatusname, `technicalstatus_id` technicalstatus, technical_status_name technicalstatusname,case when date(`CREATEDON`) > DATE(`updatedon`) then 'YES' when `updatedon` IS NULL then 'YES' ELSE 'NO' END updateRequired,didateifdoable,additionalremarks,`updatedon`  FROM sud_monitoring LEFT JOIN sud_distatus ON (sud_monitoring.distatus_id=sud_distatus.id)  LEFT JOIN sud_docketstatus ON (sud_monitoring.docketstatus_id=sud_docketstatus.id)  LEFT JOIN sud_finalstatus ON (sud_monitoring.finalstatus_id=sud_finalstatus.id)  LEFT JOIN sud_legalstatus ON (sud_monitoring.legalstatus_id=sud_legalstatus.id)  LEFT JOIN sud_pastatus ON (sud_monitoring.pastatus_id=sud_pastatus.id)  LEFT JOIN sud_technicalstatus ON (sud_monitoring.technicalstatus_id=sud_technicalstatus.id) where sanction_date BETWEEN DATE_SUB(NOW(), INTERVAL 100 DAY) AND NOW() ", nativeQuery = true)
+	 List<Object[]> findSudMonitoringListNative();
+
+}

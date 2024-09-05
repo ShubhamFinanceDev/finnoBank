@@ -1,0 +1,92 @@
+package com.kemal.spring.web.dto;
+
+public class SurveyCustomerDto {
+	
+	private Integer id;
+
+	private String applicationnumber;
+
+	private String applicantname;
+
+	private Integer mobileno;
+
+	private String emailid;
+
+	private String answers;
+
+	private String question;
+	
+	private String rowColor;
+	
+	
+	
+	
+
+
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getApplicationnumber() {
+		return applicationnumber;
+	}
+
+	public void setApplicationnumber(String applicationnumber) {
+		this.applicationnumber = applicationnumber;
+	}
+
+	public String getApplicantname() {
+		return applicantname;
+	}
+
+	public void setApplicantname(String applicantname) {
+		this.applicantname = applicantname;
+	}
+
+	public Integer getMobileno() {
+		return mobileno;
+	}
+
+	public void setMobileno(Integer mobileno) {
+		this.mobileno = mobileno;
+	}
+
+	public String getEmailid() {
+		return emailid;
+	}
+
+	public void setEmailid(String emailid) {
+		this.emailid = emailid;
+	}
+
+	public String getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(String answers) {
+		this.answers = answers;
+	}
+
+	public String getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(String question) {
+		this.question = question;
+	}
+
+	public String getRowColor() {
+		return rowColor;
+	}
+
+	public void setRowColor(String rowColor) {
+		this.rowColor = rowColor;
+	}
+	
+	
+}

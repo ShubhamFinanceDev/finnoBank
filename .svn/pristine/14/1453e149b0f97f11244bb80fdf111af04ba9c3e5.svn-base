@@ -1,0 +1,113 @@
+package com.kemal.spring.configuration;
+
+import com.kemal.spring.domain.Role;
+import com.kemal.spring.domain.User;
+import com.kemal.spring.service.RoleService;
+import com.kemal.spring.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by Keno&Kemo on 04.11.2017..
+ */
+@Component
+public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
+	private boolean alreadySetup = false;
+	private final UserService userService;
+	private final RoleService roleService;
+
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	public DataLoader(UserService userService, RoleService roleService) {
+		this.userService = userService;
+		this.roleService = roleService;
+	}
+
+	@Override
+	@Transactional
+	public void onApplicationEvent(final ContextRefreshedEvent event) {
+		if (alreadySetup)
+			return;
+
+		Role roleAdmin = createRoleIfNotFound("ROLE_ADMIN");
+		Role roleUser = createRoleIfNotFound("ROLE_USER");
+		Role roleCollection = createRoleIfNotFound("ROLE_COLLECTION");
+		Role roleSudUser = createRoleIfNotFound("ROLE_SUD_USER");
+		Role roleSudAdmin = createRoleIfNotFound("ROLE_SUD_ADMIN");
+		List<Role> adminRoles = Collections.singletonList(roleAdmin);
+		List<Role> userRoles = Collections.singletonList(roleUser);
+		List<Role> collectionRoles = Collections.singletonList(roleCollection);
+	
+		List<Role> sudUserRoles = Collections.singletonList(roleSudUser);
+		List<Role> sudAdminRoles = Collections.singletonList(roleSudAdmin);
+
+		createUserIfNotFound("sunil.biwal@shubham.co", "Sunil", "Biwal", "sunil.biwal", "sunil.biwal","00556","Gurugram","7048951052","HO – Payment Ops", adminRoles);
+		createUserIfNotFound("mohan.singh@shubham.co", "Mohan", "Singh", "mohan.singh", "mohan.singh","05428","Gurugram","7693006877","HO – Payment Ops", adminRoles);
+		createUserIfNotFound("Rohit.07498@shubham.co", "Rohit", "07498", "Rohit.07498", "Rohit.07498","07498","Gurugram","7048951305","HO – Payment Ops", adminRoles);
+		createUserIfNotFound("varun.tyagi@shubham.co", "varun", "tyagi", "varun.tyagi", "varun.tyagi","03458","Gurugram","8750260017","HO – Collection", collectionRoles);
+		
+		createUserIfNotFound("amit.lohiya@shubham.co", "amit", "lohiya", "amit.lohiya", "amit.lohiya","02776","Yamuna Vihar","7048951792","Collection", userRoles);
+		createUserIfNotFound("ASHISH.KHATANA@SHUBHAM.CO", "ASHISH", "KHATANA", "ASHISH.KHATANA", "ASHISH.KHATANA","06112","Gurugram","9711414623","Collection", userRoles);
+		createUserIfNotFound("gourav.sharma@shubham.co", "gourav", "sharma", "gourav.sharma", "gourav.sharma","06653","Preet Vihar","9758414051","Collection", userRoles);
+		createUserIfNotFound("khimanand.dhoundiyal@shubham.co", "khimanand", "dhoundiyal", "khimanand.dhoundiyal", "khimanand.dhoundiyal","04758","Burari","7048952093","Collection", userRoles);
+		createUserIfNotFound("mahesh.kumar@shubham.co", "mahesh", "kumar", "mahesh.kumar", "mahesh.kumar","02459","Faridabad","7048951036","Collection", userRoles);
+		createUserIfNotFound("maninder.phogaat@shubham.co", "maninder", "phogaat", "maninder.phogaat", "maninder.phogaat","04809","Kalkaji","7048951647","Collection", userRoles);
+		createUserIfNotFound("naveen.jain@shubham.co", "naveen", "jain", "naveen.jain", "naveen.jain","03579","Yamuna Vihar","7048951845","Collection", userRoles);
+		createUserIfNotFound("shahzad.khan@shubham.co", "shahzad", "khan", "shahzad.khan", "shahzad.khan","02333","Yamuna Vihar","7048951532","Collection", userRoles);
+		createUserIfNotFound("sudhir.gupta@shubham.co", "sudhir", "gupta", "sudhir.gupta", "sudhir.gupta","05748","Mangolpuri Branch","8595521692","Collection", userRoles);
+		createUserIfNotFound("sunil.kumar14@shubham.co", "sunil", "kumar14", "sunil.kumar14", "sunil.kumar14","06102","Faridabad","9540004044","Collection", userRoles);
+		createUserIfNotFound("surender.singh@shubham.co", "surender", "singh", "surender.singh", "surender.singh","04193","Gurugram","7048951450","Collection", sudAdminRoles);
+		
+		createUserIfNotFound("vijay.uniyal@shubham.co", "vijay", "uniyal", "vijay.uniyal", "vijay.uniyal","05626","Gurugram","8860402323","Collection", sudUserRoles);
+		createUserIfNotFound("himanshu.shandilya@shubham.co", "himanshu", "shandilya", "himanshu.shandilya", "vijay.uniyal","06887","Gurugram","8860402323","Collection", sudUserRoles);
+		
+		
+		alreadySetup = true;
+	}
+
+	@Transactional
+	Role createRoleIfNotFound(final String name) {
+		Role role = roleService.findByName(name);
+		if (role == null) {
+			role = new Role(name);
+			roleService.save(role);
+		}
+		return role;
+	}
+
+	@Transactional
+	void createUserIfNotFound(
+			final String email,final String name, final String surname, final String username,final String password,
+			final String empcode, final String empbranch, final String empcontactno, final String empdepartment, final List<Role> userRoles
+		
+		
+			) {
+		User user = userService.findByEmail(email);
+		if (user == null) {
+			user = new User();
+			user.setName(name);
+			user.setSurname(surname);
+			user.setUsername(username);
+			user.setPassword(bCryptPasswordEncoder.encode(password));
+			user.setEmail(email);
+			user.setRoles(userRoles);
+			user.setCreatedon(new Date());
+			user.setEmpbranch(empbranch);
+			user.setEmpcode(empcode);
+			user.setEmpdepartment(empdepartment);
+			user.setEmpcontactno(empcontactno);
+			
+			user.setEnabled(true);
+			userService.save(user);
+		}
+	}
+}

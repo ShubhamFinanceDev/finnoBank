@@ -1,0 +1,40 @@
+package com.kemal.spring.domain;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "sud_technicalstatus")
+public class SudTechnicalStatus {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private int id;
+
+	@Column(name = "technicalStatusName")
+	private String technicalStatusName;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getTechnicalStatusName() {
+		return technicalStatusName;
+	}
+
+	public void setTechnicalStatusName(String technicalStatusName) {
+		this.technicalStatusName = technicalStatusName;
+	}
+	
+	
+
+}

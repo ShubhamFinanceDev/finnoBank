@@ -1,0 +1,827 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<title>SUD Monitoring Dashboard</title>
+<!-- Favicon-->
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<!-- Google Fonts -->
+<link
+	th:href="@{https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext}"
+	rel="stylesheet" type="text/css" />
+<link
+	th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Bootstrap Core Css -->
+<link th:href="@{/plugins/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+
+<!-- Waves Effect Css -->
+<link th:href="@{/plugins/node-waves/waves.css}" rel="stylesheet" />
+
+<!-- Animation Css -->
+<link th:href="@{/plugins/animate-css/animate.css}" rel="stylesheet" />
+
+<!-- Morris Chart Css-->
+<link th:href="@{/plugins/morrisjs/morris.css}" rel="stylesheet" />
+
+<!-- Custom Css -->
+<link th:href="@{/css/homestyle.css}" rel="stylesheet" />
+
+<!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+<link th:href="@{/css/themes/all-themes.css}" rel="stylesheet" />
+<style>
+.btn {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.btn-app {
+	color: white;
+	box-shadow: none;
+	border-radius: 3px;
+	position: relative;
+	padding: 10px 15px;
+	margin: 0;
+	min-width: 60px;
+	max-width: 80px;
+	text-align: center;
+	border: 1px solid #ddd;
+	background-color: #f4f4f4;
+	font-size: 12px;
+	transition: all .2s;
+	background-color: steelblue !important;
+}
+
+.btn-app>.fa, .btn-app>.glyphicon, .btn-app>.ion {
+	font-size: 30px;
+	display: block;
+}
+
+.btn-app:hover {
+	border-color: #aaa;
+	transform: scale(1.1);
+}
+
+
+.highlight {
+	background: lighten(yellow, 30%);
+}
+
+@media only screen and (max-width: 767px) {
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block;
+	}
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr, tfoot tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	td {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50% !important;
+	}
+	td:before {
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+	}
+	.table td:nth-child(1) {
+		background: #ccc;
+		height: 100%;
+		top: 0;
+		left: 0;
+		font-weight: bold;
+	}
+	/*
+	Label the data
+	*/
+	
+}
+</style>
+</head>
+
+<body class="theme-red">
+	<!-- Page Loader -->
+	<div class="page-loader-wrapper">
+		<div class="loader">
+			<div class="preloader">
+				<div class="spinner-layer pl-red">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+			<p>Please wait...</p>
+		</div>
+	</div>
+	<!-- #END# Page Loader -->
+	<!-- Overlay For Sidebars -->
+	<div class="overlay"></div>
+	<!-- #END# Overlay For Sidebars -->
+
+	<!-- Top Bar -->
+	<nav class="navbar">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="javascript:void(0);" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar-collapse"
+					aria-expanded="false"></a> <a href="javascript:void(0);"
+					class="bars"></a>
+				<ul class="navbar-brand">SUD Monitoring
+				</ul>
+
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse"></div>
+		</div>
+	</nav>
+	<!-- #Top Bar -->
+	<section>
+		<!-- Left Sidebar -->
+		<aside id="leftsidebar" class="sidebar">
+			<!-- User Info -->
+			<div class="user-info">
+				<div class="image">
+					<img src="images/user.png" width="48" height="48" alt="User" />
+				</div>
+				
+				
+					<div class="page-content-wrap">
+				<div class="row">
+					<div class="col-md-12">
+						<div th:text="${successMessage}"
+							style="background-color: green; color: white; font-size: 20px; align-content: center;"></div>
+						<div th:text="${errorMessage}"
+							style="background-color: red; color: white; font-size: 20px; align-content: center;"></div>
+					</div>
+				</div>
+
+
+
+			</div>
+				
+				
+				
+				
+				
+				
+				
+				
+				<div th:if="${lisrRoles!=null and !lisrRoles.empty}">
+					<form autocomplete="off" action="#" th:action="@{/dashboard}"
+						th:object="${sudMonitoringDto}" method="post"
+						class="form-horizontal" role="form" id="formmastersubmit">
+						<select id="selectedrole" name="selectedrole" class="form-control"
+							onchange="dashboardSubmit()">
+							<option value="0">Select role</option>
+							<option th:each="category : ${lisrRoles}"
+								th:value="${category.id}" th:utext="${category.name}" />
+						</select>
+					</form>
+				</div>
+				<div class="info-container">
+					<div class="name" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false" style="font-size: 20px">
+						<b>SUD Monitoring</b>
+					</div>
+
+					<!-- <div class="email">collections@shubham.co</div> -->
+					<div class="btn-group user-helper-dropdown"></div>
+				</div>
+			</div>
+			<!-- #User Info -->
+			<!-- Menu -->
+			<div class="menu">
+
+				<ul class="list">
+					<li class="header">MAIN NAVIGATION</li>
+
+					<!-- <li><a href="/dashboard"><span class=""></span> <span
+							class="xn-text">Home</span></a></li> -->
+
+
+					<li><a href="/dashboard"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">home</i> <span> Dashboard</span></a></li>
+
+
+					<li sec:authorize="hasRole('ROLE_SUD_ADMIN')"><a href="/uploaddata"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">layers</i> <span>SUD Data Upload</span>
+					</a></li>
+					<li><a href="javascript: document.logoutForm.submit()"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">input</i> <span>Sign Out</span>
+					</a>
+						<form name="logoutForm" th:action="@{/logout}" method="post"
+							th:hidden="true">
+							<input hidden type="submit" value="Sign Out" />
+						</form></li>
+						
+						<li sec:authorize="hasRole('ROLE_SUD_ADMIN')" class="header">MASTER</li>
+					<li sec:authorize="hasRole('ROLE_SUD_ADMIN')"><a href="/sudmaster"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Master</span></a></li>
+
+				</ul>
+			</div>
+			<!-- #Menu -->
+			<!-- Footer -->
+			<div class="legal">
+				<div class="copyright">&copy; 2022-2023 Shubham IT Team</div>
+				<div class="version">
+					<b>Version: </b> 1.0
+				</div>
+			</div>
+			<!-- #Footer -->
+		</aside>
+		<!-- #END# Left Sidebar -->
+		<!-- Right Sidebar -->
+
+		<!-- #END# Right Sidebar -->
+	</section>
+
+	<section class="content">
+		<div class="container-fluid">
+			<div class="block-header">
+				<h2>SUD MASTERS</h2>
+			</div>
+
+			<!-- Vertical Layout -->
+			<div class="row clearfix">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>LEGAL STATUS</h2>
+
+						</div>
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{/savelegalstatus}"
+								th:object="${legalstatusdto}" method="post" class="form-horizontal"
+								role="form" id="formlegalsubmit">
+								<label for="legal_status">Legal Status</label>
+								<div class="form-group">
+									<div class="form-line">  
+										<input type="hidden" id="id" th:field="*{id}">
+										<input type="text" id="legalStatusName" th:field="*{legalStatusName}" class="form-control"
+											placeholder="Enter Legal Status Master">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>LEGAL STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>LEGAL STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+										<tr th:each="user : ${leagallist}">
+											<td th:text="${user.legalStatusName}">legalStatusName</td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.legalStatusName}"
+											th:onclick="editlegal(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+									<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.legalStatusName}"
+											th:onclick="editlegal(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+										</tr>
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>TECHNICAL STATUS</h2>
+
+						</div>
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{savetechnicalstatus}"
+								th:object="${technicalstatusdto}" method="post" class="form-horizontal"
+								role="form" id="formtechnicalsubmit">
+								<label for="technical_status">Technical Status</label>
+								<div class="form-group">
+									<div class="form-line">
+										<input type="hidden" id="technicalStatusNameid" th:field="*{id}">
+										<input type="text" id="technicalStatusName" th:field="*{technicalStatusName}" class="form-control"
+											placeholder="Enter Technical Status ">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>TECHNICAL STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>TECHNICAL STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+										<tr th:each="user : ${technicallist}">
+											<td th:text="${user.technicalStatusName}">technicalStatusName</td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.technicalStatusName}"
+											th:onclick="edittechnical(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.technicalStatusName}"
+											th:onclick="edittechnical(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+
+
+
+
+
+										</tr>
+
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>PA STATUS</h2>
+
+						</div>
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{/savepastatus}"
+								th:object="${pastatusdto}" method="post" class="form-horizontal"
+								role="form" id="formpasubmit">
+								<label for="legal_status">PA Status</label>
+								<div class="form-group">
+									<div class="form-line">
+									<input type="hidden" id="paStatusNameid" th:field="*{id}">
+										<input type="text" id="paStatusName" th:field="*{paStatusName}" class="form-control"
+											placeholder="Enter PA Status ">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>PA STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>PA STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+										<tr th:each="user : ${palist}">
+											<td th:text="${user.paStatusName}">paStatusName</td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.paStatusName}"
+											th:onclick="editpa(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.paStatusName}"
+											th:onclick="editpa(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+										</tr>
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>DOCKET STATUS</h2>
+
+						</div>
+
+						<div class="body">
+						<form autocomplete="off" action="#" th:action="@{/savedocketstatus}"
+								th:object="${docketstatusdto}" method="post" class="form-horizontal"
+								role="form" id="formdocketsubmit">
+								<label for="legal_status">Docket Status</label>
+								<div class="form-group">
+									<div class="form-line">
+									<input type="hidden" id="docketstatusNameid" th:field="*{id}">
+										<input type="text" id="docketstatusName" th:field="*{docketstatusName}"  class="form-control"
+											placeholder="Enter Docket Status ">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>DOCKET STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>DOCKET STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+										<tr th:each="user : ${docketlist}">
+											<td th:text="${user.docketstatusName}">docketstatusName</td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.docketstatusName}"
+											th:onclick="editdocket(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.docketstatusName}"
+											th:onclick="editdocket(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+										</tr>
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>DI STATUS</h2>
+
+						</div>
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{/savedistatus}"
+								th:object="${didto}" method="post" class="form-horizontal"
+								role="form" id="formdisubmit">
+								<label for="legal_status">DI Status</label>
+								<div class="form-group">
+									<div class="form-line">
+									<input type="hidden" id="distatusNameid" th:field="*{id}">
+										<input type="text" id="distatusName"  th:field="*{distatusName}" class="form-control"
+											placeholder="Enter DI Status ">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>DI STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>DI STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+										<tr th:each="user : ${dilist}">
+											<td th:text="${user.distatusName}">distatusName</td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.distatusName}"
+											th:onclick="editdi(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.distatusName}"
+											th:onclick="editdi(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+											 
+										</tr>
+
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="header">
+							<h2>FINAL STATUS MASTER</h2>
+
+						</div>
+						<div class="body">
+							<form autocomplete="off" action="#" th:action="@{/savefinalstatus}"
+								th:object="${finalstatusdto}" method="post" class="form-horizontal"
+								role="form" id="formfinalsubmit">
+								<label for="legal_status">Final Status</label>
+								<div class="form-group">
+									<div class="form-line">
+									<input type="hidden" id="finalstatusNameid" th:field="*{id}">
+										<input type="text" id="finalstatusName"  th:field="*{finalstatusName}" class="form-control"
+											placeholder="Enter Legal Status Master">
+									</div>
+								</div>
+								<br>
+								<button type="submit"
+									class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+							</form>
+						</div>
+						<div class="body">
+							<div class="table-responsive">
+								<table
+									class="table table-bordered table-striped table-hover js-basic-example dataTable">
+									<thead>
+										<tr>
+											<th>FINAL STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>FINAL STATUS</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+										<tr th:each="user : ${finallist}">
+											<td th:text="${user.finalstatusName}">finalstatusName</td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.finalstatusName}"
+											th:onclick="editfinal(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'))">Edit</button></td>
+											<td><button th:data-parameter1="${user.id}"  th:data-parameter2="${user.finalstatusName}"
+											th:onclick="editfinal(this.getAttribute('data-parameter1'),null)">Delete</button></td>
+
+										</tr>
+
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<!-- Jquery Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery/jquery.min.js}"></script>
+
+	<!-- Bootstrap Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+
+	<!-- Select Plugin Js -->
+	<!--<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script> -->
+
+	<!-- Slimscroll Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-slimscroll/jquery.slimscroll.js}"></script>
+
+	<!-- Waves Effect Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/node-waves/waves.js}"></script>
+
+
+
+	<script
+		th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+
+
+
+
+
+	<!-- Jquery DataTable Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/jquery.dataTables.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.flash.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/jszip.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/pdfmake.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/vfs_fonts.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.html5.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.print.min.js}"></script>
+	<script th:src="@{/js/pages/ui/modals.js}"></script>
+	<!-- Custom Js -->
+	<script type="text/javascript" th:src="@{/js/admin.js}"></script>
+
+
+	<!-- Demo Js <script th:src="@{/js/pages/tables/jquery-datatable.js}"></script>-->
+	<script type="text/javascript" th:src="@{/js/demo.js}"></script>
+	<script type="text/javascript">
+		function submitPage() {
+
+			/*if ($("#legalstatus").val() == 0 || $("#legalstatus").val() == "") {
+				alert("Please enter Legal Status");
+				return false;
+			} else if ($("#technicalstatus").val() == 0
+					|| $("#technicalstatus").val() == "") {
+				alert("Please enter Technical Status");
+				return false;
+			} else if ($("#pastatus").val() == 0 || $("#pastatus").val() == "") {
+				alert("Please enter PA Status");
+				return false;
+			} else if ($("#docketstatus").val() == 0
+					|| $("#docketstatus").val() == "") {
+				alert("Please enter Docket Status");
+				return false;
+			} else if ($("#distatus").val() == 0 || $("#distatus").val() == "") {
+				alert("Please enter DI Status");
+				return false;
+			} else if ($("#finalstatus").val() == 0
+					|| $("#finalstatus").val() == "") {
+				alert("Please enter Final Status");
+				return false;
+			}*/
+
+			$("#formsubmit").submit()
+		}
+		function dashboardSubmit() {
+			$("#formmastersubmit").submit();
+		}
+		$(function() {
+
+			$('.js-basic-example').DataTable({
+				responsive : true,
+				//"pageLength": 5,
+				"iDisplayLength" : 5
+
+			});
+
+			$("#didateifdoable").attr('disabled', 'disabled');
+
+			$("#finalstatus").change(function() {
+				var str1 = $('option:selected', this).text();
+				var str2 = "Not Doable";
+				if (str1.indexOf(str2) != -1) {
+					$("#didateifdoable").attr('disabled', 'disabled');
+				} else {
+					$("#didateifdoable").removeAttr('disabled');
+				}
+
+			});
+		});
+	
+		function editlegal(id,name) {
+			$("#legalStatusNameid").val(id);
+			if(name!=null){
+			$("#legalStatusName").val(name);
+			}else{
+				$('#formlegalsubmit').attr('action', "/deletelegal").submit();
+			}
+		}
+		
+		function edittechnical(id,name) {
+			$("#technicalStatusNameid").val(id);
+			if(name!=null){
+			$("#technicalStatusName").val(name);
+		   }else{
+				$('#formtechnicalsubmit').attr('action', "/deletetechnical").submit();
+			}
+		}		
+		
+		
+		function editpa(id,name) {
+			$("#paStatusNameid").val(id);
+			if(name!=null){
+			$("#paStatusName").val(name);
+			}else{
+				$('#formpasubmit').attr('action', "/deletepa").submit();
+			}
+		} 
+		
+		
+	
+		
+		function editdocket(id,name) {
+			$("#docketstatusNameid").val(id);
+			if(name!=null){
+			$("#docketstatusName").val(name);
+			}else{
+				$('#formdocketsubmit').attr('action', "/deletedocket").submit();
+			}	
+			
+		}
+		
+		function editdi(id,name) {
+			$("#distatusNameid").val(id);
+			if(name!=null){
+				$("#distatusName").val(name);	
+			}else{
+				$('#formdisubmit').attr('action', "/deletedi").submit();
+				
+			}
+			
+				
+		}
+		
+		
+		function editfinal(id,name) {
+			$("#finalstatusNameid").val(id);
+			if(name!=null){
+			$("#finalstatusName").val(name);
+			}else{
+				$('#formfinalsubmit').attr('action', "/deletefinal").submit();
+			}		
+		}
+		
+		
+		</script>
+</body>
+
+</html>

@@ -1,0 +1,539 @@
+package com.kemal.spring.web.controllers.viewControllers;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.kemal.spring.domain.Activity;
+import com.kemal.spring.domain.Role;
+import com.kemal.spring.domain.SudDiStatus;
+import com.kemal.spring.domain.SudDocketStatus;
+import com.kemal.spring.domain.SudDpaStatus;
+import com.kemal.spring.domain.SudFinalStatus;
+import com.kemal.spring.domain.SudLegalStatus;
+import com.kemal.spring.domain.SudMonitoring;
+import com.kemal.spring.domain.SudTechnicalStatus;
+import com.kemal.spring.domain.SurveyCustomer;
+import com.kemal.spring.domain.User;
+import com.kemal.spring.service.ActivityDetailsService;
+import com.kemal.spring.service.BatchDetailsService;
+import com.kemal.spring.service.CustomerSurveryService;
+//import com.kemal.spring.service.CustomerSurveyService;
+import com.kemal.spring.service.SudMonitoringService;
+import com.kemal.spring.service.UserService;
+import com.kemal.spring.web.dto.DashboardDTO;
+import com.kemal.spring.web.dto.SudMonitoringDto;
+import com.kemal.spring.web.dto.SurveryDataUpload;
+import com.kemal.spring.web.dto.UserDto;
+import com.kemal.spring.web.dto.batchpagingDto;
+import com.poiji.bind.Poiji;
+import com.kemal.spring.configuration.SendSMS;
+
+/**
+ * Created by Keno&Kemo on 30.09.2017..
+ */
+
+@Controller
+@RequestMapping("")
+public class IndexController {
+	private String surverySMS = "Dear+Customer,+thank+you+for+being+our+valuable+customer.+Here,+we+are+conducting+a+customer+satisfaction+survey,+and+your+response+would+be+appreciated.+Please+click+the+link+to+fill+your+feedback+<link>+We+will+use+your+feedback+to+further+improve+our+service.%0aThank+you.%0aShubham+Housing";
+	private final BatchDetailsService batchService;
+	private final UserService userService;
+	private final SudMonitoringService sudMonitoringService;
+	private final CustomerSurveryService customerSurveryService;
+	private final ActivityDetailsService activityService;
+	private final JavaMailSender mailSender;
+	private String surveyUrl = "https://houseportal.shubham.co:8959/submit-survey/";
+
+	public IndexController(BatchDetailsService batchService, UserService userService,
+			SudMonitoringService sudMonitoringService, CustomerSurveryService customerSurveryService,
+			ActivityDetailsService activityService, JavaMailSender mailSender) {
+
+		this.batchService = batchService;
+		this.userService = userService;
+		this.sudMonitoringService = sudMonitoringService;
+		this.customerSurveryService = customerSurveryService;
+		this.activityService = activityService;
+		this.mailSender = mailSender;
+	}
+
+	// @GetMapping(value = {"/", "/index"})
+	@GetMapping(value = { "/", "/index" })
+	public String index() {
+
+		Activity activity = new Activity();
+		activity.setType("HIT");
+		// activity.setUser(users);
+		activity.setCreateon(new Date());
+		activity.setDescription("Access Home Page");
+		activityService.save(activity);
+
+		return "website/firstpage";
+	}
+
+	@GetMapping(value = "/login")
+	public String login() {
+		return "website/login";
+	}
+
+	@GetMapping(value = "/sudlogin")
+	public String sudlogin() {
+		return "website/sudlogin";
+	}
+
+	@GetMapping(value = "/surveylogin")
+	public String surveylogin() {
+		return "website/surveylogin";
+	}
+
+	@GetMapping(value = "/dashboard")
+	public String dashboard(WebRequest request, Model model) {
+
+		// model.addAttribute("batchdetails", batchService.findApplicationBybatchid());
+		List<batchpagingDto> list = new ArrayList<>();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName(); // get logged in username
+		System.out.println(
+				"User Selected role is selectedrole @@@@@@@@@@@@@@@@@@@@@@@@@            @@@@@@@@@@@@@@@@@@@@@@@@@@@@  "
+						+ request.getParameter("selectedrole"));
+		User user = userService.findByUsername(name);
+		if (user.getRoles() != null && user.getRoles().size() > 1) {
+			model.addAttribute("lisrRoles", user.getRoles());
+		} else {
+			model.addAttribute("lisrRoles", null);
+		}
+		Activity activity = new Activity();
+		activity.setType("LOGIN");
+		activity.setUser(user);
+		activity.setCreateon(new Date());
+		activity.setDescription("User Login Successfully");
+		activityService.save(activity);
+		if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_ADMIN")
+				|| user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_COLLECTION")) {
+			list = (batchService.findApplicationBybatchid(null));
+			DashboardDTO dashboardDTO = new DashboardDTO();
+
+			if (list != null && list.size() > 0) {
+
+				int total = 0, pending = 0, closed = 0;
+
+				// total=list.size();
+				for (batchpagingDto batch : list) {
+
+					if (batch.getBatchnumber() != null) {
+						if (batch.getUserstatus().equalsIgnoreCase("created")) {
+
+							pending++;
+						} else {
+							closed++;
+						}
+						total++;
+					}
+
+				}
+				dashboardDTO.setClosed(closed);
+				dashboardDTO.setPending(pending);
+				dashboardDTO.setTotal(total);
+			}
+			model.addAttribute("dashboard", dashboardDTO);
+			model.addAttribute("batchdetails", list);
+			return "website/dashboard";
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_USER")) {
+			list = (batchService.findApplicationBybatchid(user.getId()));
+			DashboardDTO dashboardDTO = new DashboardDTO();
+
+			if (list != null && list.size() > 0) {
+
+				int total = 0, pending = 0, closed = 0;
+
+				// total=list.size();
+				for (batchpagingDto batch : list) {
+
+					if (batch.getBatchnumber() != null) {
+						if (batch.getUserstatus().equalsIgnoreCase("created")) {
+
+							pending++;
+						} else {
+							closed++;
+						}
+						total++;
+					}
+
+				}
+				dashboardDTO.setClosed(closed);
+				dashboardDTO.setPending(pending);
+				dashboardDTO.setTotal(total);
+			}
+			model.addAttribute("dashboard", dashboardDTO);
+			model.addAttribute("batchdetails", list);
+			return "website/dashboard";
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_SUD_USER")) {
+			model.addAttribute("sudMonitoringDto", new SudMonitoringDto());
+			model.addAttribute("batchdetails", sudMonitoringService.findSudMonitoringList(user.getEmpbranch()));
+			// master data population
+
+			model.addAttribute("dilist", sudMonitoringService.findSudDiStatusList());
+			model.addAttribute("docketlist", sudMonitoringService.findSudDocketStatusList());
+			model.addAttribute("finallist", sudMonitoringService.findSudFinalStatusList());
+			model.addAttribute("leagallist", sudMonitoringService.findSudLegalStatusList());
+			model.addAttribute("palist", sudMonitoringService.findSudPaStatusList());
+			model.addAttribute("technicallist", sudMonitoringService.findSudTechnicalStatusList());
+
+			return "website/suddashboard";
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_SUD_ADMIN")) {
+			model.addAttribute("sudMonitoringDto", new SudMonitoringDto());
+			model.addAttribute("batchdetails", sudMonitoringService.findSudMonitoringList(null));
+			return "website/suddashboard";
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_SURVEY_ADMIN")) {
+			model.addAttribute("batchdetails", customerSurveryService.findSurveyCustomerList());
+			return "website/surveydashboard";
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_SURVEY_USER")) {
+			model.addAttribute("batchdetails", customerSurveryService.findSurveyCustomerList());
+			return "website/surveydashboard";
+		}
+
+		return "website/dashboard";
+	}
+
+	@PostMapping(value = "/dashboard")
+	public String dashboardPost(WebRequest request, Model model, HttpServletRequest request2) {
+
+		// model.addAttribute("batchdetails", batchService.findApplicationBybatchid());
+		List<batchpagingDto> list = new ArrayList<>();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName(); // get logged in username
+		System.out.println(
+				"User Selected role is selectedrole @@@@@@@@@@@@@@@@@@@@@@@@@            @@@@@@@@@@@@@@@@@@@@@@@@@@@@  "
+						+ request2.getParameter("selectedrole"));
+		User user = userService.findByUsername(name);
+		if (user.getRoles() != null && user.getRoles().size() > 1) {
+			model.addAttribute("lisrRoles", user.getRoles());
+		} else {
+			model.addAttribute("lisrRoles", null);
+		}
+		Activity activity = new Activity();
+		activity.setType("LOGIN");
+		activity.setUser(user);
+		activity.setCreateon(new Date());
+		activity.setDescription("User Login Successfully");
+		activityService.save(activity);
+		if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_ADMIN")
+				|| user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_COLLECTION")) {
+			list = (batchService.findApplicationBybatchid(null));
+			DashboardDTO dashboardDTO = new DashboardDTO();
+
+			if (list != null && list.size() > 0) {
+
+				int total = 0, pending = 0, closed = 0;
+
+				// total=list.size();
+				for (batchpagingDto batch : list) {
+
+					if (batch.getBatchnumber() != null) {
+						if (batch.getUserstatus().equalsIgnoreCase("created")) {
+
+							pending++;
+						} else {
+							closed++;
+						}
+						total++;
+					}
+
+				}
+				dashboardDTO.setClosed(closed);
+				dashboardDTO.setPending(pending);
+				dashboardDTO.setTotal(total);
+			}
+			model.addAttribute("dashboard", dashboardDTO);
+			model.addAttribute("batchdetails", list);
+			return "website/dashboard";
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_USER")) {
+			list = (batchService.findApplicationBybatchid(user.getId()));
+			DashboardDTO dashboardDTO = new DashboardDTO();
+
+			if (list != null && list.size() > 0) {
+
+				int total = 0, pending = 0, closed = 0;
+
+				// total=list.size();
+				for (batchpagingDto batch : list) {
+
+					if (batch.getBatchnumber() != null) {
+						if (batch.getUserstatus().equalsIgnoreCase("created")) {
+
+							pending++;
+						} else {
+							closed++;
+						}
+						total++;
+					}
+
+				}
+				dashboardDTO.setClosed(closed);
+				dashboardDTO.setPending(pending);
+				dashboardDTO.setTotal(total);
+			}
+			model.addAttribute("dashboard", dashboardDTO);
+			model.addAttribute("batchdetails", list);
+			return "website/dashboard";
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_SUD_USER")) {
+			model.addAttribute("sudMonitoringDto", new SudMonitoringDto());
+			model.addAttribute("batchdetails", sudMonitoringService.findSudMonitoringList(user.getEmpbranch()));
+			// master data population
+
+			model.addAttribute("dilist", sudMonitoringService.findSudDiStatusList());
+			model.addAttribute("docketlist", sudMonitoringService.findSudDocketStatusList());
+			model.addAttribute("finallist", sudMonitoringService.findSudFinalStatusList());
+			model.addAttribute("leagallist", sudMonitoringService.findSudLegalStatusList());
+			model.addAttribute("palist", sudMonitoringService.findSudPaStatusList());
+			model.addAttribute("technicallist", sudMonitoringService.findSudTechnicalStatusList());
+
+			return "website/suddashboard";
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_SUD_ADMIN")) {
+
+			if (user.getRoles().size() > 1 && request2.getParameter("selectedrole") != null
+					&& request2.getParameter("selectedrole") != "") {
+				for (Role r : user.getRoles()) {
+					if (r.getId().toString().equalsIgnoreCase(request2.getParameter("selectedrole"))
+							&& r.getName().equalsIgnoreCase("ROLE_SURVEY_ADMIN")) {
+						model.addAttribute("batchdetails", customerSurveryService.findSurveyCustomerList());
+						return "website/surveydashboard";
+					} else if (r.getId().toString().equalsIgnoreCase(request2.getParameter("selectedrole"))
+							&& r.getName().equalsIgnoreCase("ROLE_SUD_ADMIN")) {
+						model.addAttribute("sudMonitoringDto", new SudMonitoringDto());
+						model.addAttribute("batchdetails", sudMonitoringService.findSudMonitoringList(null));
+						return "website/suddashboard";
+					}
+				}
+			} else {
+				model.addAttribute("sudMonitoringDto", new SudMonitoringDto());
+				model.addAttribute("batchdetails", sudMonitoringService.findSudMonitoringList(null));
+				return "website/suddashboard";
+			}
+
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_SURVEY_ADMIN")) {
+
+			if (user.getRoles().size() > 1 && request2.getParameter("selectedrole") != null
+					&& request2.getParameter("selectedrole") != "") {
+				for (Role r : user.getRoles()) {
+					if (r.getId().toString().equalsIgnoreCase(request2.getParameter("selectedrole"))
+							&& r.getName().equalsIgnoreCase("ROLE_SURVEY_ADMIN")) {
+						model.addAttribute("batchdetails", customerSurveryService.findSurveyCustomerList());
+						return "website/surveydashboard";
+					} else if (r.getId().toString().equalsIgnoreCase(request2.getParameter("selectedrole"))
+							&& r.getName().equalsIgnoreCase("ROLE_SUD_ADMIN")) {
+						model.addAttribute("sudMonitoringDto", new SudMonitoringDto());
+						model.addAttribute("batchdetails", sudMonitoringService.findSudMonitoringList(null));
+						return "website/suddashboard";
+					}
+				}
+			} else {
+				model.addAttribute("batchdetails", customerSurveryService.findSurveyCustomerList());
+				return "website/surveydashboard";
+
+			}
+
+		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_SURVEY_USER")) {
+			model.addAttribute("batchdetails", customerSurveryService.findSurveyCustomerList());
+			return "website/surveydashboard";
+		}
+
+		return "website/dashboard";
+	}
+
+	@PostMapping("/savesudmonitoring")
+	public String add(ModelAndView modelAndView, @ModelAttribute("sudMonitoringDto") SudMonitoringDto sudMonitoringDto,
+			BindingResult bindingResult, HttpServletRequest request, Errors errors) {
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName(); // get logged in username
+		User user = userService.findByUsername(name);
+		SudMonitoring suddb = sudMonitoringService.findbySudMonitoringId(sudMonitoringDto.getId());
+
+		suddb.setDidateifdoable(sudMonitoringDto.getDidateifdoable());
+
+		if (sudMonitoringDto.getDistatus() != 0) {
+			SudDiStatus distatus = new SudDiStatus();
+			distatus.setId(sudMonitoringDto.getDistatus());
+			suddb.setDistatus(distatus);
+		}
+
+		if (sudMonitoringDto.getLegalstatus() != 0) {
+			SudLegalStatus loginstatus = new SudLegalStatus();
+			loginstatus.setId(sudMonitoringDto.getLegalstatus());
+			suddb.setLegalstatus(loginstatus);
+		}
+		if (sudMonitoringDto.getTechnicalstatus() != 0) {
+
+			SudTechnicalStatus technicalstatus = new SudTechnicalStatus();
+			technicalstatus.setId(sudMonitoringDto.getTechnicalstatus());
+			suddb.setTechnicalstatus(technicalstatus);
+		}
+		if (sudMonitoringDto.getPastatus() != 0) {
+
+			SudDpaStatus dpstatus = new SudDpaStatus();
+			dpstatus.setId(sudMonitoringDto.getPastatus());
+			suddb.setPastatus(dpstatus);
+		}
+
+		if (sudMonitoringDto.getDocketstatus() != 0) {
+
+			SudDocketStatus docketstatus = new SudDocketStatus();
+			docketstatus.setId(sudMonitoringDto.getDocketstatus());
+			suddb.setDocketstatus(docketstatus);
+		}
+		if (sudMonitoringDto.getFinalstatus() != 0) {
+
+			SudFinalStatus finalstatus = new SudFinalStatus();
+			finalstatus.setId(sudMonitoringDto.getFinalstatus());
+			suddb.setFinalstatus(finalstatus);
+		}
+		suddb.setAdditionalremarks(sudMonitoringDto.getAdditionalremarks());
+		suddb.setUpdatedon(new Date());
+		suddb.setUpdatedby(user);
+		sudMonitoringService.saveMonitoring(suddb);
+
+		return "redirect:/dashboard";
+	}
+
+	// GET Method to upload data
+	@GetMapping(value = "/uploadcustomer")
+	public ModelAndView UploadBulkData(HttpServletRequest request) {
+
+		request.getSession().setAttribute("uploadbulkDatalist", null);
+
+		ModelAndView modelAndView = new ModelAndView("website/surverycustomerupload");
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName(); // get logged in username
+		User user = userService.findByUsername(name);
+		if (user.getRoles() != null && user.getRoles().size() > 1) {
+			modelAndView.addObject("lisrRoles", user.getRoles());
+		} else {
+			modelAndView.addObject("lisrRoles", null);
+		}
+
+		modelAndView.addObject("surveryDataUpload", new SurveryDataUpload());
+		return modelAndView;
+
+	}
+
+	// Post Method to view upload data
+	@PostMapping(value = "/validateuploadcustomer")
+	public ModelAndView validateUploadBulkData(@RequestParam("file") MultipartFile file, HttpServletRequest request)
+			throws IllegalStateException, IOException {
+		ModelAndView modelAndView = new ModelAndView("website/surverycustomerupload");
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName(); // get logged in username
+		User user = userService.findByUsername(name);
+		if (user.getRoles() != null && user.getRoles().size() > 1) {
+			modelAndView.addObject("lisrRoles", user.getRoles());
+		} else {
+			modelAndView.addObject("lisrRoles", null);
+		}
+		File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
+
+		file.transferTo(convFile);
+
+		List<SurveryDataUpload> invoices = Poiji.fromExcel(convFile, SurveryDataUpload.class);
+		System.out.println("Printing List Data: " + invoices);
+
+		modelAndView.addObject("uploadbulkDatalist", invoices);
+		request.getSession().setAttribute("uploadbulkDatalist", invoices);
+		return modelAndView;
+	}
+
+	// Save Method to upload data
+	@PostMapping(value = "/saveuploadcustomer")
+	public ModelAndView saveUploadBulkData(SurveryDataUpload surveryDataUpload,
+			@RequestParam("file") MultipartFile file, BindingResult bindingResult, HttpServletRequest request,
+			RedirectAttributes redir) throws MessagingException {
+		ModelAndView modelAndView = new ModelAndView("website/surverycustomerupload");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		List<SurveryDataUpload> invoices = (List<SurveryDataUpload>) request.getSession()
+				.getAttribute("uploadbulkDatalist");
+		System.out.println("Printing List Data: " + invoices);
+		for (SurveryDataUpload excel : invoices) {
+			surveyUrl = "https://houseportal.shubham.co:8959/submit-survey/";
+			SurveyCustomer invoice = new SurveyCustomer();
+
+			invoice = customerSurveryService.findCustomerByApplication(excel.getApplicationnumber());
+			if (invoice == null) {
+				invoice = new SurveyCustomer();
+			}
+			invoice.setApplicationnumber(excel.getApplicationnumber());
+			invoice.setApplicantname(excel.getApplicantname());
+			invoice.setMobileno(excel.getMobileno());
+			invoice.setEmailid(excel.getEmailid());
+			invoice.setCreateon(new Date());
+			invoice.setSecuritycode(generateString());
+			customerSurveryService.save(invoice);
+			surveyUrl = surveyUrl + invoice.getSecuritycode();
+
+			surverySMS = surverySMS.replace("<link>", surveyUrl);
+			// System.out.println( maskString(str, 0, 12, '*') );
+			String url = surverySMS;
+			System.out.println(url);
+			SendSMS sms = new SendSMS(invoice.getMobileno(), url);
+			Thread th = new Thread(sms);
+			th.start();
+
+			MimeMessage emailMessage = mailSender.createMimeMessage();
+			MimeMessageHelper mailBuilder = new MimeMessageHelper(emailMessage, true);
+
+			mailBuilder.setTo(excel.getEmailid());
+			mailBuilder.setFrom("alerts.etl@shubham.co");
+			mailBuilder.setText("Hi " + invoice.getApplicantname()
+					+ "<br><br> Thanks for taking loan from Shubham Housing. Please use the below Link to give your feedback."
+					+ "<br><br> Click on Link: " + surveyUrl, true); // Second parameter indicates that this is HTML
+																		// mail
+			mailBuilder.setSubject("Shubham Housing Customer Survey");
+
+			mailSender.send(emailMessage);
+			redir.addFlashAttribute("successMessage", "SMS/Email has been sent successfully");
+			modelAndView.addObject("successMessage", "SMS/Email has been sent successfully");
+
+		}
+		return new ModelAndView("redirect:uploadcustomer");
+
+	}
+
+	@GetMapping(value = "/register")
+	public String showRegistrationForm(WebRequest request, Model model) {
+		UserDto userDto = new UserDto();
+		model.addAttribute("userDto", userDto);
+		return "website/register";
+	}
+
+	public String generateString() {
+		String uuid = UUID.randomUUID().toString();
+		return uuid;
+	}
+}

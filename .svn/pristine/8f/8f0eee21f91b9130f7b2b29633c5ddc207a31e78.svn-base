@@ -1,0 +1,62 @@
+package com.kemal.spring.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.stereotype.Service;
+
+import com.kemal.spring.domain.SurveryCustomerDetailsRepository;
+import com.kemal.spring.domain.SurveyCustomerDetails;
+import com.kemal.spring.web.dto.SurveyCustomerDto;
+
+@Service
+public class CustomerSurveryService {
+
+	private SurveryCustomerDetailsRepository surveryCustomerDetailsRepository;
+
+	String[] colors = new String[] { /*
+										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
+										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
+										 */
+			"#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
+			"#DEB887", "#FF69B4" };
+
+	public CustomerSurveryService(SurveryCustomerDetailsRepository surveryCustomerDetailsRepository) {
+		this.surveryCustomerDetailsRepository = surveryCustomerDetailsRepository;
+
+	}
+
+	public static int randInt(int min, int max) {
+		Random rand = new Random();
+		int randomNum = rand.nextInt((max - min) + 1) + min;
+
+		return randomNum;
+	}
+
+	public List<SurveyCustomerDto> findSurveyCustomerList() {
+		// TODO Auto-generated method stub
+
+		List<SurveyCustomerDto> returnlist = new ArrayList<SurveyCustomerDto>();
+		List<SurveyCustomerDetails> list = surveryCustomerDetailsRepository.findAll();// sudMonitoringRepository.findSudMonitoringList();
+		if (list != null && list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				String color = colors[randInt(0, colors.length - 1)];
+
+				SurveyCustomerDto dto = new SurveyCustomerDto();
+				dto.setId(list.get(i).getId());
+				dto.setApplicationnumber(list.get(i).getCustomerid().getApplicationnumber());
+				dto.setApplicantname(list.get(i).getCustomerid().getApplicantname());
+				dto.setEmailid(list.get(i).getCustomerid().getEmailid());
+				dto.setMobileno(list.get(i).getCustomerid().getMobileno());
+				dto.setQuestion(list.get(i).getQuestionid().getQuestion());
+				dto.setAnswers(list.get(i).getAnswerid().getAnswers());
+				dto.setRowColor(color);
+				returnlist.add(dto);
+
+			}
+		}
+		return returnlist;
+	}
+
+}

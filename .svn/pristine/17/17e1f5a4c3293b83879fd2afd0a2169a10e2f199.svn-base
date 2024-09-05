@@ -1,0 +1,15 @@
+package com.kemal.spring.service;
+
+import com.kemal.spring.domain.ApplicationDetailsRepository;
+
+
+import org.springframework.stereotype.Service;
+
+
+
+
+@Service
+public class ApplicationDetailsService {
+	 public ApplicationDetailsService (ApplicationDetailsRepository applicationDetailsRepository) {
+
+}}

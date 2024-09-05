@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<title>Administrative Dashboard</title>
+<!-- Favicon-->
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<!-- Google Fonts -->
+<link
+	th:href="@{https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext}"
+	rel="stylesheet" type="text/css" />
+<link
+	th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Bootstrap Core Css -->
+<link th:href="@{/plugins/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+
+<link th:href="@{/plugins/font-awesome/css/font-awesome.min.css}" rel="stylesheet" />
+
+<!-- Waves Effect Css -->
+<link th:href="@{/plugins/node-waves/waves.css}" rel="stylesheet" />
+
+<!-- Animation Css -->
+<link th:href="@{/plugins/animate-css/animate.css}" rel="stylesheet" />
+
+<!-- Morris Chart Css-->
+<link th:href="@{/plugins/morrisjs/morris.css}" rel="stylesheet" />
+
+<!-- Custom Css -->
+<link th:href="@{/css/homestyle.css}" rel="stylesheet" />
+
+<!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+<link th:href="@{/css/themes/all-themes.css}" rel="stylesheet" />
+<style>
+.btn {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.btn-app {
+	color: white;
+	box-shadow: none;
+	border-radius: 3px;
+	position: relative;
+	padding: 10px 15px;
+	margin: 0;
+	min-width: 60px;
+	max-width: 80px;
+	text-align: center;
+	border: 1px solid #ddd;
+	background-color: #f4f4f4;
+	font-size: 12px;
+	transition: all .2s;
+	background-color: steelblue !important;
+}
+
+.btn-app>.fa, .btn-app>.glyphicon, .btn-app>.ion {
+	font-size: 30px;
+	display: block;
+}
+
+.btn-app:hover {
+	border-color: #aaa;
+	transform: scale(1.1);
+}
+
+.pdf {
+	background-color: #dc2f2f !important;
+}
+
+.excel {
+	background-color: #3ca23c !important;
+}
+
+.csv {
+	background-color: #e86c3a !important;
+}
+
+.imprimir {
+	background-color: #8766b1 !important;
+}
+
+/*
+Esto es opcional pero sirve para que todos los botones de exportacion se distribuyan de manera equitativa usando flexbox
+
+.flexcontent {
+    display: flex;
+    justify-content: space-around;
+}
+*/
+.selectTable {
+	height: 40px;
+	float: right;
+}
+
+div.dataTables_wrapper div.dataTables_filter {
+	text-align: left;
+	margin-top: 15px;
+}
+
+.btn-secondary {
+	color: #fff;
+	background-color: #4682b4;
+	border-color: #4682b4;
+}
+
+.btn-secondary:hover {
+	color: #fff;
+	background-color: #315f86;
+	border-color: #545b62;
+}
+
+.titulo-tabla {
+	color: #606263;
+	text-align: center;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+.inline {
+	display: inline-block;
+	padding: 0;
+}
+
+.dataTables_filter {
+	float: right;
+}
+
+.table-hover>tbody>tr:hover {
+	background-color: lighten(cyan, 40%);
+}
+
+.table {@media only screen and (min-width: 768px) {table-layout: fixed 
+	 ; max-width: 100 % !important ;
+	
+}
+
+}
+thead {
+	background: #F44336;
+	color: white;
+}
+
+.table td:nth-child(2) {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.highlight {
+	background: lighten(yellow, 30%);
+}
+</style>
+</head>
+
+<body class="theme-red">
+	<!-- Page Loader -->
+	<div class="page-loader-wrapper">
+		<div class="loader">
+			<div class="preloader">
+				<div class="spinner-layer pl-red">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+			<p>Please wait...</p>
+		</div>
+	</div>
+	<!-- #END# Page Loader -->
+	<!-- Overlay For Sidebars -->
+	<div class="overlay"></div>
+	<!-- #END# Overlay For Sidebars -->
+
+	<!-- Top Bar -->
+	<nav class="navbar">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="javascript:void(0);" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar-collapse"
+					aria-expanded="false"></a> <a href="javascript:void(0);"
+					class="bars"></a>
+				<ul class="navbar-brand">Administrative Dashboard
+				</ul>
+
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse"></div>
+		</div>
+	</nav>
+	<!-- #Top Bar -->
+	<section>
+		<!-- Left Sidebar -->
+		<aside id="leftsidebar" class="sidebar">
+			<!-- User Info -->
+			<div class="user-info">
+				<div class="image">
+					<img src="images/user.png" width="48" height="48" alt="User" />
+				</div>
+
+				<div class="info-container">
+					<div class="name" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false" style="font-size: 20px">
+						<b>Admin Portal</b>
+					</div>
+
+					<!-- <div class="email">collections@shubham.co</div> -->
+					<div class="btn-group user-helper-dropdown"></div>
+				</div>
+			</div>
+
+			<!-- #User Info -->
+			<!-- Menu -->
+		<div class="menu">
+                <ul class="list">
+                    <li class="header">MAIN NAVIGATION</li>
+                  <li  ><a href="/dashboard"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">home</i> <span> Home</span></a></li>
+                
+                    <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">widgets</i>
+                            <span>Digital Register</span>
+                        </a>
+                        <ul class="ml-menu">
+                           <li ><a href="/outwaardregister"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Outward Register</span></a></li>
+                            <li ><a href="/inwardregister"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Inward Register</span></a></li></ul>
+                          
+                            
+                  <li sec:authorize="hasRole('ROLE_ADMINISTRATOR_ADMIN')"><a href="/pettycash"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span> Petty Cash</span></a></li>
+                   
+                  <li class="active" sec:authorize="hasRole('ROLE_ADMINISTRATOR_ADMIN')" ><a href="/agreement"
+						class="toggled waves-effect waves-block"> <i
+						class="material-icons">assignment</i> <span>Agreement Details</span></a></li>
+						
+							<li><a href="javascript: document.logoutForm.submit()"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">input</i> <span>Sign Out</span>
+					</a>
+						<form name="logoutForm" th:action="@{/logout}" method="post"
+							th:hidden="true">
+							<input hidden type="submit" value="Sign Out" />
+						</form></li>
+                    
+                   <li sec:authorize="hasRole('ROLE_ADMINISTRATOR_ADMIN')" class="header">Masters</li>
+					
+					
+					<li sec:authorize="hasRole('ROLE_ADMINISTRATOR_ADMIN')"><a href="/adminmaster"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons"> assignment</i> <span>Master </span></a></li>
+                </ul>
+            </div>
+			<!-- #Menu -->
+			<!-- Footer -->
+			<div class="legal">
+				<div class="copyright">&copy; 2022-2023 Shubham IT Team</div>
+				<div class="version">
+					<b>Version: </b> 1.0
+				</div>
+			</div>
+			<!-- #Footer -->
+		</aside>
+		<!-- #END# Left Sidebar -->
+		<!-- Right Sidebar -->
+
+		<!-- #END# Right Sidebar -->
+	</section>
+
+	<section class="content">
+		<div class="container-fluid">
+			<div class="block-header">
+				<h2>Agreement Page</h2>
+			</div>
+			<!-- Input -->
+<div class="row clearfix">
+				<div class="page-content-wrap">
+					<div class="row">
+						<div class="col-md-12">
+							<div th:text="${successMessage}"
+								style="background-color: green; color: white; font-size: 20px; align-content: center;"></div>
+							<div th:text="${errorMessage}"
+								style="background-color: red; color: white; font-size: 20px; align-content: center;"></div>
+						</div>
+					</div>
+
+
+
+				</div>
+			</div>
+			<div class="row clearfix">
+				<form autocomplete="off" action="#" th:action="@{/saveagreement}"
+					th:object="${agreement}" method="post" class="form-horizontal"
+					role="form" id="formdisubmit" enctype="multipart/form-data">
+					<input type="hidden" id="id" th:field="*{id}">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+
+						<div class="row clearfix">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="card">
+									<div class="body">
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Branch Code</h2>
+												<select class="form-control show-tick" id="branchCode"
+													th:field="*{branchcode.id}" required>
+													<option value="">Please select</option>
+													<option th:each="category : ${branchlist}"
+														th:value="${category.id}"
+														th:utext="${category.branchCode}"  />
+
+												</select>
+											</div>
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Cities</h2>
+												<div class="form-group">
+													<div class="form-line">
+
+														<input type="text" id="cities" th:field="*{cities}"
+															class="form-control"
+															placeholder="Please Enter Number of Cities">
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Location</h2>
+												<select class="form-control show-tick" id="location"
+													th:field="*{location.id}" disabled="disabled">
+													<option value="">Please select</option>
+													<option th:each="category : ${branchlist}"
+														th:value="${category.id}" th:utext="${category.location}" />
+
+												</select>
+											</div>
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Branch Name</h2>
+												<select class="form-control show-tick" id="branchName"
+													th:field="*{branchname.id}" disabled="disabled">
+													<option value="">Please select</option>
+													<option th:each="category : ${branchlist}"
+														th:value="${category.id}"
+														th:utext="${category.branchName}" />
+
+												</select>
+											</div>
+
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">State</h2>
+												<select class="form-control show-tick" id="state"
+													th:field="*{state.id}" disabled="disabled">
+													<option value="">Please select</option>
+													<option th:each="category : ${branchlist}"
+														th:value="${category.id}" th:utext="${category.state}" />
+
+												</select>
+											</div>
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Shift/Closed/Active</h2>
+												<select class="form-control show-tick"
+													th:field="*{shiftclosedactiveclosed}">
+													<option value="0">Please select</option>
+													<option value="shift">Shift</option>
+													<option value="closed">Closed</option>
+													<option value="active">Active</option>
+
+												</select>
+											</div>
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Branch OpenOn</h2>
+												<div class="form-group">
+													<div class="form-line" id="bs_datepicker_container">
+														<input type="text" id="seValidFrom"
+															th:field="*{branchopenon}" class="form-control"
+															placeholder="Please choose S&E Valid From Date">
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Branch open Date as per
+													NHB</h2>
+												<div class="form-group">
+													<div class="form-line" id="bs_datepicker_container">
+														<input type="text" id="branchopendateasperNHB"
+															th:field="*{branchopendateasperNHB}" class="form-control"
+															placeholder="Please choose Branch open Date as per NHB">
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">NHB Intimation Date</h2>
+												<div class="form-group">
+													<div class="form-line" id="bs_datepicker_container">
+														<input type="text" id="nhbintimationdate"
+															th:field="*{nhbintimationdate}"
+															class="datepicker form-control"
+															placeholder="Please Enter  NHB Intimation Date">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Agreement From</h2>
+												<div class="form-group">
+													<div class="form-line" id="bs_datepicker_container">
+														<input type="text" id="agreementfrom"
+															th:field="*{agreementfrom}" class="form-control"
+															placeholder="Please Enter  Agreement From Date">
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Branch Closing /
+													Agreement Valid Till</h2>
+												<div class="form-group">
+													<div class="form-line" id="bs_datepicker_container">
+														<input type="text" id="branchclosingagreementvalidtill"
+															th:field="*{branchclosingagreementvalidtill}"
+															class="form-control"
+															placeholder="Please Enter  Branch Closing / Agreement Valid Till">
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Agreement for</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="agreementfor"
+															th:field="*{agreementfor}" class="form-control"
+															placeholder="Please Enter Agreement Duration">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Flag</h2>
+												<select class="form-control show-tick" th:field="*{flag}">
+													<option value="0">Please select</option>
+													<option value="true">True</option>
+													<option value="false">False</option>
+
+												</select>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Complete Address of
+													Current Location</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="completeAddressofCurrentLocation"
+															th:field="*{completeAddressofCurrentLocation}"
+															class="form-control"
+															placeholder="Please Enter Complete Address of Current Location">
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">PIN Code</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="pincode" th:field="*{pincode}"
+															class="form-control" placeholder="Please Enter PIN Code">
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Geo TAG</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="geotag" th:field="*{geotag}"
+															class="form-control" placeholder="Please Enter Geo TAG">
+													</div>
+												</div>
+											</div>
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Carpet Area</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="carpetarea"
+															th:field="*{carpetarea}" class="form-control"
+															placeholder="Please Enter Carpet Area">
+													</div>
+												</div>
+											</div>
+
+
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">AC's</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="ac" th:field="*{ac}"
+															class="form-control"
+															placeholder="Please Enter number of AC's ">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Electricity Via
+													Direct/Sub</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="electricityviadirectsub"
+															th:field="*{electricityviadirectsub}"
+															class="form-control"
+															placeholder="Please Enter Electricity Via Direct/Sub">
+													</div>
+												</div>
+											</div>
+
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Rate Per Units</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="rateperunits"
+															th:field="*{rateperunits}" class="form-control"
+															placeholder="Please Enter Rate Per Units">
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Work Station</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="workstation"
+															th:field="*{workstation}" class="form-control"
+															placeholder="Please Enter Work Station">
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Cubical</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id=cubical th:field="*{cubical}"
+															class="form-control" placeholder="Please Enter Cubical">
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Meeting Room</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="meetingroom"
+															th:field="*{meetingroom}" class="form-control"
+															placeholder="Please Enter Meeting Room">
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Cabin</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="cabin" th:field="*{cabin}"
+															class="form-control"
+															placeholder="Please Enter number of Cabin">
+													</div>
+												</div>
+											</div>
+
+
+
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Landlord Name</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="landlordname"
+															th:field="*{landlordname}" class="form-control"
+															placeholder="Please Enter Landlord Name">
+													</div>
+												</div>
+											</div>
+
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">SD Amounts</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="sdamounts" th:field="*{sdamounts}"
+															class="form-control"
+															placeholder="Please Enter SD Amounts">
+													</div>
+												</div>
+											</div>
+
+
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Rent</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="rent" th:field="*{rent}"
+															class="form-control"
+															placeholder="Please Enter Rent Amounts">
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Maintenance Amounts</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="maintenance"
+															th:field="*{maintenance}" class="form-control"
+															placeholder="Please Enter Maintenance Amounts">
+													</div>
+												</div>
+											</div>
+
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Esclation</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="esclation" th:field="*{esclation}"
+															class="form-control" placeholder="Please Enter Esclation">
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Stamp Duty</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id=stampduty th:field="*{stampduty}"
+															class="form-control"
+															placeholder="Please Enter Stamp Duty">
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Contact person</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="contactperson"
+															th:field="*{contactperson}" class="form-control"
+															placeholder="Please Enter Contact person Name">
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Contact Number</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="contactnumber"
+															th:field="*{contactnumber}" class="form-control"
+															placeholder="Please Enter Contact Number">
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">E Mail ID</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="emailid" th:field="*{emailid}"
+															class="form-control" placeholder="Please Enter E Mail ID">
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Shop act  Certificate No</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="shopacecertificaneno"
+															th:field="*{shopacecertificaneno}" class="form-control"
+															placeholder="Please Enter Shop ace Certificane No">
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Opt on</h2>
+												<div class="form-group">
+													<div class="form-line" id="bs_datepicker_container">
+														<input type="text" id="opton" th:field="*{opton}"
+															class="form-control"
+															placeholder="Please choose Opt on Date">
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-4">
+												<h2 class="card-inside-title">S&E Valid From</h2>
+												<div class="form-group">
+													<div class="form-line" id="bs_datepicker_container">
+														<input type="text" id="sevalidfrom"
+															th:field="*{sevalidfrom}" class="form-control"
+															placeholder="Please choose S&E Valid From Date">
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<h2 class="card-inside-title">S&E Valid Till</h2>
+												<div class="form-group">
+													<div class="form-line" id="bs_datepicker_container">
+														<input type="text" id="sevalidtill"
+															th:field="*{sevalidtill}" class="form-control"
+															placeholder="Please Enter S&E Valid Till">
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<h2 class="card-inside-title">REMARK</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="text" id="remarks" th:field="*{remarks}"
+															class="form-control" placeholder="Please Enter REMARK">
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<h2 class="card-inside-title">Agreement Pdf</h2>
+												<div class="form-group">
+													<div class="form-line">
+														<input type="file" accept="application/pdf"
+															class="fileinput btn-primary" name="file" id="file"
+															title="Browse file"  required />
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="row clearfix">
+											<div class="col-md-4">
+												<button type="submit" class="btn btn-info waves-effect">Submit</button>
+											</div>
+										</div>
+										<div class="row clearfix"></div>
+										<div class="row clearfix"></div>
+										<div class="row clearfix"></div>
+									</div>
+
+								</div>
+
+
+							</div>
+						</div>
+
+
+					</div>
+				</form>
+			</div>
+
+		</div>
+		<div class="row clearfix">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<div class="card">
+					<div class="header">
+						<h2>Agreement Details</h2>
+
+					</div>
+					<div class="body">
+						<div class="table-responsive">
+							<table
+								class="table table-bordered table-striped table-hover dataTable js-exportable">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Edit</th>
+										<th>Delete</th>
+										<th>Agreement File(PDF)</th>
+										<th>Branch Code</th>
+										<th>Cities</th>
+										<th>Location</th>
+										<th>Branch Name</th>
+										<th>State</th>
+										<th>Shift/Closed/Active</th>
+										<th>Branch OpenOn</th>
+										<th>Branch open Date as per NHB</th>
+										<th>NHB Intimation Date</th>
+										<th>Agreement From</th>
+										<th>Branch Closing /Agreement Valid Till</th>
+										<th>Agreement for</th>
+										<th>Flag</th>
+										<th>Complete Address of Current Location</th>
+										<th>PIN Code</th>
+										<th>Geo TAG</th>
+										<th>Carpet Area</th>
+										<th>AC's</th>
+										<th>Electricity Via Direct/Sub</th>
+										<th>Rate Per Units</th>
+										<th>Work Station</th>
+										<th>Cubical</th>
+										<th>Meeting Room</th>
+										<th>Cabin</th>
+										<th>Landlord Name</th>
+										<th>SD Amounts</th>
+										<th>Rent</th>
+										<th>Maintenance Amounts</th>
+										<th>Esclation</th>
+										<th>Stamp Duty</th>
+										<th>Contact person</th>
+										<th>Contact Number</th>
+										<th>E Mail ID</th>
+										<th>Shop act  Certificate No</th>
+										<th>Opt on</th>
+										<th>S&E Valid From</th>
+										<th>S&E Valid Till</th>
+										<th>REMARK</th>
+
+
+									</tr>
+								</thead>
+
+								<tbody>
+
+									<tr class="details" th:each="user : ${agreementdetails}">
+
+										<td></td>
+										<td><button th:data-parameter1="${user.id}"
+												th:onclick="editagreement(this.getAttribute('data-parameter1'))">Edit</button></td>
+
+										<td><button th:data-parameter1="${user.id}"
+												th:onclick="deleteagreement(this.getAttribute('data-parameter1'))">Delete</button></td>
+										<td><a th:href="@{/getagreement/{id}(id=${user.id})}"
+											 href="#" role="button"><span
+												class="fa fa-file-pdf-o" style="size: 20px;"></span></a></td>
+										<td th:text="${user.branchcode.branchCode}">branchcode</td>
+										<td th:text="${user.cities}">cities</td>
+										<td th:text="${user.branchcode.location}">location</td>
+										<td th:text="${user.branchcode.branchName}">branchname</td>
+										<td th:text="${user.branchcode.state}">state</td>
+										<td th:text="${user.shiftclosedactiveclosed}">shiftclosedactiveclosed</td>
+										<td th:text="${user.branchopenon}">branchopenon</td>
+										<td th:text="${user.branchopendateasperNHB}">branchopendateasperNHB</td>
+										<td th:text="${user.nhbintimationdate}">nhbintimationdate</td>
+										<td th:text="${user.agreementfrom}">agreementfrom</td>
+										<td th:text="${user.branchclosingagreementvalidtill}">branchclosingagreementvalidtill</td>
+										<td th:text="${user.agreementfor}">agreementfor</td>
+										<td th:text="${user.flag}">flag</td>
+										<td th:text="${user.completeAddressofCurrentLocation}">completeAddressofCurrentLocation</td>
+										<td th:text="${user.pincode}">pincode</td>
+										<td th:text="${user.geotag}">geotag</td>
+										<td th:text="${user.carpetarea}">carpetarea</td>
+										<td th:text="${user.ac}">ac</td>
+										<td th:text="${user.electricityviadirectsub}">electricityviadirectsub</td>
+										<td th:text="${user.rateperunits}">rateperunits</td>
+										<td th:text="${user.workstation}">workstation</td>
+										<td th:text="${user.cubical}">cubical</td>
+										<td th:text="${user.meetingroom}">meetingroom</td>
+										<td th:text="${user.cabin}">cabin</td>
+										<td th:text="${user.landlordname}">landlordname</td>
+										<td th:text="${user.sdamounts}">sdamounts</td>
+										<td th:text="${user.rent}">rent</td>
+										<td th:text="${user.maintenance}">maintenance</td>
+										<td th:text="${user.esclation}">esclation</td>
+										<td th:text="${user.stampduty}">stampduty</td>
+										<td th:text="${user.contactperson}">contactperson</td>
+										<td th:text="${user.contactnumber}">contactnumber</td>
+										<td th:text="${user.emailid}">emailid</td>
+										<td th:text="${user.shopacecertificaneno}">shopacecertificaneno</td>
+										<td th:text="${user.opton}">opton</td>
+										<td th:text="${user.sevalidfrom}">sevalidfrom</td>
+										<td th:text="${user.sevalidtill}">sevalidtill</td>
+										<td th:text="${user.remarks}">remarks</td>
+
+
+
+
+
+
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Jquery Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery/jquery.min.js}"></script>
+
+	<!-- Bootstrap Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+
+	<!-- Select Plugin Js -->
+	<!--<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script> -->
+
+	<!-- Slimscroll Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-slimscroll/jquery.slimscroll.js}"></script>
+
+	<!-- Waves Effect Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/node-waves/waves.js}"></script>
+
+
+	<!-- Moment Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/momentjs/moment.js}"></script>
+
+	<!-- Bootstrap Material Datetime Picker Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js}"></script>
+
+	<!-- Bootstrap Datepicker Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+
+
+
+
+
+
+	<!-- Jquery DataTable Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/jquery.dataTables.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.flash.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/jszip.min.js}"></script>
+	<!-- <script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/pdfmake.min.js}"></script> -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/vfs_fonts.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.html5.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.print.min.js}"></script>
+	<script th:src="@{/js/pages/ui/modals.js}"></script>
+	<!-- Custom Js -->
+	<script type="text/javascript" th:src="@{/js/admin.js}"></script>
+
+	<script th:src="@{/js/pages/tables/jquery-datatable-admin.js}"></script>
+	<!-- Demo Js -->
+	<script type="text/javascript" th:src="@{/js/demo.js}"></script>
+
+
+	<script>
+		$(document).ready(function() {
+
+			$("#branchCode").bind("change", function() {
+				$("#location").val($("#branchCode").val());
+				$("#branchName").val($("#branchCode").val());
+				$("#state").val($("#branchCode").val());
+			});
+		});
+	</script>
+
+	<script type="text/javascript">
+		function deleteagreement(id) {
+			debugger;
+			$("#id").val(id);
+			$('#formdisubmit').attr('action', "/deleteagreement").submit();
+
+		}
+
+		function editagreement(id) {
+			debugger;
+			$("#id").val(id);
+			$('#formdisubmit').attr('action', "/editagreement").submit();
+
+		}
+	</script>
+
+
+
+</body>
+
+</html>

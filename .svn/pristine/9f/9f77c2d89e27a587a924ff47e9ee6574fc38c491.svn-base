@@ -1,0 +1,167 @@
+package com.kemal.spring.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.stereotype.Service;
+
+import com.kemal.spring.domain.SudDiStatus;
+import com.kemal.spring.domain.SudDiStatusRepository;
+import com.kemal.spring.domain.SudDocketStatus;
+import com.kemal.spring.domain.SudDocketStatusRepository;
+import com.kemal.spring.domain.SudDpaStatus;
+import com.kemal.spring.domain.SudFinalStatus;
+import com.kemal.spring.domain.SudFinalStatusRepository;
+import com.kemal.spring.domain.SudLegalStatus;
+import com.kemal.spring.domain.SudLegalStatusRepository;
+import com.kemal.spring.domain.SudMonitoring;
+import com.kemal.spring.domain.SudMonitoringRepository;
+import com.kemal.spring.domain.SudTechnicalStatus;
+import com.kemal.spring.domain.SudTechnicalStatusRepository;
+import com.kemal.spring.domain.SudpaStatusRepository;
+import com.kemal.spring.web.dto.SudMonitoringDto;
+
+@Service
+public class SudMonitoringService {
+
+	private SudMonitoringRepository sudMonitoringRepository;
+	private SudDiStatusRepository sudDiStatusRepository;
+	private SudDocketStatusRepository sudDocketStatusRepository;
+	private SudpaStatusRepository sudpaStatusRepository;
+	private SudFinalStatusRepository sudFinalStatusRepository;
+	private SudLegalStatusRepository sudLegalStatusRepository;
+	private SudTechnicalStatusRepository sudTechnicalStatusRepository;
+
+	String[] colors = new String[] { /*
+										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
+										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
+										 */
+			"#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
+			"#DEB887", "#FF69B4" };
+
+	public SudMonitoringService(SudMonitoringRepository sudMonitoringRepository,
+			SudDiStatusRepository sudDiStatusRepository, SudDocketStatusRepository sudDocketStatusRepository,
+			SudpaStatusRepository sudpaStatusRepository, SudFinalStatusRepository sudFinalStatusRepository,
+			SudLegalStatusRepository sudLegalStatusRepository,
+			SudTechnicalStatusRepository sudTechnicalStatusRepository) {
+		this.sudMonitoringRepository = sudMonitoringRepository;
+		this.sudDiStatusRepository = sudDiStatusRepository;
+		this.sudDocketStatusRepository = sudDocketStatusRepository;
+		this.sudpaStatusRepository = sudpaStatusRepository;
+		this.sudFinalStatusRepository = sudFinalStatusRepository;
+		this.sudLegalStatusRepository = sudLegalStatusRepository;
+		this.sudTechnicalStatusRepository = sudTechnicalStatusRepository;
+
+	}
+
+	public static int randInt(int min, int max) {
+		Random rand = new Random();
+		int randomNum = rand.nextInt((max - min) + 1) + min;
+
+		return randomNum;
+	}
+
+	public List<SudMonitoringDto> findSudMonitoringList() {
+		// TODO Auto-generated method stub
+		List<SudMonitoringDto> returnlist = new ArrayList<SudMonitoringDto>();
+		List<SudMonitoring> list = sudMonitoringRepository.findAll();// sudMonitoringRepository.findSudMonitoringList();
+		for (int i = 0; i < list.size(); i++) {
+			String color = colors[randInt(0, colors.length - 1)];
+			if (list.get(i).getApplicationnumber().equalsIgnoreCase("APPL05031950")
+					|| list.get(i).getApplicationnumber().equalsIgnoreCase("APPL05032763")) {
+				SudMonitoringDto dto = new SudMonitoringDto();
+				dto.setId(list.get(i).getId());
+				dto.setAdditionalremarks(list.get(i).getAdditionalremarks());
+				dto.setApplicationnumber(list.get(i).getApplicationnumber());
+				dto.setBranchname(list.get(i).getBranchname());
+
+				dto.setCustomername(list.get(i).getCustomername());
+				dto.setDidateifdoable(list.get(i).getDidateifdoable());
+				dto.setDisbursalamount(list.get(i).getDisbursalamount());
+				dto.setScheme(list.get(i).getScheme());
+
+				if (list.get(i).getDistatus() != null) {
+					dto.setDistatus(list.get(i).getDistatus().getId());
+					dto.setDistatusname(list.get(i).getDistatus().getDistatusName());
+				}
+
+				dto.setDivalue(list.get(i).getDivalue());
+
+				if (list.get(i).getDocketstatus() != null) {
+					dto.setDocketstatus(list.get(i).getDocketstatus().getId());
+					dto.setDocketstatusname(list.get(i).getDocketstatus().getDocketstatusName());
+				}
+
+				if (list.get(i).getFinalstatus() != null) {
+					dto.setFinalstatus(list.get(i).getFinalstatus().getId());
+					dto.setFinalstatusname(list.get(i).getFinalstatus().getFinalstatusName());
+				}
+
+				if (list.get(i).getLegalstatus() != null) {
+					dto.setLegalstatus(list.get(i).getLegalstatus().getId());
+					dto.setLegalstatusname(list.get(i).getLegalstatus().getLegalStatusName());
+				}
+
+				dto.setLogindate(list.get(i).getLogindate());
+
+				if (list.get(i).getPastatus() != null) {
+					dto.setPastatus(list.get(i).getPastatus().getId());
+					dto.setPastatusname(list.get(i).getPastatus().getPaStatusName());
+				}
+
+				dto.setProduct(list.get(i).getProduct());
+				dto.setRegion(list.get(i).getRegion());
+				dto.setRowColor(color);
+				dto.setSanctionby(list.get(i).getSanctionby());
+				dto.setSanctionloanamount(list.get(i).getSanctionloanamount());
+				dto.setSanctiondate(list.get(i).getSanctiondate());
+
+				if (list.get(i).getTechnicalstatus() != null) {
+					dto.setTechnicalstatus(list.get(i).getTechnicalstatus().getId());
+					dto.setTechnicalstatusname(list.get(i).getTechnicalstatus().getTechnicalStatusName());
+					
+				}
+
+				dto.setRowColor(color);
+				returnlist.add(dto);
+			}
+		}
+		return returnlist;
+	}
+
+	public List<SudDiStatus> findSudDiStatusList() {
+		return sudDiStatusRepository.findAll();
+	}
+
+	public List<SudDocketStatus> findSudDocketStatusList() {
+		return sudDocketStatusRepository.findAll();
+	}
+
+	public List<SudFinalStatus> findSudFinalStatusList() {
+		return sudFinalStatusRepository.findAll();
+	}
+
+	public List<SudLegalStatus> findSudLegalStatusList() {
+		return sudLegalStatusRepository.findAll();
+	}
+
+	public List<SudDpaStatus> findSudPaStatusList() {
+		return sudpaStatusRepository.findAll();
+	}
+
+	public List<SudTechnicalStatus> findSudTechnicalStatusList() {
+		return sudTechnicalStatusRepository.findAll();
+	}
+
+	public SudMonitoring findbySudMonitoringId(Integer sudid) {
+		// TODO Auto-generated method stub
+		return sudMonitoringRepository.findById(sudid).get();
+	}
+
+	public void saveMonitoring(SudMonitoring suddb) {
+		// TODO Auto-generated method stub
+		sudMonitoringRepository.save(suddb);
+	}
+
+}

@@ -1,0 +1,558 @@
+﻿
+<!DOCTYPE html>
+<html lang="en" class="body-full-height"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<title>Batch Creation</title>
+<!-- Favicon-->
+
+<link rel="icon" th:href="favicon.ico" type="image/x-icon">
+
+<!-- Google Fonts -->
+
+
+<link
+	th:href="@{https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext}"
+	rel="stylesheet" type="text/css" />
+<link
+	th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Bootstrap Core Css -->
+<link th:href="@{plugins/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+
+<!-- Waves Effect Css -->
+<link th:href="@{plugins/node-waves/waves.css}" rel="stylesheet" />
+
+<!-- Animation Css -->
+<link th:href="@{plugins/animate-css/animate.css}" rel="stylesheet" />
+
+<!-- Sweetalert Css -->
+<link th:href="@{plugins/sweetalert/sweetalert.css}" rel="stylesheet" />
+
+<!-- JQuery DataTable Css -->
+<link
+	th:href="@{plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css}"
+	rel="stylesheet" />
+
+<!-- Bootstrap Material Datetime Picker Css -->
+<link
+	th:href="@{plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css}"
+	rel="stylesheet" />
+
+<!-- Bootstrap DatePicker Css -->
+<link
+	th:href="@{plugins/bootstrap-datepicker/css/bootstrap-datepicker.css}"
+	rel="stylesheet" />
+
+<!-- Wait Me Css -->
+<link th:href="@{plugins/waitme/waitMe.css}" rel="stylesheet" />
+
+<!-- Bootstrap Select Css -->
+<link th:href="@{plugins/bootstrap-select/css/bootstrap-select.css}"
+	rel="stylesheet" />
+
+<!-- Custom Css -->
+<link th:href="@{css/homestyle.css}" rel="stylesheet" />
+
+<!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+<link th:href="@{css/themes/all-themes.css}" rel="stylesheet" />
+
+<style>
+@media only screen and (max-width: 800px) {
+	/* Force table to not be like tables anymore */
+	#no-more-tables table, #no-more-tables thead, #no-more-tables tbody,
+		#no-more-tables th, #no-more-tables td, #no-more-tables tr {
+		display: block;
+	}
+
+	/* Hide table headers (but not display: none;, for accessibility) */
+	#no-more-tables thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	#no-more-tables tr {
+		border: 1px solid #ccc;
+	}
+	#no-more-tables td {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50%;
+		white-space: normal;
+		text-align: left;
+	}
+	#no-more-tables td:before {
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+		text-align: left;
+		font-weight: bold;
+	}
+
+	/*
+	Label the data
+	*/
+	#no-more-tables td:before {
+		content: attr(data-title);
+	}
+}
+</style>
+
+</head>
+
+<body class="theme-red">
+	<!-- Page Loader -->
+	<div class="page-loader-wrapper">
+		<div class="loader">
+			<div class="preloader">
+				<div class="spinner-layer pl-red">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+			<p>Please wait...</p>
+		</div>
+	</div>
+	<!-- #END# Page Loader -->
+	<!-- Overlay For Sidebars -->
+	<div class="overlay"></div>
+	<!-- #END# Overlay For Sidebars -->
+	<!-- Search Bar -->
+	<div class="search-bar">
+		<div class="search-icon">
+			<i class="material-icons">search</i>
+		</div>
+		<input type="text" placeholder="START TYPING...">
+		<div class="close-search">
+			<i class="material-icons">close</i>
+		</div>
+	</div>
+	<!-- #END# Search Bar -->
+	<!-- Top Bar -->
+	<nav class="navbar">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="javascript:void(0);" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar-collapse"
+					aria-expanded="false"></a> <a href="javascript:void(0);"
+					class="bars"></a>
+				<ul class="navbar-brand">FINOBANK Web Portal
+				</ul>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse"></div>
+		</div>
+	</nav>
+	<!-- #Top Bar -->
+	<section>
+		<!-- Left Sidebar -->
+		<aside id="leftsidebar" class="sidebar">
+			<!-- User Info -->
+			<div class="user-info">
+				<div class="image">
+
+					<img th:src="@{images/user.png}" width="48" height="48" alt="User" />
+				</div>
+				<div class="info-container">
+					<div class="name" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false">Collection Desk</div>
+					<!--  <div class="email">collections@shubham.co</div> -->
+
+				</div>
+			</div>
+			<!-- #User Info -->
+			<!-- Menu -->
+			<div class="menu">
+				<ul class="list">
+					<li class="header">MAIN NAVIGATION</li>
+
+					<!-- <li><a href="/dashboard"><span class=""></span> <span
+							class="xn-text">Home</span></a></li> -->
+
+
+					<li><a href="/dashboard"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">home</i> <span> Dashboard</span></a></li>
+					<li><a href="/batchcreate"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">description</i> <span> Batch Create</span></a></li>
+					<li><a href="/updatepayment"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">layers</i> <span>Payment Update</span></a></li>
+					<li><a href="/showdeletebatch"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">layers</i> <span>Batch Delete</span></a></li>
+					<li><a href="/pagesignout"
+						class="toggled waves-effect waves-block"> <i
+							class="material-icons">input</i> <span>Sign Out</span></a></li>
+
+				</ul>
+			</div>
+
+
+
+			<!-- #Menu -->
+			<!-- Footer -->
+			<div class="legal">
+				<div class="copyright">&copy; 2022-2023 Shubham IT Team</div>
+				<div class="version">
+					<b>Version: </b> 1.0
+				</div>
+			</div>
+			<!-- #Footer -->
+		</aside>
+		<!-- #END# Left Sidebar -->
+		<!-- Right Sidebar -->
+		<!-- #END# Right Sidebar -->
+	</section>
+
+	<section class="content">
+		<div class="container-fluid">
+			<div class="block-header">
+				<h2>Batch Creation</h2>
+			</div>
+			<form autocomplete="off" action="#" th:action="@{/savebatch}"
+				th:object="${batchDto}" method="post" class="form-horizontal"
+				role="form" id="formsubmit">
+				<!-- Input -->
+				<div class="row clearfix">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="card">
+							<div class="body">
+								<div class="row clearfix">
+									<div class="col-md-6">
+										<b>Loan Account Number/Application Number</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{loannumber}" class="form-control"
+													placeholder="Enter Loan Account Number or Application Number"
+													maxlength="20" required />
+
+											</div>
+
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<div class="button-demo">
+											<button type="button" class="btn btn-primary waves-effect"
+												id="fetchdata">Fetch</button>
+										</div>
+									</div>
+								</div>
+								<div class="row clearfix">
+									<div class="col-md-6">
+										<b>Customer Name</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{customername}" class="form-control"
+													placeholder="Customer Name" readonly />
+											</div>
+
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<b>EMI Overdue</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{emiamount}" class="form-control"
+													placeholder="EMI Overdue" readonly />
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+								<div class="row clearfix">
+									<div class="col-md-6">
+										<b>Total Overdue</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{totalamount}" class="form-control"
+													placeholder="Total Overdue" readonly />
+											</div>
+
+										</div>
+									</div>
+									<div class="col-md-6">
+
+										<b>Receipt Type</b>
+										<div class="input-group colorpicker" style="z-index: auto;">
+											<div class="form-line">
+												<select th:field="*{paymentype}"
+													class="form-control show-tick">
+													<option value="Any Dues">Any Dues</option>
+													<option value="Closure">Closure</option>
+													<option value="Installment">Installment</option>
+													<option value="Part Payment">Part Payment</option>
+													<option value="Settlement">Settlement</option>
+												</select>
+											</div>
+
+										</div>
+									</div>
+								</div>
+								<div class="row clearfix">
+									<div class="col-md-6">
+
+										<b>Receipt Number</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{reciptnumber}" class="form-control"
+													placeholder="Enter Receipt Number" id="receiptno" required />
+											</div>
+
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<b>Collected Amount</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input th:field="*{collectedamount}" class="form-control"
+													placeholder="Enter Collected Amount" required />
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+
+							<div class="body">
+								<div class="button-demo">
+									<button type="button" class="btn btn-primary waves-effect"
+										id="addbatch">ADD</button>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+
+
+		<!-- #END# Input -->
+		<div class="row clearfix" th:if="${not #lists.isEmpty(batchdetails)}">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<div class="card">
+					<div class="header">
+						<h2>
+							Batch TABLES <small></small>
+						</h2>
+
+					</div>
+					<div class="body table-responsive">
+						<div id="no-more-tables">
+							<table
+								class="col-md-12 table-bordered table-striped table-condensed cf">
+								<thead class="cf">
+									<tr>
+
+										<th>Delete</th>
+										<th>Loan Number</th>
+										<th>Customer Name</th>
+										<th>EMI overdue</th>
+										<th>Total Overdue</th>
+										<th class="numeric">Collected Amount</th>
+
+
+
+									</tr>
+								</thead>
+								<tbody>
+
+									<tr class="details" th:each="user,iter : ${batchdetails}">
+
+										<td data-title="Delete"><a
+											class="btn btn-primary waves-effect"
+											th:href="@{/deletefetchdata/{id}(id=${iter.index})}"
+											th:text="Delete">Delete</a></td>
+
+
+										<td data-title="Loan Number" th:text="${user.loannumber}">loannumber</td>
+										<td data-title="Customer Name" th:text="${user.customername}">customername</td>
+										<td data-title="EMI overdue" th:text="${user.emiamount}">emiamount</td>
+										<td data-title="Total Overdue" th:text="${user.totalamount}">emiamount</td>
+										<td data-title="Collected Amount"
+											th:text="${user.collectedamount}">emiamount</td>
+
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+
+						<!-- <button class="btn btn-primary waves-effect" type="button" id="formsubmitbtn">GENERATE
+							BATCH</button> -->
+
+
+						<button class="btn btn-primary pull-right" type="button"
+							id="generatedata" th:onclick="javascript:generatedata">Generate</button>
+
+
+
+
+
+
+
+					</div>
+
+				</div>
+
+
+
+				<!-- Textarea -->
+
+				<!--#END# Switch Button -->
+			</div>
+
+		</div>
+	</section>
+
+	<!-- Jquery Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery/jquery.min.js}"></script>
+
+	<!-- Bootstrap Core Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+
+	<!-- Select Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script>
+
+	<!-- Slimscroll Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/jquery-slimscroll/jquery.slimscroll.js}"></script>
+
+	<!-- Waves Effect Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/node-waves/waves.js}"></script>
+
+	<!-- Autosize Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/autosize/autosize.js}"></script>
+
+	<!-- Moment Plugin Js -->
+	<script type="text/javascript" th:src="@{/plugins/momentjs/moment.js}"></script>
+
+	<!-- Bootstrap Material Datetime Picker Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js}"></script>
+
+	<!-- Bootstrap Datepicker Plugin Js -->
+	<script type="text/javascript"
+		th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+<script type="text/javascript"
+		th:src="@{/plugins/jquery-validation/jquery.validate.js}"></script>
+	<!-- Custom Js -->
+	<script type="text/javascript" th:src="@{/js/admin.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/js/pages/forms/basic-form-elements.js}"></script>
+
+	<!-- Demo Js -->
+	<script type="text/javascript" th:src="@{/js/demo.js}"></script>
+	<script>
+		$(document).ready(
+				function() {
+
+					$('#formsubmit').validate(
+							{
+
+								highlight : function(input) {
+									$(input).parents('.form-line').addClass(
+											'error');
+								},
+								unhighlight : function(input) {
+									$(input).parents('.form-line').removeClass(
+											'error');
+								},
+								errorPlacement : function(error, element) {
+									$(element).parents('.form-group').append(
+											error);
+								}
+							});
+
+					$("#fetchdata").on(
+							"click",
+							function() {
+
+								//formsubmit
+								$('#formsubmit').attr('action',
+										"/fetchloandata").submit();
+							});
+
+					$("#formsubmitbtn").on("click", function() {
+
+						//formsubmit
+						$('#formsubmit').submit();
+					});
+
+					$("#addbatch").on("click", function() {
+
+						$('#formsubmit').attr('action', "/adddata").submit();
+						//formsubmit
+
+					});
+
+					function receiptno() {
+						if ($('#receiptno').val() == ''
+								|| $('#receiptno').val() == null
+								|| $('#receiptno').val() == '0') {
+							alert('Please enter Receipt No');
+							return false;
+						}
+					}
+					;
+
+					function generatedata() {
+						swal({
+							title : "Are you sure?",
+							//text: "You will not be able to recover this imaginary file!",
+							type : "warning",
+							showCancelButton : true,
+							confirmButtonColor : "#DD6B55",
+							confirmButtonText : "Yes, generate it!",
+							cancelButtonText : "No, cancel plx!",
+							closeOnConfirm : false,
+							closeOnCancel : false
+						}, function(isConfirm) {
+							if (isConfirm) {
+								//swal("Deleted!", "Your imaginary file has been deleted.", "success");
+								// location.href="/batchcreate";
+								$("#formsubmit").attr('action', "/batchcreate")
+										.submit();
+							} else {
+								swal("Cancelled", "Batch is not generated :)",
+										"error");
+							}
+						});
+					}
+
+				});
+	</script>
+
+</body>
+
+</html>

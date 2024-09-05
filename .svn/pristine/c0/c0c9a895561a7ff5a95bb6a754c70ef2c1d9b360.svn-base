@@ -1,0 +1,320 @@
+package com.kemal.spring.domain.administrative;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.ColumnDefault;
+
+@Entity
+@Table(name = "administration_pettycash")
+public class PettyCash {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private Integer id;
+
+	@Column(name = "docketstatusName")
+	private String docketstatusName;
+
+	@Column(name = "branch")
+	private String branch;
+	@Column(name = "claimReceivedDate")
+	private String claimReceivedDate;
+	@Column(name = "manpower")
+	private String manpower;
+	@Column(name = "month")
+	private String month;
+
+	@Column(name = "housekeeping")
+	private String housekeeping;
+
+	@Column(name = "sweeper")
+	private String sweeper;
+
+	@Column(name = "teaSnacksLunchDinner")
+	private String teaSnacksLunchDinner;
+
+	@Column(name = "water")
+	private String water;
+	@Column(name = "photocopy")
+	private String photocopy;
+	@Column(name = "stationery")
+	private String stationery;
+	@Column(name = "buildingMaintenance")
+	private String buildingMaintenance;
+
+	@Column(name = "elecBill")
+	private String elecBill;
+	@Column(name = "crockeryItems")
+	private String crockeryItems;
+	@Column(name = "housekeepingitem")
+	private String housekeepingitem;
+	@Column(name = "otherofficeExpenses")
+	private String otherofficeExpenses;
+	@Column(name = "computerMaintenance")
+	private String computerMaintenance;
+	@Column(name = "advertisement")
+	private String advertisement;
+	@Column(name = "legal")
+	private String legal;
+	@Column(name = "courier")
+	private String courier;
+	@Column(name = "telephoneinternet")
+	private String telephoneinternet;
+	@Column(name = "repairMaintenance")
+	private String repairMaintenance;
+	@Column(name = "acmaintenance")
+	private String acmaintenance;
+	@Column(name = "occassionaly")
+	private String occassionaly;
+	@Column(name = "eventsParty")
+	private String eventsParty;
+	@Column(name = "total")
+	private String total;
+	@Column(name = "remarks")
+	private String remarks;
+
+	@Column(name = "active")
+	@ColumnDefault("1")
+	private int active;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getDocketstatusName() {
+		return docketstatusName;
+	}
+
+	public void setDocketstatusName(String docketstatusName) {
+		this.docketstatusName = docketstatusName;
+	}
+
+	public String getBranch() {
+		return branch;
+	}
+
+	public void setBranch(String branch) {
+		this.branch = branch;
+	}
+
+	public String getClaimReceivedDate() {
+		return claimReceivedDate;
+	}
+
+	public void setClaimReceivedDate(String claimReceivedDate) {
+		this.claimReceivedDate = claimReceivedDate;
+	}
+
+	public String getManpower() {
+		return manpower;
+	}
+
+	public void setManpower(String manpower) {
+		this.manpower = manpower;
+	}
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
+	public String getHousekeeping() {
+		return housekeeping;
+	}
+
+	public void setHousekeeping(String housekeeping) {
+		this.housekeeping = housekeeping;
+	}
+
+	public String getSweeper() {
+		return sweeper;
+	}
+
+	public void setSweeper(String sweeper) {
+		this.sweeper = sweeper;
+	}
+
+	public String getTeaSnacksLunchDinner() {
+		return teaSnacksLunchDinner;
+	}
+
+	public void setTeaSnacksLunchDinner(String teaSnacksLunchDinner) {
+		this.teaSnacksLunchDinner = teaSnacksLunchDinner;
+	}
+
+	public String getWater() {
+		return water;
+	}
+
+	public void setWater(String water) {
+		this.water = water;
+	}
+
+	public String getPhotocopy() {
+		return photocopy;
+	}
+
+	public void setPhotocopy(String photocopy) {
+		this.photocopy = photocopy;
+	}
+
+	public String getStationery() {
+		return stationery;
+	}
+
+	public void setStationery(String stationery) {
+		this.stationery = stationery;
+	}
+
+	public String getBuildingMaintenance() {
+		return buildingMaintenance;
+	}
+
+	public void setBuildingMaintenance(String buildingMaintenance) {
+		this.buildingMaintenance = buildingMaintenance;
+	}
+
+	public String getElecBill() {
+		return elecBill;
+	}
+
+	public void setElecBill(String elecBill) {
+		this.elecBill = elecBill;
+	}
+
+	public String getCrockeryItems() {
+		return crockeryItems;
+	}
+
+	public void setCrockeryItems(String crockeryItems) {
+		this.crockeryItems = crockeryItems;
+	}
+
+	public String getHousekeepingitem() {
+		return housekeepingitem;
+	}
+
+	public void setHousekeepingitem(String housekeepingitem) {
+		this.housekeepingitem = housekeepingitem;
+	}
+
+	public String getOtherofficeExpenses() {
+		return otherofficeExpenses;
+	}
+
+	public void setOtherofficeExpenses(String otherofficeExpenses) {
+		this.otherofficeExpenses = otherofficeExpenses;
+	}
+
+	public String getComputerMaintenance() {
+		return computerMaintenance;
+	}
+
+	public void setComputerMaintenance(String computerMaintenance) {
+		this.computerMaintenance = computerMaintenance;
+	}
+
+	public String getAdvertisement() {
+		return advertisement;
+	}
+
+	public void setAdvertisement(String advertisement) {
+		this.advertisement = advertisement;
+	}
+
+	public String getLegal() {
+		return legal;
+	}
+
+	public void setLegal(String legal) {
+		this.legal = legal;
+	}
+
+	public String getCourier() {
+		return courier;
+	}
+
+	public void setCourier(String courier) {
+		this.courier = courier;
+	}
+
+	public String getTelephoneinternet() {
+		return telephoneinternet;
+	}
+
+	public void setTelephoneinternet(String telephoneinternet) {
+		this.telephoneinternet = telephoneinternet;
+	}
+
+	public String getRepairMaintenance() {
+		return repairMaintenance;
+	}
+
+	public void setRepairMaintenance(String repairMaintenance) {
+		this.repairMaintenance = repairMaintenance;
+	}
+
+	public String getAcmaintenance() {
+		return acmaintenance;
+	}
+
+	public void setAcmaintenance(String acmaintenance) {
+		this.acmaintenance = acmaintenance;
+	}
+
+	public String getOccassionaly() {
+		return occassionaly;
+	}
+
+	public void setOccassionaly(String occassionaly) {
+		this.occassionaly = occassionaly;
+	}
+
+	public String getEventsParty() {
+		return eventsParty;
+	}
+
+	public void setEventsParty(String eventsParty) {
+		this.eventsParty = eventsParty;
+	}
+
+	public String getTotal() {
+		return total;
+	}
+
+	public void setTotal(String total) {
+		this.total = total;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+	public int getActive() {
+		return active;
+	}
+
+	public void setActive(int active) {
+		this.active = active;
+	}
+	
+	
+
+}

@@ -1,0 +1,11 @@
+package com.kemal.spring.domain;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface BatchDetailsRepository extends JpaRepository<BatchDetails, Long> {
+	
+	BatchDetails findBybatchId(Integer batchid);
+	
+}

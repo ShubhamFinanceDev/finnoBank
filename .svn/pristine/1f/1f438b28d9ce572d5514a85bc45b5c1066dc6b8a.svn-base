@@ -1,0 +1,71 @@
+package com.kemal.spring.domain;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class SurveyCustomer {
+	
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+
+	private int id;
+	private String applicationnumber;
+	private String applicantname;
+	private String mobileno;
+	private String emailid;
+	private Date createon;
+	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getApplicationnumber() {
+		return applicationnumber;
+	}
+	public void setApplicationnumber(String applicationnumber) {
+		this.applicationnumber = applicationnumber;
+	}
+	public String getApplicantname() {
+		return applicantname;
+	}
+	public void setApplicantname(String applicantname) {
+		this.applicantname = applicantname;
+	}
+	
+
+	public String getMobileno() {
+		return mobileno;
+	}
+	public void setMobileno(String mobileno) {
+		this.mobileno = mobileno;
+	}
+	public String getEmailid() {
+		return emailid;
+	}
+	public void setEmailid(String emailid) {
+		this.emailid = emailid;
+	}
+	public Date getCreateon() {
+		return createon;
+	}
+	public void setCreateon(Date createon) {
+		this.createon = createon;
+	}
+	
+	
+	
+	
+	
+
+}
