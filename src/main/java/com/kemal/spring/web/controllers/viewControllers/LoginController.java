@@ -1,5 +1,6 @@
 package com.kemal.spring.web.controllers.viewControllers;
 
+import com.kemal.spring.domain.administrative.ResetPassword;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
