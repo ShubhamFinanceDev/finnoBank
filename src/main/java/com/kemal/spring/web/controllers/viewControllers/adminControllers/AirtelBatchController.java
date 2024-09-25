@@ -51,7 +51,7 @@ public class AirtelBatchController {
 	private final ActivityDetailsService activityService;
 
 	@Autowired
-	@Qualifier("jdbcTemplate2")
+	@Qualifier("jdbcTemplate1")
 	private JdbcTemplate osourceTemplate;
 
 	public AirtelBatchController(AirtelBatchDetailsService batchService, AirtelApplicationDetailsService applicationService,
