@@ -2,11 +2,7 @@ package com.kemal.spring.domain;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.*;
 
 
 @Entity
@@ -16,8 +12,8 @@ public class SurveyQuestions {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private int id;
-	
-	
+
+	@Column(name = "question", length = 500)
 	private String question;
 	
 	private Date createon;

@@ -1,29 +1,28 @@
 package com.kemal.spring.configuration;
 
-
 import com.kemal.spring.service.userDetails.UserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
-/*@Configuration
-@Order(3)
-@EnableWebSecurity*/
-public class SurveySecurityConfig extends WebSecurityConfigurerAdapter {
+@Configuration
+@EnableWebSecurity
+public class SurveySecurityConfig {
+
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     public SurveySecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
-    //Beans
+    // Bean for Password Encoder
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -34,53 +33,46 @@ public class SurveySecurityConfig extends WebSecurityConfigurerAdapter {
         return new ModelMapper();
     }
 
+    // Bean for DaoAuthenticationProvider
     @Bean
     public DaoAuthenticationProvider authProvider() {
-        final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsServiceImpl);
         authProvider.setPasswordEncoder(bCryptPasswordEncoder());
         return authProvider;
     }
 
-//    @Bean
-//    public RememberMeServices rememberMeServices() {
-//        return new CustomRememberMeServices("theKey",
-//                userDetailsServiceImpl, new InMemoryTokenRepositoryImpl());
-//    }
+    // Configure SecurityFilterChain
+    @Bean
+    public SecurityFilterChain surveySecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/css/**", "/js/**", "/plugins/**", "/images/**", "/index", "/", "/register", "/excel", "/csv", "/submit-registration", "/submit-survey/**").permitAll()
+                        .requestMatchers("/surveyuserPage/**").hasRole("SURVEY_ADMIN")
+                        .requestMatchers("/surveyadminPage/**").hasRole("SURVEY_USER")
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/surveylogin")
+                        .permitAll()
+                        .loginProcessingUrl("/perform-login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/login-error")
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/surveylogout")
+                        .logoutSuccessUrl("/surveylogin")
+                        .permitAll()
+                );
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.
-                authorizeRequests()
-                .antMatchers("/css/**","/js/**","/js/**", "/plugins/**","/images/**",
-                        "/index", "/", "/register","/excel","/csv", "/submit-registration","/submit-survey/**").permitAll()
-               /* .antMatchers("/adminPage/**").hasRole("ADMIN")
-                .antMatchers("/adminPage/**").hasRole("COLLECTION")
-                .antMatchers("/userPage/**").hasRole("USER")
-                .antMatchers("/sudPage/**").hasRole("SUD_USER")
-                .antMatchers("/sudadminPage/**").hasRole("SUD_ADMIN")*/
-                .antMatchers("/surveyuserPage/**").hasRole("SURVEY_ADMIN")
-                .antMatchers("/surveyadminPage/**").hasRole("SURVEY_USER")
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/surveylogin")
-                .permitAll()
-                .loginProcessingUrl("/perform-login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/dashboard", true)
-                .failureUrl("/login-error")
-                .and()
-                .logout()
-                .logoutUrl("/surveylogout")
-                .logoutSuccessUrl("/surveylogin")
-                .permitAll();
+        return http.build();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authProvider());
+    // Bean for AuthenticationManager
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
-
 }

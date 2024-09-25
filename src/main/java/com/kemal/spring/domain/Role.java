@@ -2,8 +2,8 @@ package com.kemal.spring.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kemal.spring.customAnnotations.ValidRoleName;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 

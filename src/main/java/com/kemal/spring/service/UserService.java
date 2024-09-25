@@ -3,12 +3,14 @@ package com.kemal.spring.service;
 import com.kemal.spring.domain.Role;
 import com.kemal.spring.domain.User;
 import com.kemal.spring.domain.UserRepository;
+import com.kemal.spring.service.userDetails.UserDetailsServiceImpl;
 import com.kemal.spring.web.dto.UserDto;
 import com.kemal.spring.web.dto.UserUpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final CacheManager cacheManager;
+
+    private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    @Lazy
+    public void setUserDetailsService(UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     public UserService(UserRepository userRepository,
                        RoleService roleService,
