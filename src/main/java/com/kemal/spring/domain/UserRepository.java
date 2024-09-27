@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Keno&Kemo on 30.09.2017..
@@ -41,6 +42,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u JOIN FETCH u.roles WHERE u.id = (:id)")
     User findByIdEagerly(@Param("id") Long id);
+    @Query("select u from User u where u.empcode=:employeeCode ")
+   Optional<User> finbyEmployeeId(String employeeCode);
     //==========================================================================
     //endregion
 

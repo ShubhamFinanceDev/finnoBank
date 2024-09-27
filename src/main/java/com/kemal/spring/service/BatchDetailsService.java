@@ -2,22 +2,22 @@ package com.kemal.spring.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
+import com.kemal.spring.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.kemal.spring.domain.ApplicationDetails;
-import com.kemal.spring.domain.ApplicationDetailsRepository;
-import com.kemal.spring.domain.BatchDetails;
-import com.kemal.spring.domain.BatchDetailsRepository;
-import com.kemal.spring.domain.SudMonitoring;
 import com.kemal.spring.web.dto.batchpagingDto;
 
 @Service
 public class BatchDetailsService {
 
+	@Autowired
+	private UserService userService;
 	private BatchDetailsRepository batchDetailsRepository;
 
 	private ApplicationDetailsRepository applicationDetailsRepository;
@@ -199,6 +199,13 @@ public class BatchDetailsService {
 		} else {
 			return batchDetailsRepository.findActiveBatch(paging, keyword);
 		}
+	}
+
+	public  Page<BatchDetails> findApplicationByEmployeeId(String keyword, Pageable paging)
+	{
+		Optional<User> user= userService.finByEmployeeCode(keyword);
+		return user.isPresent() ? batchDetailsRepository.findAllBatch(paging,user.get().getId()): batchDetailsRepository.findActiveBatch(paging);
+
 	}
 
 	public List<batchpagingDto> findApplicationBybatchDto(List<BatchDetails> content) {
