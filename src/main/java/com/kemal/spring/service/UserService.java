@@ -6,6 +6,7 @@ import com.kemal.spring.domain.UserRepository;
 import com.kemal.spring.service.userDetails.UserDetailsServiceImpl;
 import com.kemal.spring.web.dto.UserDto;
 import com.kemal.spring.web.dto.UserUpdateDto;
+import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -97,6 +98,8 @@ public class UserService {
     public User findByIdEagerly(Long id) {
         return userRepository.findByIdEagerly(id);
     }
+
+    public  Optional<User> finByEmployeeCode(String employeeID) {return userRepository.finbyEmployeeId(employeeID);}
 
     @Cacheable(value = "cache.allUsersEagerly")
     public List<User> findAllEagerly() {

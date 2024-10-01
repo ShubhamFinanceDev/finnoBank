@@ -317,13 +317,14 @@ public class IndexController {
 			Pageable paging = PageRequest.of(page - 1, size);
 
 			Page<BatchDetails> pageTuts;
-			if (keyword == null) {
+			if (keyword == null || keyword.isEmpty()) {
 
 				pageTuts = batchService.findApplicationBybatchIdPaging(paging, 0);
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
-				pageTuts = batchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, 0);
+//				pageTuts = batchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, 0);   //add search filter for employee code
+				pageTuts = batchService.findApplicationByEmployeeId(keyword, paging);
 				model.addAttribute("keyword", keyword);
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 			}
@@ -368,14 +369,15 @@ public class IndexController {
 			Pageable paging = PageRequest.of(page - 1, size);
 
 			Page<BatchDetails> pageTuts;
-			if (keyword == null) {
+			if (keyword == null || keyword.isEmpty()) {
 
 				pageTuts = batchService.findApplicationBybatchIdPaging(paging, user.getId());
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
-				pageTuts = batchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging,
-						user.getId());
+//				pageTuts = batchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging,   //add search filter for employee code
+//						user.getId());
+				pageTuts = batchService.findApplicationByEmployeeId(keyword, paging);
 				model.addAttribute("keyword", keyword);
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 			}
@@ -420,7 +422,7 @@ public class IndexController {
 			Pageable paging = PageRequest.of(page - 1, size);
 
 			Page<SudMonitoring> pageTuts;
-			if (keyword == null) {
+			if (keyword == null || keyword.isEmpty()) {
 
 				pageTuts = sudMonitoringService.findSudMonitoringListPaging(paging, user.getEmpbranch());
 				tutorials = sudMonitoringService.findSudMonitoringListByIds(pageTuts.getContent());
@@ -557,7 +559,7 @@ public class IndexController {
 				Pageable paging = PageRequest.of(page - 1, size);
 
 				Page<SurveyCustomer> pageTuts;
-				if (keyword == null) {
+				if (keyword == null || keyword.isEmpty()) {
 					pageTuts = customerSurveryService.findSurveyCustomerList(paging);
 				} else {
 					pageTuts = customerSurveryService.findSurveyCustomerListByTitleContainingIgnoreCase(keyword,

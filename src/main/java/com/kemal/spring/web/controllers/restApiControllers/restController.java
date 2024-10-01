@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.kemal.spring.domain.*;
+import com.kemal.spring.service.AirtelBatchDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,11 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kemal.spring.domain.BatchDetails;
-import com.kemal.spring.domain.SurveyAnswers;
-import com.kemal.spring.domain.SurveyCustomer;
-import com.kemal.spring.domain.SurveyCustomerDetails;
-import com.kemal.spring.domain.User;
 import com.kemal.spring.service.BatchDetailsService;
 import com.kemal.spring.service.CustomerSurveryService;
 import com.kemal.spring.service.UserService;
@@ -31,6 +29,8 @@ public class restController {
 
 	private final BatchDetailsService batchService;
 	private CustomerSurveryService customerSurveryService;
+	@Autowired
+	private AirtelBatchDetailsService airtelBatchDetailsService;
 
 	public restController(UserService userService, BatchDetailsService batchService,
 			CustomerSurveryService customerSurveryService) {
@@ -107,5 +107,24 @@ public class restController {
 
 		userService.deleteById(id);
 		return new ResponseEntity<>(userToDelete.get(), HttpStatus.NO_CONTENT);
+	}
+
+
+	@PostMapping(value = { "/adminPage/airtelpaymendate/{batchid}/{finobankacknumber}",
+			"/userPage/airtelpaymendate/{batchid}/{finobankacknumber}" })
+	public ResponseEntity<String> paymentsaveForAirtel(@PathVariable Long batchid, @PathVariable String finobankacknumber) {
+		try {
+			AirtelBatchDetails airtelBatchDetails = airtelBatchDetailsService.findById(batchid);
+			airtelBatchDetails.setFinobankacknumber(finobankacknumber);
+			airtelBatchDetails.setDepositon(new Date());
+			airtelBatchDetails.setUserstatus("deposit");
+			airtelBatchDetailsService.save(airtelBatchDetails);
+			return new ResponseEntity<String>("true", HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<String>("false", HttpStatus.OK);
+		}
+		// return modelAndView;
+
 	}
 }

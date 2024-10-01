@@ -21,6 +21,9 @@ public interface BatchDetailsRepository extends JpaRepository<BatchDetails, Long
 	@Query("select c from BatchDetails c where c.active=1")
 	List<BatchDetails> findActiveBatch();
 
+	@Query("select c from BatchDetails c where c.createdby.id=:userid")
+	Page<BatchDetails> findAllBatch(Pageable paging, @Param("userid") long userid);
+
 	@Query("select c from BatchDetails c where c.active=1 and c.createdby.id=:userid")	
 	Page<BatchDetails> findActiveBatch(Pageable paging, @Param("userid") long userid);
 
