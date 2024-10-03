@@ -4,6 +4,11 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.kemal.spring.domain.UserRepository;
+import com.kemal.spring.service.MailService;
+import com.kemal.spring.service.enodeUtility.EncodingUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +32,13 @@ import com.kemal.spring.web.dto.UserDto;
 public class UsersController {
     private final UserService userService;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+
     public UsersController(UserService userService) {
         this.userService = userService;
     }
@@ -38,7 +50,7 @@ public class UsersController {
         return modelAndView;
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/edit/{id}")
     public ModelAndView getEditUserForm(@PathVariable Long id) {
         Optional<User> role = userService.findById(id);
         ModelAndView modelAndView = new ModelAndView("users/usercreation");
@@ -59,16 +71,23 @@ public class UsersController {
     public String saveNewRole(@ModelAttribute("userDto") @Valid final UserDto userDto,
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
-        boolean roleNameAlreadyExists = userService.findByName(userDto.getEmail().split("@")[0]) != null;
-        boolean hasErrors = roleNameAlreadyExists || bindingResult.hasErrors();
-        String formWithErrors = "users/usercreation";
 
-        if (roleNameAlreadyExists) bindingResult.rejectValue("name", "userNameAlreadyExists");
-        if (hasErrors) return formWithErrors;
+
+        Optional<Object> existingUser = userRepository.findByEmail(userDto.getEmail());
+
+        if (existingUser.isPresent()) {
+            redirectAttributes.addFlashAttribute("userAlreadyExists", "This Email already exists "+ userDto.getEmail());
+            return "redirect:/users/newUser";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "users/usercreation";
+        }
 
         userService.createNewAccount(userDto);
+        mailService.sendSimpleMail(userDto.getEmail(), userDto.getPassword());
+
         redirectAttributes.addFlashAttribute("userHasBeenSaved", true);
-        
-        return "redirect:newUser";
+        return "redirect:/users/newUser";
     }
 }

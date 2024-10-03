@@ -414,6 +414,15 @@ thead {
 
 	<section class="content">
 		<div class="container-fluid">
+			<!-- Display "User already exists" message -->
+			<div th:if="${userAlreadyExists}">
+				<p th:text="${userAlreadyExists}" class="alert alert-danger"></p>
+			</div>
+
+			<!-- Display "User has been successfully saved" message -->
+			<div th:if="${userHasBeenSaved}">
+				<p class="alert alert-success">User created successfully!</p>
+			</div>
 			<div class="block-header">
 				<h2>User Creation</h2>
 			</div>
@@ -447,6 +456,16 @@ thead {
 
 										</div>
 
+									</div>
+								</div>
+								<div class="row clearfix">
+									<div class="col-md-6">
+										<b>Password</b>
+										<div class="input-group colorpicker">
+											<div class="form-line">
+												<input type="password" th:field="*{password}" class="form-control" placeholder="Password" />
+											</div>
+										</div>
 									</div>
 								</div>
 								<div class="row clearfix">

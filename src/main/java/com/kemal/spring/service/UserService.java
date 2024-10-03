@@ -3,7 +3,7 @@ package com.kemal.spring.service;
 import com.kemal.spring.domain.Role;
 import com.kemal.spring.domain.User;
 import com.kemal.spring.domain.UserRepository;
-import com.kemal.spring.service.userDetails.UserDetailsServiceImpl;
+import com.kemal.spring.service.enodeUtility.EncodingUtils;
 import com.kemal.spring.web.dto.UserDto;
 import com.kemal.spring.web.dto.UserUpdateDto;
 import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -35,14 +34,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final CacheManager cacheManager;
-
-    private UserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    @Lazy
-    public void setUserDetailsService(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     public UserService(UserRepository userRepository,
                        RoleService roleService,
@@ -171,11 +162,11 @@ public class UserService {
         user.setEmpbranch(userDto.getEmpbranch());
         user.setEmpdepartment(user.getEmpdepartment());
         user.setEmail(userDto.getEmail());        
-        user.setPassword(bCryptPasswordEncoder.encode(userDto.getEmail().split("@")[0]));        
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         user.setRoles(Collections.singletonList(roleService.findByName(userDto.getUserrole())));
         user.setEnabled(true);
         user.setCreatedon(new Date());
-        user.setEmpcode(userDto.getEmpcode()); 
+        user.setEmpcode(userDto.getEmpcode());
         
         userRepository.save(user);
         return user;
