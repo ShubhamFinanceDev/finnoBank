@@ -161,7 +161,7 @@ public class UserService {
         user.setEmpbranch(userDto.getEmpbranch());
         user.setEmpdepartment(user.getEmpdepartment());
         user.setEmail(userDto.getEmail());        
-        user.setPassword(bCryptPasswordEncoder.encode(userDto.getEmail().split("@")[0]));        
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         user.setRoles(Collections.singletonList(roleService.findByName(userDto.getUserrole())));
         user.setEnabled(true);
         user.setCreatedon(new Date());
