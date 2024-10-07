@@ -73,7 +73,7 @@ public class UsersController {
         Optional<Object> existingUser = userRepository.findByEmail(userDto.getEmail());
 
         if (existingUser.isPresent()) {
-            redirectAttributes.addFlashAttribute("userAlreadyExists", "This Email already exists "+ userDto.getEmail());
+            redirectAttributes.addFlashAttribute("userAlreadyExists", "This Email already exists " + userDto.getEmail());
             return "redirect:/users/newUser";
         }
 
@@ -87,4 +87,5 @@ public class UsersController {
         redirectAttributes.addFlashAttribute("userHasBeenSaved", true);
         return "redirect:/users/newUser";
     }
+
 }

@@ -46,6 +46,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
    Optional<User> finbyEmployeeId(String employeeCode);
     @Query("select u from User u where u.email=:email")
     Optional<Object> findByEmail(String email);
+    @Query("select u.email from User u")
+    List<String> findAllEmailUser();
     //==========================================================================
     //endregion
 
