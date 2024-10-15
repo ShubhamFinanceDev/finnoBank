@@ -1,23 +1,24 @@
 package com.kemal.spring.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
+import com.kemal.spring.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.kemal.spring.domain.ApplicationDetails;
-import com.kemal.spring.domain.ApplicationDetailsRepository;
-import com.kemal.spring.domain.BatchDetails;
-import com.kemal.spring.domain.BatchDetailsRepository;
-import com.kemal.spring.domain.SudMonitoring;
 import com.kemal.spring.web.dto.batchpagingDto;
 
 @Service
 public class BatchDetailsService {
 
+	@Autowired
+	private UserService userService;
 	private BatchDetailsRepository batchDetailsRepository;
 
 	private ApplicationDetailsRepository applicationDetailsRepository;
@@ -25,8 +26,8 @@ public class BatchDetailsService {
 										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
 										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
 										 */
-			"#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
-			"#DEB887", "#FF69B4" };
+
+			 "#F8F8F8" };
 
 	public BatchDetailsService(BatchDetailsRepository batchDetailsRepository,
 			ApplicationDetailsRepository applicationDetailsRepository) {
@@ -41,13 +42,15 @@ public class BatchDetailsService {
 		return randomNum;
 	}
 
-	public List<batchpagingDto> findApplicationBybatchid(Long userid) {
+	public List<batchpagingDto> findApplicationBybatchid(Long userid, String date) {
 		// TODO Auto-generated method stub
 		List<batchpagingDto> returnlist = new ArrayList<batchpagingDto>();
 
 		List<BatchDetails> list = new ArrayList<>();
 		if (userid != null) {
 			list = batchDetailsRepository.findActiveBatch(userid);
+		} else if (date != null){
+			list = batchDetailsRepository.findActiveBatchByDateForExcel(date);
 		} else {
 			list = batchDetailsRepository.findActiveBatch();
 		}
@@ -182,14 +185,18 @@ public class BatchDetailsService {
 		return returnlist;
 	}
 
-	public Page<BatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid) {
+	public Page<BatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate date) {
 
-		if (userid != 0) {
-			return batchDetailsRepository.findActiveBatch(paging, userid);
+		if (userid != 0 && date != null) {
+			System.out.println(userid + "  userid and date in findApplicationBybatchIdPaging");
+			return batchDetailsRepository.findActiveBatchByUserIdAndDate(paging, userid, date);
+		} else if (userid != 0) {
+			return batchDetailsRepository.findActiveBatchByUserId(paging, userid);
+		} else if (date != null) {
+			return batchDetailsRepository.findActiveBatchByDate(paging, date);
 		} else {
 			return batchDetailsRepository.findActiveBatch(paging);
 		}
-
 	}
 
 	public Page<BatchDetails> findApplicationBybatchidByTitleContainingIgnoreCase(String keyword, Pageable paging,
@@ -199,6 +206,13 @@ public class BatchDetailsService {
 		} else {
 			return batchDetailsRepository.findActiveBatch(paging, keyword);
 		}
+	}
+
+	public  Page<BatchDetails> findApplicationByEmployeeId(String keyword, Pageable paging)
+	{
+		Optional<User> user= userService.finByEmployeeCode(keyword);
+		return user.isPresent() ? batchDetailsRepository.findAllBatch(paging,user.get().getId()): batchDetailsRepository.findActiveBatch(paging);
+
 	}
 
 	public List<batchpagingDto> findApplicationBybatchDto(List<BatchDetails> content) {

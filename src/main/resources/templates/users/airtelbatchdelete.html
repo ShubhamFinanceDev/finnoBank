@@ -1,5 +1,4 @@
 ﻿
-
 <!DOCTYPE html>
 <html lang="en" class="body-full-height"
 	xmlns="http://www.w3.org/1999/xhtml"
@@ -446,58 +445,58 @@ thead {
 
 										<tr class="details" th:each="user : ${batchdetails}">
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.id}">id</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.batchnumber}">batchnumber</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.userstatus}">userstatus</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.totalcollectedamount}">totalcollectedamount</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.branchname}">branchname</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
-												th:text="${user.empcode}">empcode</td>	
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
+												th:text="${user.empcode}">empcode</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.createdby}">createdby</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.createon}">createon</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.depositon}">updatedon</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.loannumber}">loannumber</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.customername}">customername</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.emiamount}">emiamount</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.totaldue}">totaldue</td>
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.collectedamount}">collectedamount</td>
 
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.reciptnumber}">reciptnumber</td>
-											
+
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+												th:style="'background-color:'+@{${user.rowColor}}+';'"
 												th:text="${user.paymentype}">paymentype</td>
 
 											<td
-												th:style="'background-color:'+@{${user.rowColor}}+';color:white;'">
+												th:style="'background-color:'+@{${user.rowColor}}+';'">
 
 												<button th:if="${user.batchnumber != null}"
 													class="btn btn-primary" type="button"

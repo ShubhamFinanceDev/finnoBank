@@ -6896,6 +6896,7 @@ section.content {
   border: none;
   box-shadow: none;
   padding-left: 0;
+  width: auto;
 }
 
 .input-group .form-control:focus {
