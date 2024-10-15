@@ -477,13 +477,19 @@ thead {
 										<div class="col-md-4">
 											<div class="input-group">
 												<input type="text" class="form-control" id="keyword"
-													name="keyword" th:value="${keyword}"
-													placeholder="Search By Employee-ID">
+													   name="keyword" th:value="${keyword}"
+													   placeholder="Search By Employee-ID">
+												<input type="text" class="form-control" id="userId"
+													   name="userId" th:value="${userId}"
+													   placeholder="Search By User-ID">
+												<input type="date" class="form-control" id="date"
+													   name="date" th:value="${date}"
+													   placeholder="Search By date">
 												<div class="input-group-append">
 													<button class="btn btn-secondary" type="submit">
 														<i class="fa fa-search"></i>
 													</button>
-													<button class="btn btn-secondary" type="submit">
+													<button class="btn btn-secondary" type="reset">
 														<i class="fa fa-trash"></i>
 													</button>
 												</div>
@@ -506,10 +512,8 @@ thead {
 										</div>
 										<div class="col-md-4">
 											<div class="button-demo">
-												<a href="/excel/FinnoBankreport"
-													class="btn btn-success waves-effect">Excel</a> <a
-													href="/csv/FinnoBankreport"
-													class="btn btn-danger waves-effect">CSV</a>
+												<button id="generateExcel" class="btn btn-success waves-effect" type="button">Excel</button>
+												<button id="generateCsv" class="btn btn-danger waves-effect" type="button">CSV</button>
 											</div>
 										</div>
 
@@ -519,6 +523,30 @@ thead {
 
 
 									</form>
+
+									<script>
+										document.getElementById('generateExcel').addEventListener('click', function() {
+                                            const dateValue = document.getElementById('date').value;
+                                            const keyword = document.getElementById('keyword').value;
+                                            const userId = document.getElementById('userId').value;
+
+                                            // Updated URL for request parameters
+                                            const url = `/excel/FinnoBankreport?date=${encodeURIComponent(dateValue)}&keyword=${encodeURIComponent(keyword)}&userId=${encodeURIComponent(userId)}`;
+                                            window.location.href = url; // Redirect to the generated URL
+                                        });
+
+                                        document.getElementById('generateCsv').addEventListener('click', function() {
+                                            const dateValue = document.getElementById('date').value;
+                                            const keyword = document.getElementById('keyword').value;
+                                            const userId = document.getElementById('userId').value;
+
+                                            // Updated URL for request parameters
+                                            const url = `/csv/FinnoBankreport?date=${encodeURIComponent(dateValue)}&keyword=${encodeURIComponent(keyword)}&userId=${encodeURIComponent(userId)}`;
+                                            window.location.href = url; // Redirect to the generated URL
+                                        });
+									</script>
+
+
 								</div>
 
 								<div th:if="${tutorials.size() > 0}">

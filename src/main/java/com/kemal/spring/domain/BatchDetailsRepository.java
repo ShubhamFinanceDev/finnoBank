@@ -1,5 +1,6 @@
 package com.kemal.spring.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public interface BatchDetailsRepository extends JpaRepository<BatchDetails, Long
 	Page<BatchDetails> findAllBatch(Pageable paging, @Param("userid") long userid);
 
 	@Query("select c from BatchDetails c where c.active=1 and c.createdby.id=:userid")	
-	Page<BatchDetails> findActiveBatch(Pageable paging, @Param("userid") long userid);
+	Page<BatchDetails> findActiveBatchByUserId(Pageable paging, @Param("userid") long userid);
 
 	@Query("select c from BatchDetails c where c.active=1")
 	Page<BatchDetails> findActiveBatch(Pageable paging);
@@ -36,5 +37,12 @@ public interface BatchDetailsRepository extends JpaRepository<BatchDetails, Long
 	@Query("select c from BatchDetails c where c.active=1 and (c.batchnumber like lower(concat('%',:keyword,'%')) or c.finobankacknumber like lower(concat('%',:keyword,'%')) or c.userstatus like lower(concat('%',:keyword,'%')))")
 	Page<BatchDetails> findActiveBatch(Pageable paging,@Param("keyword") String keyword);
 
-	
+	@Query("select c from BatchDetails c where c.active = 1 and c.createdby.id = :userid and function('DATE', c.createon) = :date")
+	Page<BatchDetails> findActiveBatchByUserIdAndDate(Pageable paging, @Param("userid") long userid, @Param("date") LocalDate date);
+
+	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) = cast(:date as date)")
+	Page<BatchDetails> findActiveBatchByDate(Pageable paging, @Param("date") LocalDate date);
+
+	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) = cast(:date as date)")
+	List<BatchDetails> findActiveBatchByDateForExcel(String date);
 }

@@ -33,5 +33,6 @@ public interface AirtelBatchDetailsRepository extends JpaRepository<AirtelBatchD
 	@Query("select c from BatchDetails c where c.active=1 and (c.batchnumber like lower(concat('%',:keyword,'%')) or c.finobankacknumber like lower(concat('%',:keyword,'%')) or c.userstatus like lower(concat('%',:keyword,'%')))")
 	Page<AirtelBatchDetails> findActiveBatch(Pageable paging,@Param("keyword") String keyword);
 
-	
+	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) = cast(:date as date)")
+    List<AirtelBatchDetails> findActiveBatchByDateForCsv(String date);
 }
