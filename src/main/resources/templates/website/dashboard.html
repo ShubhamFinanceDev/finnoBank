@@ -379,6 +379,10 @@ thead {
 						href="/users/newUser" class="toggled waves-effect waves-block">
 							<i class="material-icons">layers</i> <span>User Management</span>
 					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
+							href="/password-reset" class="toggled waves-effect waves-block">
+						<i class="material-icons">layers</i> <span>Password-Reset</span>
+					</a></li>
 					<li><a href="javascript: document.logoutForm.submit()"
 						class="toggled waves-effect waves-block"> <i
 							class="material-icons">input</i> <span>Sign Out</span>

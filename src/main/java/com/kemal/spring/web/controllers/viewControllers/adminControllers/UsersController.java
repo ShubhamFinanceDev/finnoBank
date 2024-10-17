@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.kemal.spring.domain.UserRepository;
+import com.kemal.spring.service.MailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +29,12 @@ import com.kemal.spring.web.dto.UserDto;
 @RequestMapping("")
 public class UsersController {
     private final UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MailService mailService;
 
     public UsersController(UserService userService) {
         this.userService = userService;
@@ -59,16 +68,24 @@ public class UsersController {
     public String saveNewRole(@ModelAttribute("userDto") @Valid final UserDto userDto,
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
-        boolean roleNameAlreadyExists = userService.findByName(userDto.getEmail().split("@")[0]) != null;
-        boolean hasErrors = roleNameAlreadyExists || bindingResult.hasErrors();
-        String formWithErrors = "users/usercreation";
 
-        if (roleNameAlreadyExists) bindingResult.rejectValue("name", "userNameAlreadyExists");
-        if (hasErrors) return formWithErrors;
+
+        Optional<Object> existingUser = userRepository.findByEmail(userDto.getEmail());
+
+        if (existingUser.isPresent()) {
+            redirectAttributes.addFlashAttribute("userAlreadyExists", "This Email already exists " + userDto.getEmail());
+            return "redirect:/users/newUser";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "users/usercreation";
+        }
 
         userService.createNewAccount(userDto);
+        mailService.sendSimpleMail(userDto.getEmail(), userDto.getPassword());
+
         redirectAttributes.addFlashAttribute("userHasBeenSaved", true);
-        
-        return "redirect:newUser";
+        return "redirect:/users/newUser";
     }
+
 }

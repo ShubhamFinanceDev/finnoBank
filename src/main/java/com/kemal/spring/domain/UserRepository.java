@@ -44,6 +44,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByIdEagerly(@Param("id") Long id);
     @Query("select u from User u where u.empcode=:employeeCode ")
    Optional<User> finbyEmployeeId(String employeeCode);
+    @Query("select u from User u where u.email=:email")
+    Optional<Object> findByEmail(String email);
+    @Query("select u.email from User u")
+    List<String> findAllEmailUser();
     //==========================================================================
     //endregion
 
