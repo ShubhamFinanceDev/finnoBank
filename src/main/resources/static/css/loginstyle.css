@@ -91,6 +91,9 @@ section {
 	padding: 5px 0 0 10px;
 	text-transform: uppercase;
 }
+.navbar-brand {
+	margin-left: 12px !important;
+}
 .sps--blw.top-bar a.navbar-brand {
 	color: #000;
 }
