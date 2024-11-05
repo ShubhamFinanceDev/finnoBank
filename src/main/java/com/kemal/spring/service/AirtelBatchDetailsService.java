@@ -244,13 +244,13 @@ public class AirtelBatchDetailsService {
 						}
 
 						// add application data here (add those fields which is not repeating)
-						batches.setTotaldue(app.getTotaldue().toString());
+						batches.setTotaldue(app.getTotaldue() != null ? app.getTotaldue().toString() : "0.0");
 						batches.setReciptnumber(app.getReciptnumber());
 						batches.setPaymentype(app.getPaymentype());
 						batches.setLoannumber(app.getLoannumber());
 						batches.setCustomername(app.getCustomername());
-						batches.setEmiamount(app.getEmiamount().toString());
-						batches.setCollectedamount(app.getCollectedAmount().toString());
+						batches.setEmiamount(app.getEmiamount() != null ? app.getEmiamount().toString() : "0.0");
+						batches.setCollectedamount(app.getCollectedAmount() != null ? app.getCollectedAmount().toString() : "0.0");
 
 						index++;
 						batchindex = batchindex + 1;
