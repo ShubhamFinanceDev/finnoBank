@@ -1,5 +1,6 @@
 package com.kemal.spring.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,14 +42,17 @@ public class AirtelBatchDetailsService {
 		return randomNum;
 	}
 
-	public List<batchpagingDto> findApplicationBybatchid(Long userid) {
+	public List<batchpagingDto> findApplicationBybatchid(Long userid, String date) {
 		// TODO Auto-generated method stub
 		List<batchpagingDto> returnlist = new ArrayList<batchpagingDto>();
 
 		List<AirtelBatchDetails> list = new ArrayList<>();
 		if (userid != null) {
 			list = batchDetailsRepository.findActiveBatch(userid);
-		} else {
+		}
+		else if (date != null){
+			list = batchDetailsRepository.findActiveBatchByDateForCsv(date);
+		}else {
 			list = batchDetailsRepository.findActiveBatch();
 		}
 
@@ -182,7 +186,7 @@ public class AirtelBatchDetailsService {
 		return returnlist;
 	}
 
-	public Page<AirtelBatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid) {
+	public Page<AirtelBatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate date) {
 
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid);
@@ -193,7 +197,7 @@ public class AirtelBatchDetailsService {
 	}
 
 	public Page<AirtelBatchDetails> findApplicationBybatchidByTitleContainingIgnoreCase(String keyword, Pageable paging,
-			long userid) {
+																						long userid, LocalDate date) {
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid, keyword);
 		} else {

@@ -1,5 +1,6 @@
 package com.kemal.spring.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,13 +42,15 @@ public class BatchDetailsService {
 		return randomNum;
 	}
 
-	public List<batchpagingDto> findApplicationBybatchid(Long userid) {
+	public List<batchpagingDto> findApplicationBybatchid(Long userid, String date) {
 		// TODO Auto-generated method stub
 		List<batchpagingDto> returnlist = new ArrayList<batchpagingDto>();
 
 		List<BatchDetails> list = new ArrayList<>();
 		if (userid != null) {
 			list = batchDetailsRepository.findActiveBatch(userid);
+		} else if (date != null){
+			list = batchDetailsRepository.findActiveBatchByDateForExcel(date);
 		} else {
 			list = batchDetailsRepository.findActiveBatch();
 		}
@@ -182,10 +185,12 @@ public class BatchDetailsService {
 		return returnlist;
 	}
 
-	public Page<BatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid) {
+	public Page<BatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate date) {
 
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid);
+		}  else if (date != null) {
+			return batchDetailsRepository.findActiveBatchByDate(paging, date);
 		} else {
 			return batchDetailsRepository.findActiveBatch(paging);
 		}

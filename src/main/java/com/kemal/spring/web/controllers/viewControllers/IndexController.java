@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,11 +13,8 @@ import java.util.Random;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,6 +25,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -164,8 +162,10 @@ public class IndexController {
 
 	@GetMapping(value = "/airteldashboard")
 	public String airteldashboard(WebRequest request, Model model, @RequestParam(required = false) String keyword,
-			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
-		
+								  @RequestParam(required = false, defaultValue = "0") Long userId, // User ID parameter
+								  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+								  @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName(); // get logged in username
 		System.out.println(
@@ -192,11 +192,11 @@ public class IndexController {
 			Page<AirtelBatchDetails> pageTuts;
 			if (keyword == null) {
 
-				pageTuts = airtelBatchService.findApplicationBybatchIdPaging(paging, 0);
+				pageTuts = airtelBatchService.findApplicationBybatchIdPaging(paging, userId, date);
 				list = airtelBatchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
-				pageTuts = airtelBatchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, 0);
+				pageTuts = airtelBatchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, userId, date);
 				model.addAttribute("keyword", keyword);
 				list = airtelBatchService.findApplicationBybatchDto(pageTuts.getContent());
 			}
@@ -243,12 +243,11 @@ public class IndexController {
 			Page<AirtelBatchDetails> pageTuts;
 			if (keyword == null) {
 
-				pageTuts = airtelBatchService.findApplicationBybatchIdPaging(paging, user.getId());
+				pageTuts = airtelBatchService.findApplicationBybatchIdPaging(paging, userId, date);
 				list = airtelBatchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
-				pageTuts = airtelBatchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging,
-						user.getId());
+				pageTuts = airtelBatchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, userId, date);
 				model.addAttribute("keyword", keyword);
 				list = airtelBatchService.findApplicationBybatchDto(pageTuts.getContent());
 			}
@@ -290,9 +289,13 @@ public class IndexController {
 		return "website/airteldashboard";
 	}
 	@GetMapping(value = "/dashboard")
-	public String dashboard(WebRequest request, Model model, @RequestParam(required = false) String keyword,
-			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
-
+	public String dashboard(WebRequest request, Model model,
+							@RequestParam(required = false) String keyword,
+							@RequestParam(required = false, defaultValue = "0") Long userId, // User ID parameter
+							@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+							@RequestParam(defaultValue = "1") int page,
+							@RequestParam(defaultValue = "10") int size) {
+		System.out.println(userId + " in controller");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName(); // get logged in username
 		System.out.println(
@@ -317,9 +320,9 @@ public class IndexController {
 			Pageable paging = PageRequest.of(page - 1, size);
 
 			Page<BatchDetails> pageTuts;
-			if (keyword == null || keyword.isEmpty()) {
 
-				pageTuts = batchService.findApplicationBybatchIdPaging(paging, 0);
+			if (keyword == null || keyword.isEmpty() && userId != 0 || date != null) {
+				pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId, date);
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
@@ -369,9 +372,9 @@ public class IndexController {
 			Pageable paging = PageRequest.of(page - 1, size);
 
 			Page<BatchDetails> pageTuts;
-			if (keyword == null || keyword.isEmpty()) {
 
-				pageTuts = batchService.findApplicationBybatchIdPaging(paging, user.getId());
+			if (keyword == null || keyword.isEmpty() && userId != 0 || date != null) {
+				pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId, date);
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
@@ -702,7 +705,7 @@ public class IndexController {
 
 			List<batchpagingDto> list = new ArrayList<>();
 
-			list = (batchService.findApplicationBybatchid(null));
+			list = (batchService.findApplicationBybatchid(null, null));
 			DashboardDTO dashboardDTO = new DashboardDTO();
 
 			if (list != null && list.size() > 0) {
@@ -732,7 +735,7 @@ public class IndexController {
 			return "website/dashboard";
 		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_USER")) {
 			List<batchpagingDto> list = new ArrayList<>();
-			list = (batchService.findApplicationBybatchid(user.getId()));
+			list = (batchService.findApplicationBybatchid(user.getId(), null));
 			DashboardDTO dashboardDTO = new DashboardDTO();
 
 			if (list != null && list.size() > 0) {
@@ -1096,7 +1099,10 @@ public class IndexController {
 	}
 
 	@GetMapping("/excel/{downloadType}")
-	public ResponseEntity<Resource> downloadExcel(@PathVariable(required = false) String downloadType) {
+	public ResponseEntity<Resource> downloadExcel(
+			@PathVariable String downloadType,
+			@RequestParam(required = false) String date) {
+
 		try {
 			System.out.println("Inside excel download---------------------------" + downloadType);
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
@@ -1149,9 +1155,9 @@ public class IndexController {
 
 				}
 
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport")) {
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && date == null || date.isEmpty()) {
 
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null);
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null);
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1207,9 +1213,9 @@ public class IndexController {
 
 				}
 
-			} else if (downloadType.equalsIgnoreCase("Airtelreport")) {
+			} else if (downloadType.equalsIgnoreCase("Airtelreport") && date == null || date.isEmpty()) {
 
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null);
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null);
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1331,6 +1337,121 @@ public class IndexController {
 						
 
 				}
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && date != null || !date.isEmpty()) {
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, date);
+				int rowNum = 0;
+				Row rowHeader = sheet.createRow(rowNum++);
+				rowHeader.createCell(0).setCellValue("ID");
+				rowHeader.createCell(1).setCellValue("Batch Number");
+				rowHeader.createCell(2).setCellValue("FinnoBank Number");
+				rowHeader.createCell(3).setCellValue("Status");
+				rowHeader.createCell(4).setCellValue("Total Collected Amount");
+				rowHeader.createCell(5).setCellValue("Branch Name");
+				rowHeader.createCell(6).setCellValue("Employee Code");
+
+				rowHeader.createCell(7).setCellValue("Created By");
+				rowHeader.createCell(8).setCellValue("Created On");
+				rowHeader.createCell(9).setCellValue("Deposit On");
+				rowHeader.createCell(10).setCellValue("Loan Number");
+				rowHeader.createCell(11).setCellValue("CUSTOMER NAME");
+				rowHeader.createCell(12).setCellValue("EMI Amount");
+				rowHeader.createCell(13).setCellValue("Total Dues");
+				rowHeader.createCell(14).setCellValue("Collected Amount");
+				rowHeader.createCell(15).setCellValue("Receipt Number");
+				rowHeader.createCell(16).setCellValue("Receipt Purpose");
+
+				for (batchpagingDto data : dataList) {
+					Row row = sheet.createRow(rowNum++);
+
+					row.createCell(0).setCellValue(String.valueOf(data.getId()));
+					row.createCell(1).setCellValue(data.getBatchnumber());
+					row.createCell(2).setCellValue(data.getFinobankacknumber());
+					row.createCell(3).setCellValue(data.getUserstatus());
+					row.createCell(4).setCellValue(data.getTotalcollectedamount());
+					row.createCell(5).setCellValue(data.getBranchname());
+					row.createCell(6).setCellValue(data.getEmpcode());
+					row.createCell(7).setCellValue(data.getCreatedby());
+
+					if (data.getCreateon() != null)
+						row.createCell(8).setCellValue(sdf.format(data.getCreateon()));
+					else
+						row.createCell(8).setCellValue("");
+
+
+					if (data.getDepositon() != null)
+						row.createCell(9).setCellValue(sdf.format(data.getDepositon()));
+					else
+						row.createCell(9).setCellValue("");
+
+
+					row.createCell(10).setCellValue(data.getLoannumber());
+					row.createCell(11).setCellValue(data.getCustomername());
+					row.createCell(12).setCellValue(data.getEmiamount());
+					row.createCell(13).setCellValue(data.getTotaldue());
+					row.createCell(14).setCellValue(data.getCollectedamount());
+					row.createCell(15).setCellValue(data.getReciptnumber());
+					row.createCell(16).setCellValue(data.getPaymentype());
+
+				}
+
+			}else if (downloadType.equalsIgnoreCase("Airtelreport") && date != null || !date.isEmpty()) {
+
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, date);
+				int rowNum = 0;
+				Row rowHeader = sheet.createRow(rowNum++);
+				rowHeader.createCell(0).setCellValue("ID");
+				rowHeader.createCell(1).setCellValue("Batch Number");
+				rowHeader.createCell(2).setCellValue("FinnoBank Number");
+				rowHeader.createCell(3).setCellValue("Status");
+				rowHeader.createCell(4).setCellValue("Total Collected Amount");
+				rowHeader.createCell(5).setCellValue("Branch Name");
+				rowHeader.createCell(6).setCellValue("Employee Code");
+
+				rowHeader.createCell(7).setCellValue("Created By");
+				rowHeader.createCell(8).setCellValue("Created On");
+				rowHeader.createCell(9).setCellValue("Deposit On");
+				rowHeader.createCell(10).setCellValue("Loan Number");
+				rowHeader.createCell(11).setCellValue("CUSTOMER NAME");
+				rowHeader.createCell(12).setCellValue("EMI Amount");
+				rowHeader.createCell(13).setCellValue("Total Dues");
+				rowHeader.createCell(14).setCellValue("Collected Amount");
+				rowHeader.createCell(15).setCellValue("Receipt Number");
+				rowHeader.createCell(16).setCellValue("Receipt Purpose");
+
+				for (batchpagingDto data : dataList) {
+					Row row = sheet.createRow(rowNum++);
+
+					row.createCell(0).setCellValue(String.valueOf(data.getId()));
+					row.createCell(1).setCellValue(data.getBatchnumber());
+					row.createCell(2).setCellValue(data.getFinobankacknumber());
+					row.createCell(3).setCellValue(data.getUserstatus());
+					row.createCell(4).setCellValue(data.getTotalcollectedamount());
+					row.createCell(5).setCellValue(data.getBranchname());
+					row.createCell(6).setCellValue(data.getEmpcode());
+					row.createCell(7).setCellValue(data.getCreatedby());
+
+					if (data.getCreateon() != null)
+						row.createCell(8).setCellValue(sdf.format(data.getCreateon()));
+					else
+						row.createCell(8).setCellValue("");
+
+
+					if (data.getDepositon() != null)
+						row.createCell(9).setCellValue(sdf.format(data.getDepositon()));
+					else
+						row.createCell(9).setCellValue("");
+
+
+					row.createCell(10).setCellValue(data.getLoannumber());
+					row.createCell(11).setCellValue(data.getCustomername());
+					row.createCell(12).setCellValue(data.getEmiamount());
+					row.createCell(13).setCellValue(data.getTotaldue());
+					row.createCell(14).setCellValue(data.getCollectedamount());
+					row.createCell(15).setCellValue(data.getReciptnumber());
+					row.createCell(16).setCellValue(data.getPaymentype());
+
+				}
+
 			}
 			// Write workbook to ByteArrayOutputStream
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1357,7 +1478,8 @@ public class IndexController {
 	}
 
 	@GetMapping("/csv/{downloadType}")
-	public ResponseEntity<Resource> downloadCSV(@PathVariable(required = false) String downloadType) {
+	public ResponseEntity<Resource> downloadCSV(@PathVariable(required = false) String downloadType, @RequestParam(name = "date", required = false) String date) {
+
 		try {
 			System.out.println("Inside csv download---------------------------" + downloadType);
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
@@ -1379,8 +1501,8 @@ public class IndexController {
 							data.getAnswers2(), data.getQuestion3(), data.getAnswers3(), data.getQuestion4(),
 							data.getAnswers4(), data.getQuestion5(), data.getAnswers5(), data.getFeedback() });
 				}
-			}  else if (downloadType.equalsIgnoreCase("FinnoBankreport")) {
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null);
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && date == null || date.isEmpty()) {
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null);
 				// Write the header row
 				writer.writeNext(new String[] { "ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
@@ -1398,8 +1520,8 @@ public class IndexController {
 							data.getReciptnumber(), data.getPaymentype() });
 				}
 
-			}else if (downloadType.equalsIgnoreCase("Airtelreport")) {
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null);
+			} else if (downloadType.equalsIgnoreCase("Airtelreport") && date == null || date.isEmpty()) {
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null);
 				// Write the header row
 				writer.writeNext(new String[] { "ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
@@ -1437,6 +1559,42 @@ public class IndexController {
 							(data.getUpdateOn()!=null?sdf.format(data.getUpdateOn()):"") });
 				}
 
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && date != null) {
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, date);
+				// Write the header row
+				writer.writeNext(new String[]{"ID", "Batch Number", "FinnoBank Number", "Status",
+						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
+						"Deposit On", "Loan Number", "CUSTOMER NAME", "EMI Amount", "Total Dues", "Collected Amount",
+						"Receipt Number", "Receipt Purpose",});
+
+				// Write the POJO data to the CSV file
+				for (batchpagingDto data : dataList) {
+					writer.writeNext(new String[]{String.valueOf(data.getId()), data.getBatchnumber(),
+							data.getFinobankacknumber(), data.getUserstatus(), data.getTotalcollectedamount(),
+							data.getBranchname(), data.getEmpcode(), data.getCreatedby(),
+							(data.getCreateon() != null ? sdf.format(data.getCreateon()) : ""),
+							(data.getDepositon() != null ? sdf.format(data.getDepositon()) : ""), data.getLoannumber(),
+							data.getCustomername(), data.getEmiamount(), data.getTotaldue(), data.getCollectedamount(),
+							data.getReciptnumber(), data.getPaymentype()});
+				}
+			}else if (downloadType.equalsIgnoreCase("Airtelreport") && date != null) {
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, date);
+				// Write the header row
+				writer.writeNext(new String[]{"ID", "Batch Number", "FinnoBank Number", "Status",
+						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
+						"Deposit On", "Loan Number", "CUSTOMER NAME", "EMI Amount", "Total Dues", "Collected Amount",
+						"Receipt Number", "Receipt Purpose",});
+
+				// Write the POJO data to the CSV file
+				for (batchpagingDto data : dataList) {
+					writer.writeNext(new String[]{String.valueOf(data.getId()), data.getBatchnumber(),
+							data.getFinobankacknumber(), data.getUserstatus(), data.getTotalcollectedamount(),
+							data.getBranchname(), data.getEmpcode(), data.getCreatedby(),
+							(data.getCreateon() != null ? sdf.format(data.getCreateon()) : ""),
+							(data.getDepositon() != null ? sdf.format(data.getDepositon()) : ""), data.getLoannumber(),
+							data.getCustomername(), data.getEmiamount(), data.getTotaldue(), data.getCollectedamount(),
+							data.getReciptnumber(), data.getPaymentype()});
+				}
 			}
 			writer.close();
 
