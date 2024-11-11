@@ -1,5 +1,6 @@
 package com.kemal.spring.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,8 +13,6 @@ import com.kemal.spring.domain.AirtelApplicationDetails;
 import com.kemal.spring.domain.AirtelApplicationDetailsRepository;
 import com.kemal.spring.domain.AirtelBatchDetails;
 import com.kemal.spring.domain.AirtelBatchDetailsRepository;
-import com.kemal.spring.domain.ApplicationDetails;
-import com.kemal.spring.domain.BatchDetails;
 import com.kemal.spring.web.dto.batchpagingDto;
 
 @Service
@@ -26,8 +25,7 @@ public class AirtelBatchDetailsService {
 										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
 										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
 										 */
-			"#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
-			"#DEB887", "#FF69B4" };
+			"#F8F8F8" };
 
 	public AirtelBatchDetailsService(AirtelBatchDetailsRepository batchDetailsRepository,
 			AirtelApplicationDetailsRepository applicationDetailsRepository) {
@@ -42,14 +40,17 @@ public class AirtelBatchDetailsService {
 		return randomNum;
 	}
 
-	public List<batchpagingDto> findApplicationBybatchid(Long userid) {
+	public List<batchpagingDto> findApplicationBybatchid(Long userid, String date) {
 		// TODO Auto-generated method stub
 		List<batchpagingDto> returnlist = new ArrayList<batchpagingDto>();
 
 		List<AirtelBatchDetails> list = new ArrayList<>();
 		if (userid != null) {
 			list = batchDetailsRepository.findActiveBatch(userid);
-		} else {
+		}
+		else if (date != null){
+			list = batchDetailsRepository.findActiveBatchByDateForCsv(date);
+		}else {
 			list = batchDetailsRepository.findActiveBatch();
 		}
 
@@ -183,7 +184,7 @@ public class AirtelBatchDetailsService {
 		return returnlist;
 	}
 
-	public Page<AirtelBatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid) {
+	public Page<AirtelBatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate date) {
 
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid);
@@ -194,7 +195,7 @@ public class AirtelBatchDetailsService {
 	}
 
 	public Page<AirtelBatchDetails> findApplicationBybatchidByTitleContainingIgnoreCase(String keyword, Pageable paging,
-			long userid) {
+																						long userid, LocalDate date) {
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid, keyword);
 		} else {
@@ -245,13 +246,13 @@ public class AirtelBatchDetailsService {
 						}
 
 						// add application data here (add those fields which is not repeating)
-						batches.setTotaldue(app.getTotaldue().toString());
+						batches.setTotaldue(app.getTotaldue() != null ? app.getTotaldue().toString() : "0.0");
 						batches.setReciptnumber(app.getReciptnumber());
 						batches.setPaymentype(app.getPaymentype());
 						batches.setLoannumber(app.getLoannumber());
 						batches.setCustomername(app.getCustomername());
-						batches.setEmiamount(app.getEmiamount().toString());
-						batches.setCollectedamount(app.getCollectedAmount().toString());
+						batches.setEmiamount(app.getEmiamount() != null ? app.getEmiamount().toString() : "0.0");
+						batches.setCollectedamount(app.getCollectedAmount() != null ? app.getCollectedAmount().toString() : "0.0");
 
 						index++;
 						batchindex = batchindex + 1;

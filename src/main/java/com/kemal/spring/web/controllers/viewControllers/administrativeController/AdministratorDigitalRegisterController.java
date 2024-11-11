@@ -37,7 +37,7 @@ public class AdministratorDigitalRegisterController {
 	private final ActivityDetailsService activityService;
 
 	@Autowired
-	@Qualifier("jdbcTemplate2")
+	@Qualifier("jdbcTemplate1")
 	private JdbcTemplate osourceTemplate;
 
 	public AdministratorDigitalRegisterController(AdministrativeDetailsService administrativeDetailsService,

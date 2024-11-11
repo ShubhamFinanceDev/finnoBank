@@ -51,7 +51,7 @@ public class AirtelBatchController {
 	private final ActivityDetailsService activityService;
 
 	@Autowired
-	@Qualifier("jdbcTemplate2")
+	@Qualifier("jdbcTemplate1")
 	private JdbcTemplate osourceTemplate;
 
 	public AirtelBatchController(AirtelBatchDetailsService batchService, AirtelApplicationDetailsService applicationService,
@@ -113,7 +113,7 @@ System.out.println("select * from BBPS_PAYMENT where LOAN_ACCOUNT_NUMBER like '%
 						return list; // rs.next() ? rs.getString("APPLICATION_NUMBER") : null;
 					}
 				});
-
+if(strlist.isEmpty()) {return modelAndView;}
 		batchDto.setCustomername(strlist.get(0).getCustomername());
 		batchDto.setEmiamount(strlist.get(0).getEmiamount());
 		batchDto.setTotalamount(strlist.get(0).getTotalamount());

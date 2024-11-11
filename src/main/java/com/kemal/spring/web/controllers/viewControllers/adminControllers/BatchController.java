@@ -47,7 +47,7 @@ public class BatchController {
 	private final ActivityDetailsService activityService;
 
 	@Autowired
-	@Qualifier("jdbcTemplate2")
+	@Qualifier("jdbcTemplate1")
 	private JdbcTemplate osourceTemplate;
 
 	public BatchController(BatchDetailsService batchService, ApplicationDetailsService applicationService,

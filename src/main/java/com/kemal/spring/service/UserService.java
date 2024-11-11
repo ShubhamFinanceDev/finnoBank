@@ -5,6 +5,7 @@ import com.kemal.spring.domain.User;
 import com.kemal.spring.domain.UserRepository;
 import com.kemal.spring.web.dto.UserDto;
 import com.kemal.spring.web.dto.UserUpdateDto;
+import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -88,6 +89,8 @@ public class UserService {
         return userRepository.findByIdEagerly(id);
     }
 
+    public  Optional<User> finByEmployeeCode(String employeeID) {return userRepository.finbyEmployeeId(employeeID);}
+
     @Cacheable(value = "cache.allUsersEagerly")
     public List<User> findAllEagerly() {
         return userRepository.findAllEagerly();
@@ -158,7 +161,7 @@ public class UserService {
         user.setEmpbranch(userDto.getEmpbranch());
         user.setEmpdepartment(user.getEmpdepartment());
         user.setEmail(userDto.getEmail());        
-        user.setPassword(bCryptPasswordEncoder.encode(userDto.getEmail().split("@")[0]));        
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         user.setRoles(Collections.singletonList(roleService.findByName(userDto.getUserrole())));
         user.setEnabled(true);
         user.setCreatedon(new Date());

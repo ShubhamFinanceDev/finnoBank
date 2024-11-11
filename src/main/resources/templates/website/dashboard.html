@@ -127,6 +127,9 @@ div.dataTables_wrapper div.dataTables_filter {
 	background-color: #315f86;
 	border-color: #545b62;
 }
+.table table-bordered table-striped table-hover table-responsive-xl{
+	border-style: solid;
+}
 
 .titulo-tabla {
 	color: #606263;
@@ -163,6 +166,9 @@ thead {
 	color: white;
 }
 
+ keyword{
+	border-style: solid;
+}
 .table td:nth-child(2) {
 	overflow: hidden; //
 	white-space: nowrap;
@@ -290,8 +296,8 @@ thead {
 
 	<!-- Top Bar -->
 	<nav class="navbar">
-		<div class="container-fluid">
-			<div class="navbar-header">
+		<div class="container-fluid"style="background-color: #00A6C7">
+			<div class="navbar-header"style="background-color: #00A6C7">
 				<a href="javascript:void(0);" class="navbar-toggle collapsed"
 					data-toggle="collapse" data-target="#navbar-collapse"
 					aria-expanded="false"></a> <a href="javascript:void(0);"
@@ -372,6 +378,10 @@ thead {
 					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
 						href="/users/newUser" class="toggled waves-effect waves-block">
 							<i class="material-icons">layers</i> <span>User Management</span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
+							href="/password-reset" class="toggled waves-effect waves-block">
+						<i class="material-icons">layers</i> <span>Password-Reset</span>
 					</a></li>
 					<li><a href="javascript: document.logoutForm.submit()"
 						class="toggled waves-effect waves-block"> <i
@@ -468,7 +478,10 @@ thead {
 											<div class="input-group">
 												<input type="text" class="form-control" id="keyword"
 													name="keyword" th:value="${keyword}"
-													placeholder="Enter keyword">
+													placeholder="Search By Employee-ID">
+												<input type="date" class="form-control" id="date"
+													   name="date" th:value="${date}"
+													   placeholder="Search By date">
 												<div class="input-group-append">
 													<button class="btn btn-secondary" type="submit">
 														<i class="fa fa-search"></i>
@@ -496,10 +509,8 @@ thead {
 										</div>
 										<div class="col-md-4">
 											<div class="button-demo">
-												<a href="/excel/FinnoBankreport"
-													class="btn btn-success waves-effect">Excel</a> <a
-													href="/csv/FinnoBankreport"
-													class="btn btn-danger waves-effect">CSV</a>
+												<button id="generateExcel" class="btn btn-success waves-effect" type="button">Excel</button>
+												<button id="generateCsv" class="btn btn-danger waves-effect" type="button">CSV</button>
 											</div>
 										</div>
 
@@ -509,6 +520,30 @@ thead {
 
 
 									</form>
+
+									<script>
+										document.getElementById('generateExcel').addEventListener('click', function() {
+                                            const dateValue = document.getElementById('date').value;
+                                            const keyword = document.getElementById('keyword').value;
+                                            const userId = document.getElementById('userId').value;
+
+                                            // Updated URL for request parameters
+                                            const url = `/excel/FinnoBankreport?date=${encodeURIComponent(dateValue)}&keyword=${encodeURIComponent(keyword)}&userId=${encodeURIComponent(userId)}`;
+                                            window.location.href = url; // Redirect to the generated URL
+                                        });
+
+                                        document.getElementById('generateCsv').addEventListener('click', function() {
+                                            const dateValue = document.getElementById('date').value;
+                                            const keyword = document.getElementById('keyword').value;
+                                            const userId = document.getElementById('userId').value;
+
+                                            // Updated URL for request parameters
+                                            const url = `/csv/FinnoBankreport?date=${encodeURIComponent(dateValue)}&keyword=${encodeURIComponent(keyword)}&userId=${encodeURIComponent(userId)}`;
+                                            window.location.href = url; // Redirect to the generated URL
+                                        });
+									</script>
+
+
 								</div>
 
 								<div th:if="${tutorials.size() > 0}">
@@ -542,57 +577,57 @@ thead {
 											<tr class="details" th:each="user : ${tutorials}">
 
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.id}">id</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.batchnumber}">batchnumber</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.finobankacknumber}">finobankacknumber</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.userstatus}">userstatus</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.totalcollectedamount}">totalcollectedamount</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.branchname}">branchname</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.empcode}">empcode</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.createdby}">createdby</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.createon}">createon</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.depositon}">updatedon</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.loannumber}">loannumber</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.customername}">customername</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.emiamount}">emiamount</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.totaldue}">totaldue</td>
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.collectedamount}">collectedamount</td>
 
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.reciptnumber}">reciptnumber</td>
 
 												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';color:white;'"
+													th:style="'background-color:'+@{${user.rowColor}}+';'"
 													th:text="${user.paymentype}">paymentype</td>
 
 											</tr>
