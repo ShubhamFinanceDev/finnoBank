@@ -188,9 +188,7 @@ public class BatchDetailsService {
 	public Page<BatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate fromDate, LocalDate toDate) {
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid);
-		}  else if (fromDate != null && toDate != null) {
-			return batchDetailsRepository.findActiveBatchByDate(paging, fromDate, toDate);
-		} else {
+		}else {
 			return batchDetailsRepository.findActiveBatch(paging);
 		}
 
@@ -273,4 +271,7 @@ public class BatchDetailsService {
 		return returnlist;
 	}
 
+	public Page<BatchDetails> findFyDateRange(Pageable pagging,LocalDate fromDate, LocalDate toDate) {
+		return batchDetailsRepository.findActiveBatchByDate(pagging,fromDate,toDate);
+	}
 }
