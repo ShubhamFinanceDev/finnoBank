@@ -13,8 +13,6 @@ import com.kemal.spring.domain.AirtelApplicationDetails;
 import com.kemal.spring.domain.AirtelApplicationDetailsRepository;
 import com.kemal.spring.domain.AirtelBatchDetails;
 import com.kemal.spring.domain.AirtelBatchDetailsRepository;
-import com.kemal.spring.domain.ApplicationDetails;
-import com.kemal.spring.domain.BatchDetails;
 import com.kemal.spring.web.dto.batchpagingDto;
 
 @Service
@@ -42,7 +40,7 @@ public class AirtelBatchDetailsService {
 		return randomNum;
 	}
 
-	public List<batchpagingDto> findApplicationBybatchid(Long userid, String date) {
+	public List<batchpagingDto> findApplicationBybatchid(Long userid, String fromDate, String toDate) {
 		// TODO Auto-generated method stub
 		List<batchpagingDto> returnlist = new ArrayList<batchpagingDto>();
 
@@ -50,8 +48,8 @@ public class AirtelBatchDetailsService {
 		if (userid != null) {
 			list = batchDetailsRepository.findActiveBatch(userid);
 		}
-		else if (date != null){
-			list = batchDetailsRepository.findActiveBatchByDateForCsv(date);
+		else if (fromDate != null && toDate !=null){
+			list = batchDetailsRepository.findActiveBatchByDateForCsv(fromDate,toDate);
 		}else {
 			list = batchDetailsRepository.findActiveBatch();
 		}
@@ -186,7 +184,7 @@ public class AirtelBatchDetailsService {
 		return returnlist;
 	}
 
-	public Page<AirtelBatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate date) {
+	public Page<AirtelBatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate fromDate, LocalDate toDate) {
 
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid);
@@ -197,7 +195,7 @@ public class AirtelBatchDetailsService {
 	}
 
 	public Page<AirtelBatchDetails> findApplicationBybatchidByTitleContainingIgnoreCase(String keyword, Pageable paging,
-																						long userid, LocalDate date) {
+																						long userid, LocalDate fromDate, LocalDate toDate) {
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid, keyword);
 		} else {

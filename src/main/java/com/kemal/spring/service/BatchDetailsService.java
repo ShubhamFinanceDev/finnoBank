@@ -42,15 +42,15 @@ public class BatchDetailsService {
 		return randomNum;
 	}
 
-	public List<batchpagingDto> findApplicationBybatchid(Long userid, String date) {
+	public List<batchpagingDto> findApplicationBybatchid(Long userid, String fromDate, String toDate) {
 		// TODO Auto-generated method stub
 		List<batchpagingDto> returnlist = new ArrayList<batchpagingDto>();
 
 		List<BatchDetails> list = new ArrayList<>();
 		if (userid != null) {
 			list = batchDetailsRepository.findActiveBatch(userid);
-		} else if (date != null){
-			list = batchDetailsRepository.findActiveBatchByDateForExcel(date);
+		} else if (fromDate != null && toDate != null ){
+			list = batchDetailsRepository.findActiveBatchByDateForExcel(fromDate,toDate );
 		} else {
 			list = batchDetailsRepository.findActiveBatch();
 		}
@@ -185,12 +185,14 @@ public class BatchDetailsService {
 		return returnlist;
 	}
 
-	public Page<BatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate date) {
+	public Page<BatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate fromDate, LocalDate toDate) {
 
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid);
-		}  else if (date != null) {
-			return batchDetailsRepository.findActiveBatchByDate(paging, date);
+		}  else if (fromDate != null && toDate != null) {
+			return batchDetailsRepository.findActiveBatchByDate(paging, fromDate, toDate);
+//		}  else if (toDate != null) {
+//			return batchDetailsRepository.findActiveBatchBytoDate(paging, toDate);
 		} else {
 			return batchDetailsRepository.findActiveBatch(paging);
 		}

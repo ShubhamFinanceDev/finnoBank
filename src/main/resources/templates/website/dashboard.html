@@ -1,741 +1,799 @@
 <!DOCTYPE html>
 <html lang="en" class="body-full-height"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-<meta
-	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-	name="viewport">
-<title>Finno Bank Dashboard</title>
-<!-- Favicon-->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta
+            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+            name="viewport">
+    <title>Finno Bank Dashboard</title>
+    <!-- Favicon-->
 
-<link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-<!-- Google Fonts -->
-<link
-	th:href="@{https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext}"
-	rel="stylesheet" type="text/css" />
-<link
-	th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}"
-	rel="stylesheet" type="text/css" />
+    <!-- Google Fonts -->
+    <link
+            th:href="@{https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext}"
+            rel="stylesheet" type="text/css"/>
+    <link
+            th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}"
+            rel="stylesheet" type="text/css"/>
 
-<!-- Bootstrap Core Css -->
-<link th:href="@{/plugins/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+    <!-- Bootstrap Core Css -->
+    <link th:href="@{/plugins/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
 
-<!-- Waves Effect Css -->
-<link th:href="@{/plugins/node-waves/waves.css}" rel="stylesheet" />
+    <!-- Waves Effect Css -->
+    <link th:href="@{/plugins/node-waves/waves.css}" rel="stylesheet"/>
 
-<!-- Animation Css -->
-<link th:href="@{/plugins/animate-css/animate.css}" rel="stylesheet" />
-<link th:href="@{/plugins/font-awesome/css/font-awesome.css}" rel="stylesheet" />
-<!-- Morris Chart Css-->
-<link th:href="@{/plugins/morrisjs/morris.css}" rel="stylesheet" />
+    <!-- Animation Css -->
+    <link th:href="@{/plugins/animate-css/animate.css}" rel="stylesheet"/>
+    <link th:href="@{/plugins/font-awesome/css/font-awesome.css}" rel="stylesheet"/>
+    <!-- Morris Chart Css-->
+    <link th:href="@{/plugins/morrisjs/morris.css}" rel="stylesheet"/>
 
-<!-- Custom Css -->
-<link th:href="@{/css/homestyle.css}" rel="stylesheet" />
+    <!-- Custom Css -->
+    <link th:href="@{/css/homestyle.css}" rel="stylesheet"/>
 
-<!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
-<link th:href="@{/css/themes/all-themes.css}" rel="stylesheet" />
-<style>
-.btn {
-	display: inline-block;
-	font-size: 14px;
-	font-weight: 400;
-	line-height: 1.42857143;
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: middle;
-	cursor: pointer;
-	user-select: none;
-	background-image: none;
-	border: 1px solid transparent;
-	border-radius: 4px;
-}
+    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+    <link th:href="@{/css/themes/all-themes.css}" rel="stylesheet"/>
+    <style>
+        .btn {
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
 
-.btn-app {
-	color: white;
-	box-shadow: none;
-	border-radius: 3px;
-	position: relative;
-	padding: 10px 15px;
-	margin: 0;
-	min-width: 60px;
-	max-width: 80px;
-	text-align: center;
-	border: 1px solid #ddd;
-	background-color: #f4f4f4;
-	font-size: 12px;
-	transition: all .2s;
-	background-color: steelblue !important;
-}
+        .btn-app {
+            color: white;
+            box-shadow: none;
+            border-radius: 3px;
+            position: relative;
+            padding: 10px 15px;
+            margin: 0;
+            min-width: 60px;
+            max-width: 80px;
+            text-align: center;
+            border: 1px solid #ddd;
+            background-color: #f4f4f4;
+            font-size: 12px;
+            transition: all .2s;
+            background-color: steelblue !important;
+        }
 
-.btn-app>.fa, .btn-app>.glyphicon, .btn-app>.ion {
-	font-size: 30px;
-	display: block;
-}
+        .btn-app > .fa, .btn-app > .glyphicon, .btn-app > .ion {
+            font-size: 30px;
+            display: block;
+        }
 
-.btn-app:hover {
-	border-color: #aaa;
-	transform: scale(1.1);
-}
+        .btn-app:hover {
+            border-color: #aaa;
+            transform: scale(1.1);
+        }
 
-.pdf {
-	background-color: #dc2f2f !important;
-}
+        .pdf {
+            background-color: #dc2f2f !important;
+        }
 
-.excel {
-	background-color: #3ca23c !important;
-}
+        .excel {
+            background-color: #3ca23c !important;
+        }
 
-.csv {
-	background-color: #e86c3a !important;
-}
+        .csv {
+            background-color: #e86c3a !important;
+        }
 
-.imprimir {
-	background-color: #8766b1 !important;
-}
+        .imprimir {
+            background-color: #8766b1 !important;
+        }
 
-/*
-Esto es opcional pero sirve para que todos los botones de exportacion se distribuyan de manera equitativa usando flexbox
+        /*
+        Esto es opcional pero sirve para que todos los botones de exportacion se distribuyan de manera equitativa usando flexbox
 
-.flexcontent {
-    display: flex;
-    justify-content: space-around;
-}
-*/
-.selectTable {
-	height: 40px;
-	float: right;
-}
+        .flexcontent {
+            display: flex;
+            justify-content: space-around;
+        }
+        */
+        .selectTable {
+            height: 40px;
+            float: right;
+        }
 
-div.dataTables_wrapper div.dataTables_filter {
-	text-align: left;
-	margin-top: 15px;
-}
+        div.dataTables_wrapper div.dataTables_filter {
+            text-align: left;
+            margin-top: 15px;
+        }
 
-.btn-secondary {
-	color: #fff;
-	background-color: #4682b4;
-	border-color: #4682b4;
-}
+        .btn-secondary {
+            color: #fff;
+            background-color: #4682b4;
+            border-color: #4682b4;
+        }
 
-.btn-secondary:hover {
-	color: #fff;
-	background-color: #315f86;
-	border-color: #545b62;
-}
-.table table-bordered table-striped table-hover table-responsive-xl{
-	border-style: solid;
-}
+        .btn-secondary:hover {
+            color: #fff;
+            background-color: #315f86;
+            border-color: #545b62;
+        }
 
-.titulo-tabla {
-	color: #606263;
-	text-align: center;
-	margin-top: 15px;
-	margin-bottom: 15px;
-	font-weight: bold;
-}
+        .table table-bordered table-striped table-hover table-responsive-xl {
+            border-style: solid;
+        }
 
-.inline {
-	display: inline-block;
-	padding: 0;
-}
+        .titulo-tabla {
+            color: #606263;
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
 
-.dataTables_filter {
-	float: right;
-}
+        .inline {
+            display: inline-block;
+            padding: 0;
+        }
 
-.table-hover>tbody>tr:hover {
-	background-color: lighten(cyan, 40%);
-}
+        .dataTables_filter {
+            float: right;
+        }
 
-//
-important if we want to add ellipsis //to cells with content longer than width
-.table {@media only screen and (min-width: 768px) {table-layout: fixed 
-	 ; //this declaration overwrites //the default plugin style
-    max-width: 100% !important ;
-	
-}
+        .table-hover > tbody > tr:hover {
+            background-color: lighten(cyan, 40%);
+        }
 
-}
-thead {
-	background: #F44336;
-	color: white;
-}
+        /
+        /
+        important if we want to add ellipsis
 
- keyword{
-	border-style: solid;
-}
-.table td:nth-child(2) {
-	overflow: hidden; //
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
+        /
+        /
+        to cells with content longer than width
+        .table {
+            @media only screen and (min-width: 768px) {
+                table-layout: fixed
+            ; //this declaration overwrites //the default plugin style
+            max-width: 100% !important ;
 
-.highlight {
-	background: lighten(yellow, 30%);
-}
+            }
 
-@media only screen and (max-width: 767px) {
-	/* Force table to not be like tables anymore */
-	table, thead, tbody, th, td, tr {
-		display: block;
-	}
-	/* Hide table headers (but not display: none;, for accessibility) */
-	thead tr, tfoot tr {
-		position: absolute;
-		top: -9999px;
-		left: -9999px;
-	}
-	td {
-		/* Behave  like a "row" */
-		border: none;
-		border-bottom: 1px solid #eee;
-		position: relative;
-		padding-left: 50% !important;
-	}
-	td:before {
-		/* Now like a table header */
-		position: absolute;
-		/* Top/left values mimic padding */
-		top: 6px;
-		left: 6px;
-		width: 45%;
-		padding-right: 10px;
-		white-space: nowrap;
-	}
-	.table td:nth-child(1) {
-		background: #ccc;
-		height: 100%;
-		top: 0;
-		left: 0;
-		font-weight: bold;
-	}
-	/*
-	Label the data
-	*/
-	td:nth-of-type(1):before {
-		content: "Batch Number";
-	}
-	td:nth-of-type(2):before {
-		content: "FinnoBank Number";
-	}
-	td:nth-of-type(3):before {
-		content: "Status";
-	}
-	td:nth-of-type(4):before {
-		content: "Total Collected Amount";
-	}
-	td:nth-of-type(5):before {
-		content: "Branch Name";
-	}
-	td:nth-of-type(6):before {
-		content: "Created By";
-	}
-	td:nth-of-type(7):before {
-		content: "Created On";
-	}
-	td:nth-of-type(8):before {
-		content: "Deposit On";
-	}
-	td:nth-of-type(9):before {
-		content: "Loan Number";
-	}
-	td:nth-of-type(10):before {
-		content: "CUSTOMER NAME";
-	}
-	td:nth-of-type(11):before {
-		content: "EMI Amount";
-	}
-	td:nth-of-type(12):before {
-		content: "Total Dues";
-	}
-	td:nth-of-type(13):before {
-		content: "Collected Amount";
-	}
-	td:nth-of-type(14):before {
-		content: "Receipt Number";
-	}
-	td:nth-of-type(15):before {
-		content: "Employee Code";
-	}
-	td:nth-of-type(16):before {
-		content: "Receipt Purpose";
-	}
-	.dataTables_length {
-		display: none;
-	}
-}
-</style>
+        }
+
+        thead {
+            background: #F44336;
+            color: white;
+        }
+
+        keyword {
+            border-style: solid;
+        }
+
+        .table td:nth-child(2) {
+            overflow: hidden;
+        / / white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .highlight {
+            background: lighten(yellow, 30%);
+        }
+
+        @media only screen and (max-width: 767px) {
+            /* Force table to not be like tables anymore */
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            /* Hide table headers (but not display: none;, for accessibility) */
+            thead tr, tfoot tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            td {
+                /* Behave  like a "row" */
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50% !important;
+            }
+
+            td:before {
+                /* Now like a table header */
+                position: absolute;
+                /* Top/left values mimic padding */
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+            }
+
+            .table td:nth-child(1) {
+                background: #ccc;
+                height: 100%;
+                top: 0;
+                left: 0;
+                font-weight: bold;
+            }
+
+            /*
+            Label the data
+            */
+            td:nth-of-type(1):before {
+                content: "Batch Number";
+            }
+
+            td:nth-of-type(2):before {
+                content: "FinnoBank Number";
+            }
+
+            td:nth-of-type(3):before {
+                content: "Status";
+            }
+
+            td:nth-of-type(4):before {
+                content: "Total Collected Amount";
+            }
+
+            td:nth-of-type(5):before {
+                content: "Branch Name";
+            }
+
+            td:nth-of-type(6):before {
+                content: "Created By";
+            }
+
+            td:nth-of-type(7):before {
+                content: "Created On";
+            }
+
+            td:nth-of-type(8):before {
+                content: "Deposit On";
+            }
+
+            td:nth-of-type(9):before {
+                content: "Loan Number";
+            }
+
+            td:nth-of-type(10):before {
+                content: "CUSTOMER NAME";
+            }
+
+            td:nth-of-type(11):before {
+                content: "EMI Amount";
+            }
+
+            td:nth-of-type(12):before {
+                content: "Total Dues";
+            }
+
+            td:nth-of-type(13):before {
+                content: "Collected Amount";
+            }
+
+            td:nth-of-type(14):before {
+                content: "Receipt Number";
+            }
+
+            td:nth-of-type(15):before {
+                content: "Employee Code";
+            }
+
+            td:nth-of-type(16):before {
+                content: "Receipt Purpose";
+            }
+
+            .dataTables_length {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body class="theme-red">
-	<!-- Page Loader -->
-	<div class="page-loader-wrapper">
-		<div class="loader">
-			<div class="preloader">
-				<div class="spinner-layer pl-red">
-					<div class="circle-clipper left">
-						<div class="circle"></div>
-					</div>
-					<div class="circle-clipper right">
-						<div class="circle"></div>
-					</div>
-				</div>
-			</div>
-			<p>Please wait...</p>
-		</div>
-	</div>
-	<!-- #END# Page Loader -->
-	<!-- Overlay For Sidebars -->
-	<div class="overlay"></div>
-	<!-- #END# Overlay For Sidebars -->
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+        <div class="preloader">
+            <div class="spinner-layer pl-red">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+        <p>Please wait...</p>
+    </div>
+</div>
+<!-- #END# Page Loader -->
+<!-- Overlay For Sidebars -->
+<div class="overlay"></div>
+<!-- #END# Overlay For Sidebars -->
 
-	<!-- Top Bar -->
-	<nav class="navbar">
-		<div class="container-fluid"style="background-color: #00A6C7">
-			<div class="navbar-header"style="background-color: #00A6C7">
-				<a href="javascript:void(0);" class="navbar-toggle collapsed"
-					data-toggle="collapse" data-target="#navbar-collapse"
-					aria-expanded="false"></a> <a href="javascript:void(0);"
-					class="bars"></a>
-				<ul class="navbar-brand">FINOBANK Web Portal
-				</ul>
-				<div th:if="${lisrRoles!=null and !lisrRoles.empty}">
-					<select id="selectedrole" name="selectedrole" class="form-control">
-						<option value="0">Select role</option>
-						<option th:each="category : ${lisrRoles}"
-							th:value="${category.id}" th:utext="${category.name}" />
-					</select>
-				</div>
-			</div>
-			<div class="collapse navbar-collapse" id="navbar-collapse"></div>
-		</div>
-	</nav>
-	<!-- #Top Bar -->
-	<section>
-		<!-- Left Sidebar -->
-		<aside id="leftsidebar" class="sidebar">
-			<!-- User Info -->
-			<div class="user-info">
-				<div class="image">
-					<img src="images/user.png" width="48" height="48" alt="User" />
-				</div>
-				<div class="info-container">
-					<div class="name" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false">Collection Desk</div>
-					<!-- <div class="email">collections@shubham.co</div> -->
+<!-- Top Bar -->
+<nav class="navbar">
+    <div class="container-fluid" style="background-color: #00A6C7">
+        <div class="navbar-header" style="background-color: #00A6C7">
+            <a href="javascript:void(0);" class="navbar-toggle collapsed"
+               data-toggle="collapse" data-target="#navbar-collapse"
+               aria-expanded="false"></a> <a href="javascript:void(0);"
+                                             class="bars"></a>
+            <ul class="navbar-brand">FINOBANK Web Portal
+            </ul>
+            <div th:if="${lisrRoles!=null and !lisrRoles.empty}">
+                <select id="selectedrole" name="selectedrole" class="form-control">
+                    <option value="0">Select role</option>
+                    <option th:each="category : ${lisrRoles}"
+                            th:value="${category.id}" th:utext="${category.name}"/>
+                </select>
+            </div>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse"></div>
+    </div>
+</nav>
+<!-- #Top Bar -->
+<section>
+    <!-- Left Sidebar -->
+    <aside id="leftsidebar" class="sidebar">
+        <!-- User Info -->
+        <div class="user-info">
+            <div class="image">
+                <img src="images/user.png" width="48" height="48" alt="User"/>
+            </div>
+            <div class="info-container">
+                <div class="name" data-toggle="dropdown" aria-haspopup="true"
+                     aria-expanded="false">Collection Desk
+                </div>
+                <!-- <div class="email">collections@shubham.co</div> -->
 
-					<div class="btn-group user-helper-dropdown"></div>
-				</div>
-			</div>
-			<!-- #User Info -->
-			<!-- Menu -->
-			<div class="menu">
-				<ul class="list">
-					<li class="header">MAIN NAVIGATION</li>
-					<!-- <li class="active"><a href="/dashboard"><span class=""></span>
-							<span class="xn-text">Home</span></a></li> -->
+                <div class="btn-group user-helper-dropdown"></div>
+            </div>
+        </div>
+        <!-- #User Info -->
+        <!-- Menu -->
+        <div class="menu">
+            <ul class="list">
+                <li class="header">MAIN NAVIGATION</li>
+                <!-- <li class="active"><a href="/dashboard"><span class=""></span>
+                        <span class="xn-text">Home</span></a></li> -->
 
 
-					<li><a href="/dashboard"
-						class="toggled waves-effect waves-block"> <i
-							class="material-icons">home</i> <span> Dashboard</span></a></li>
-					
-<!--					<li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"><a href="/airteldashboard"-->
-<!--						class="toggled waves-effect waves-block"> <i-->
-<!--							class="material-icons">home</i> <span> Airtel Dashboard</span></a></li>-->
-									
-					<li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"><a
-						href="/batchcreate" class="toggled waves-effect waves-block">
-							<i class="material-icons">description</i> <span> Batch
+                <li><a href="/dashboard"
+                       class="toggled waves-effect waves-block"> <i
+                        class="material-icons">home</i> <span> Dashboard</span></a></li>
+
+                <!--					<li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"><a href="/airteldashboard"-->
+                <!--						class="toggled waves-effect waves-block"> <i-->
+                <!--							class="material-icons">home</i> <span> Airtel Dashboard</span></a></li>-->
+
+                <li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"><a
+                        href="/batchcreate" class="toggled waves-effect waves-block">
+                    <i class="material-icons">description</i> <span> Batch
 								Create</span>
-					</a></li>
-					<li sec:authorize="hasRole('ROLE_USER')"><a
-						href="/updatepayment" class="toggled waves-effect waves-block">
-							<i class="material-icons">layers</i> <span>Payment Update</span>
-					</a></li>
-					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
-						href="/showdeletebatch" class="toggled waves-effect waves-block">
-							<i class="material-icons">layers</i> <span>Batch Delete</span>
-					</a></li>
-<!--					<li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"><a-->
-<!--						href="/airtelbatchcreate" class="toggled waves-effect waves-block">-->
-<!--							<i class="material-icons">description</i> <span>Airtel Batch-->
-<!--								Create</span>-->
-<!--					</a></li>-->
-<!--					<li sec:authorize="hasRole('ROLE_USER')"><a-->
-<!--						href="/airtelupdatepayment" class="toggled waves-effect waves-block">-->
-<!--							<i class="material-icons">layers</i> <span>Airtel Payment Update</span>-->
-<!--					</a></li>-->
-<!--					<li sec:authorize="hasRole('ROLE_ADMIN')"><a-->
-<!--						href="/airtelshowdeletebatch" class="toggled waves-effect waves-block">-->
-<!--							<i class="material-icons">layers</i> <span>Airtel Batch Delete</span>-->
-<!--					</a></li>-->
-					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
-						href="/users/newUser" class="toggled waves-effect waves-block">
-							<i class="material-icons">layers</i> <span>User Management</span>
-					</a></li>
-					<li sec:authorize="hasRole('ROLE_ADMIN')"><a
-							href="/password-reset" class="toggled waves-effect waves-block">
-						<i class="material-icons">layers</i> <span>Password-Reset</span>
-					</a></li>
-					<li><a href="javascript: document.logoutForm.submit()"
-						class="toggled waves-effect waves-block"> <i
-							class="material-icons">input</i> <span>Sign Out</span>
-					</a>
-						<form name="logoutForm" th:action="@{/logout}" method="post"
-							th:hidden="true">
-							<input hidden type="submit" value="Sign Out" />
-						</form></li>
+                </a></li>
+                <li sec:authorize="hasRole('ROLE_USER')"><a
+                        href="/updatepayment" class="toggled waves-effect waves-block">
+                    <i class="material-icons">layers</i> <span>Payment Update</span>
+                </a></li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')"><a
+                        href="/showdeletebatch" class="toggled waves-effect waves-block">
+                    <i class="material-icons">layers</i> <span>Batch Delete</span>
+                </a></li>
+                <!--					<li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"><a-->
+                <!--						href="/airtelbatchcreate" class="toggled waves-effect waves-block">-->
+                <!--							<i class="material-icons">description</i> <span>Airtel Batch-->
+                <!--								Create</span>-->
+                <!--					</a></li>-->
+                <!--					<li sec:authorize="hasRole('ROLE_USER')"><a-->
+                <!--						href="/airtelupdatepayment" class="toggled waves-effect waves-block">-->
+                <!--							<i class="material-icons">layers</i> <span>Airtel Payment Update</span>-->
+                <!--					</a></li>-->
+                <!--					<li sec:authorize="hasRole('ROLE_ADMIN')"><a-->
+                <!--						href="/airtelshowdeletebatch" class="toggled waves-effect waves-block">-->
+                <!--							<i class="material-icons">layers</i> <span>Airtel Batch Delete</span>-->
+                <!--					</a></li>-->
+                <li sec:authorize="hasRole('ROLE_ADMIN')"><a
+                        href="/users/newUser" class="toggled waves-effect waves-block">
+                    <i class="material-icons">layers</i> <span>User Management</span>
+                </a></li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')"><a
+                        href="/password-reset" class="toggled waves-effect waves-block">
+                    <i class="material-icons">layers</i> <span>Password-Reset</span>
+                </a></li>
+                <li><a href="javascript: document.logoutForm.submit()"
+                       class="toggled waves-effect waves-block"> <i
+                        class="material-icons">input</i> <span>Sign Out</span>
+                </a>
+                    <form name="logoutForm" th:action="@{/logout}" method="post"
+                          th:hidden="true">
+                        <input hidden type="submit" value="Sign Out"/>
+                    </form>
+                </li>
 
 
-				</ul>
-			</div>
-			<!-- #Menu -->
-			<!-- Footer -->
-			<div class="legal">
-				<div class="copyright">&copy; 2022-2023 Shubham IT Team</div>
-				<div class="version">
-					<b>Version: </b> 1.0
-				</div>
-			</div>
-			<!-- #Footer -->
-		</aside>
-		<!-- #END# Left Sidebar -->
-		<!-- Right Sidebar -->
+            </ul>
+        </div>
+        <!-- #Menu -->
+        <!-- Footer -->
+        <div class="legal">
+            <div class="copyright">&copy; 2022-2023 Shubham IT Team</div>
+            <div class="version">
+                <b>Version: </b> 1.0
+            </div>
+        </div>
+        <!-- #Footer -->
+    </aside>
+    <!-- #END# Left Sidebar -->
+    <!-- Right Sidebar -->
 
-		<!-- #END# Right Sidebar -->
-	</section>
+    <!-- #END# Right Sidebar -->
+</section>
 
-	<section class="content">
-		<div class="container-fluid">
-			<div class="block-header">
-				<h2>DASHBOARD</h2>
-			</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <h2>DASHBOARD</h2>
+        </div>
 
-			<!-- Widgets -->
-			<div class="row clearfix">
-				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-					<div class="info-box bg-pink hover-expand-effect">
-						<div class="icon">
-							<i class="material-icons">playlist_add_check</i>
-						</div>
-						<div class="content">
-							<div class="text">BATCH CREATED</div>
-							<div class="number count-to" data-from="0" data-to="125"
-								data-speed="15" data-fresh-interval="20"
-								th:text="${dashboard.total}"></div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-					<div class="info-box bg-cyan hover-expand-effect">
-						<div class="icon">
-							<i class="material-icons">help</i>
-						</div>
-						<div class="content">
-							<div class="text">PENDING BATCH</div>
-							<div class="number count-to" data-from="0" data-to="257"
-								data-speed="1000" data-fresh-interval="20"
-								th:text="${dashboard.pending}"></div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-					<div class="info-box bg-light-green hover-expand-effect">
-						<div class="icon">
-							<i class="material-icons">forum</i>
-						</div>
-						<div class="content">
-							<div class="text">CLOSED BATCH</div>
-							<div class="number count-to" data-from="0" data-to="243"
-								data-speed="1000" data-fresh-interval="20"
-								th:text="${dashboard.closed}"></div>
-						</div>
-					</div>
-				</div>
+        <!-- Widgets -->
+        <div class="row clearfix">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="info-box bg-pink hover-expand-effect">
+                    <div class="icon">
+                        <i class="material-icons">playlist_add_check</i>
+                    </div>
+                    <div class="content">
+                        <div class="text">BATCH CREATED</div>
+                        <div class="number count-to" data-from="0" data-to="125"
+                             data-speed="15" data-fresh-interval="20"
+                             th:text="${dashboard.total}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="info-box bg-cyan hover-expand-effect">
+                    <div class="icon">
+                        <i class="material-icons">help</i>
+                    </div>
+                    <div class="content">
+                        <div class="text">PENDING BATCH</div>
+                        <div class="number count-to" data-from="0" data-to="257"
+                             data-speed="1000" data-fresh-interval="20"
+                             th:text="${dashboard.pending}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="info-box bg-light-green hover-expand-effect">
+                    <div class="icon">
+                        <i class="material-icons">forum</i>
+                    </div>
+                    <div class="content">
+                        <div class="text">CLOSED BATCH</div>
+                        <div class="number count-to" data-from="0" data-to="243"
+                             data-speed="1000" data-fresh-interval="20"
+                             th:text="${dashboard.closed}"></div>
+                    </div>
+                </div>
+            </div>
 
-			</div>
-			<!-- #END# Widgets -->
-			<!-- CPU Usage -->
-			<div class="row clearfix">
-				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-					<div class="card">
-						<div class="header">
-							<h2>Batch Details</h2>
+        </div>
+        <!-- #END# Widgets -->
+        <!-- CPU Usage -->
+        <div class="row clearfix">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Batch Details</h2>
 
-						</div>
-						<div class="body">
+                    </div>
+                    <div class="body">
 
-							<div class="table-responsive">
-								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-									<form th:action="@{/dashboard}" id="searchForm">
-										<div class="col-md-4">
-											<div class="input-group">
-												<input type="text" class="form-control" id="keyword"
-													name="keyword" th:value="${keyword}"
-													placeholder="Enter keyword">
-												<input type="date" class="form-control" id="date"
-													   name="date" th:value="${date}"
-													   placeholder="Search By date">
-												<div class="input-group-append">
-													<button class="btn btn-secondary" type="submit">
-														<i class="fa fa-search"></i>
-													</button>
-													<button class="btn btn-secondary" type="submit">
-														<i class="fa fa-trash"></i>
-													</button>
-												</div>
-											</div>
+                        <div class="table-responsive">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <form th:action="@{/dashboard}" id="searchForm">
+                                    <div class="col-md-4">
+                                        <div>
+                                            <div class="mb-1">
+                                                <label for="keyword" class="form-label"></label>
+                                                <input type="text" class="form-control" id="keyword"
+                                                       name="keyword" th:value="${keyword}"
+                                                       placeholder="Enter keyword">
+                                            </div>
+                                            <div>
+                                                <label for="fromDate">From Date:</label>
+                                                <input type="date" class="form-control" id="fromDate"
+                                                       name="date" th:value="${fromDate}"
+                                                       placeholder="Search By fromDate">
+                                            </div>
+                                            <div>
+                                                <label for="toDate">To Date: </label>
+                                                <input type="date" class="form-control" id="toDate"
+                                                       name="date" th:value="${toDate}"
+                                                       placeholder="Search By toDate">
+                                            </div>
 
-										</div>
-										<div class="col-md-4">
-											<!-- ><div class="input-group">
-												<label class="input-group-text" for="pageSize">Items
-													per page:</label>
-												<div class="input-group-append">
-													<select form="searchForm" name="size"
-														th:value="${pageSize}" onchange="changePageSize()"
-														class="form-control show-tick" id="pageSize">
-														<option th:each="s : ${ {3, 6, 9} }" th:value="${s}"
-															th:text="${s}" th:selected="${s == pageSize}"></option>
-													</select>
-												</div>
-											</div> -->
-										</div>
-										<div class="col-md-4">
-											<div class="button-demo">
-												<button id="generateExcel" class="btn btn-success waves-effect" type="button">Excel</button>
-												<button id="generateCsv" class="btn btn-danger waves-effect" type="button">CSV</button>
-											</div>
-										</div>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-secondary" type="submit">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                                <button class="btn btn-secondary" type="submit">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
 
-
-
-
-
-
-									</form>
-
-									<script>
-										document.getElementById('generateExcel').addEventListener('click', function() {
-                                            const dateValue = document.getElementById('date').value;
-                                            const keyword = document.getElementById('keyword').value;
-
-                                            // Updated URL for request parameters
-                                            const url = `/excel/FinnoBankreport?date=${encodeURIComponent(dateValue)}&keyword=${encodeURIComponent(keyword)}`;
-                                            window.location.href = url; // Redirect to the generated URL
-                                        });
-
-                                        document.getElementById('generateCsv').addEventListener('click', function() {
-                                            const dateValue = document.getElementById('date').value;
-                                            const keyword = document.getElementById('keyword').value;
-
-                                            // Updated URL for request parameters
-                                            const url = `/csv/FinnoBankreport?date=${encodeURIComponent(dateValue)}&keyword=${encodeURIComponent(keyword)}`;
-                                            window.location.href = url; // Redirect to the generated URL
-                                        });
-									</script>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <!-- ><div class="input-group">
+                                            <label class="input-group-text" for="pageSize">Items
+                                                per page:</label>
+                                            <div class="input-group-append">
+                                                <select form="searchForm" name="size"
+                                                    th:value="${pageSize}" onchange="changePageSize()"
+                                                    class="form-control show-tick" id="pageSize">
+                                                    <option th:each="s : ${ {3, 6, 9} }" th:value="${s}"
+                                                        th:text="${s}" th:selected="${s == pageSize}"></option>
+                                                </select>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="button-demo">
+                                            <button id="generateExcel" class="btn btn-success waves-effect"
+                                                    type="button">Excel
+                                            </button>
+                                            <button id="generateCsv" class="btn btn-danger waves-effect" type="button">
+                                                CSV
+                                            </button>
+                                        </div>
+                                    </div>
 
 
-								</div>
+                                </form>
 
-								<div th:if="${tutorials.size() > 0}">
-									<table
-										class="table table-bordered table-striped table-hover table-responsive-xl">
-										<thead>
-											<tr>
+                                <script>
+                                    document.getElementById('generateExcel').addEventListener('click', function () {
+                                        const fromDateValue = document.getElementById('fromDate').value;
+                                        const toDateValue = document.getElementById('toDate').value;
+                                        const keyword = document.getElementById('keyword').value;
 
-												<th class="notexport">ID</th>
-												<th>Batch Number</th>
-												<th>FinnoBank Number</th>
-												<th>Status</th>
-												<th>Total Collected Amount</th>
-												<th>Branch Name</th>
-												<th>Employee Code</th>
+                                        // Updated URL for request parameters
+                                        const url = `/excel/FinnoBankreport?fromDate=${encodeURIComponent(fromDateValue)}&toDate=${encodeURIComponent(toDateValue)}&keyword=${encodeURIComponent(keyword)}`;
+                                        window.location.href = url; // Redirect to the generated URL
+                                    });
 
-												<th>Created By</th>
-												<th>Created On</th>
-												<th>Deposit On</th>
-												<th>Loan Number</th>
-												<th>CUSTOMER NAME</th>
-												<th>EMI Amount</th>
-												<th>Total Dues</th>
-												<th>Collected Amount</th>
-												<th>Receipt Number</th>
-												<th>Receipt Purpose</th>
-											</tr>
-										</thead>
-										<tbody>
+                                    document.getElementById('generateCsv').addEventListener('click', function () {
+                                        const fromDateValue = document.getElementById('fromDate').value;
+                                        const toDateValue = document.getElementById('toDate').value;
+                                        const keyword = document.getElementById('keyword').value;
 
-											<tr class="details" th:each="user : ${tutorials}">
-
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.id}">id</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.batchnumber}">batchnumber</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.finobankacknumber}">finobankacknumber</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.userstatus}">userstatus</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.totalcollectedamount}">totalcollectedamount</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.branchname}">branchname</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.empcode}">empcode</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.createdby}">createdby</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.createon}">createon</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.depositon}">updatedon</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.loannumber}">loannumber</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.customername}">customername</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.emiamount}">emiamount</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.totaldue}">totaldue</td>
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.collectedamount}">collectedamount</td>
-
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.reciptnumber}">reciptnumber</td>
-
-												<td
-													th:style="'background-color:'+@{${user.rowColor}}+';'"
-													th:text="${user.paymentype}">paymentype</td>
-
-											</tr>
-										</tbody>
-
-									</table>
-								</div>
-
-								<div th:unless="${tutorials.size() > 0}">
-									<span>No tutorials found!</span>
-								</div>
+                                        // Updated URL for request parameters
+                                        const url = `/csv/FinnoBankreport?fromDate=${encodeURIComponent(fromDateValue)}&toDate=${encodeURIComponent(toDateValue)}&keyword=${encodeURIComponent(keyword)}`;
+                                        window.location.href = url; // Redirect to the generated URL
+                                    });
+                                </script>
 
 
-							</div>
-							<nav aria-label="Pagination" th:if="${totalPages > 0}">
-								<ul class="pagination justify-content-center">
-									<li class="page-item"
-										th:classappend="${currentPage == 1} ? 'disabled'"><a
-										th:replace="fragments/paging :: paging(1, '<<', 'First Page')"></a>
-									</li>
-									<li class="page-item font-weight-bold"
-										th:classappend="${currentPage == 1} ? 'disabled'"><a
-										th:replace="fragments/paging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
-									</li>
-									<li class="page-item disabled" th:if="${currentPage - 2 > 1}">
-										<a class="page-link" href="#">...</a>
-									</li>
-									<li class="page-item"
-										th:classappend="${page == currentPage} ? 'active'"
-										th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
-										<a
-										th:replace="fragments/paging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
-									</li>
-									<li class="page-item disabled"
-										th:if="${currentPage + 2 < totalPages}"><a
-										class="page-link" href="#">...</a></li>
-									<li class="page-item font-weight-bold"
-										th:classappend="${currentPage == totalPages} ? 'disabled'">
-										<a
-										th:replace="fragments/paging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
-									</li>
-									<li class="page-item"
-										th:classappend="${currentPage == totalPages} ? 'disabled'">
-										<a
-										th:replace="fragments/paging :: paging(${totalPages}, '>>', 'Last Page')"></a>
-									</li>
-								</ul>
-							</nav>
+                            </div>
 
-						</div>
-					</div>
-				</div>
+                            <div th:if="${tutorials.size() > 0}">
+                                <table
+                                        class="table table-bordered table-striped table-hover table-responsive-xl">
+                                    <thead>
+                                    <tr>
 
-			</div>
-			<!-- #END# CPU Usage -->
-	</section>
+                                        <th class="notexport">ID</th>
+                                        <th>Batch Number</th>
+                                        <th>FinnoBank Number</th>
+                                        <th>Status</th>
+                                        <th>Total Collected Amount</th>
+                                        <th>Branch Name</th>
+                                        <th>Employee Code</th>
 
-	<!-- Jquery Core Js -->
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery/jquery.min.js}"></script>
+                                        <th>Created By</th>
+                                        <th>Created On</th>
+                                        <th>Deposit On</th>
+                                        <th>Loan Number</th>
+                                        <th>CUSTOMER NAME</th>
+                                        <th>EMI Amount</th>
+                                        <th>Total Dues</th>
+                                        <th>Collected Amount</th>
+                                        <th>Receipt Number</th>
+                                        <th>Receipt Purpose</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
-	<!-- Bootstrap Core Js -->
-	<script type="text/javascript"
-		th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+                                    <tr class="details" th:each="user : ${tutorials}">
 
-	<!-- Select Plugin Js -->
-	<script type="text/javascript"
-		th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.id}">id
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.batchnumber}">batchnumber
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.finobankacknumber}">finobankacknumber
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.userstatus}">userstatus
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.totalcollectedamount}">totalcollectedamount
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.branchname}">branchname
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.empcode}">empcode
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.createdby}">createdby
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.createon}">createon
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.depositon}">updatedon
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.loannumber}">loannumber
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.customername}">customername
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.emiamount}">emiamount
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.totaldue}">totaldue
+                                        </td>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.collectedamount}">collectedamount
+                                        </td>
 
-	<!-- Slimscroll Plugin Js -->
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-slimscroll/jquery.slimscroll.js}"></script>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.reciptnumber}">reciptnumber
+                                        </td>
 
-	<!-- Waves Effect Plugin Js -->
-	<script type="text/javascript" th:src="@{/plugins/node-waves/waves.js}"></script>
+                                        <td
+                                                th:style="'background-color:'+@{${user.rowColor}}+';'"
+                                                th:text="${user.paymentype}">paymentype
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                            <div th:unless="${tutorials.size() > 0}">
+                                <span>No tutorials found!</span>
+                            </div>
 
 
+                        </div>
+                        <nav aria-label="Pagination" th:if="${totalPages > 0}">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item"
+                                    th:classappend="${currentPage == 1} ? 'disabled'"><a
+                                        th:replace="fragments/paging :: paging(1, '<<', 'First Page')"></a>
+                                </li>
+                                <li class="page-item font-weight-bold"
+                                    th:classappend="${currentPage == 1} ? 'disabled'"><a
+                                        th:replace="fragments/paging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+                                </li>
+                                <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                                    <a class="page-link" href="#">...</a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${page == currentPage} ? 'active'"
+                                    th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                                    <a
+                                            th:replace="fragments/paging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                                </li>
+                                <li class="page-item disabled"
+                                    th:if="${currentPage + 2 < totalPages}"><a
+                                        class="page-link" href="#">...</a></li>
+                                <li class="page-item font-weight-bold"
+                                    th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a
+                                            th:replace="fragments/paging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a
+                                            th:replace="fragments/paging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- #END# CPU Usage -->
+</section>
+
+<!-- Jquery Core Js -->
+<script type="text/javascript"
+        th:src="@{/plugins/jquery/jquery.min.js}"></script>
+
+<!-- Bootstrap Core Js -->
+<script type="text/javascript"
+        th:src="@{/plugins/bootstrap/js/bootstrap.js}"></script>
+
+<!-- Select Plugin Js -->
+<script type="text/javascript"
+        th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script>
+
+<!-- Slimscroll Plugin Js -->
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-slimscroll/jquery.slimscroll.js}"></script>
+
+<!-- Waves Effect Plugin Js -->
+<script type="text/javascript" th:src="@{/plugins/node-waves/waves.js}"></script>
 
 
+<!-- Jquery DataTable Plugin Js -->
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/jquery.dataTables.js}"></script>
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js}"></script>
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js}"></script>
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/extensions/export/buttons.flash.min.js}"></script>
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/extensions/export/jszip.min.js}"></script>
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/extensions/export/pdfmake.min.js}"></script>
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/extensions/export/vfs_fonts.js}"></script>
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/extensions/export/buttons.html5.min.js}"></script>
+<script type="text/javascript"
+        th:src="@{/plugins/jquery-datatable/extensions/export/buttons.print.min.js}"></script>
 
+<!-- Custom Js -->
+<script type="text/javascript" th:src="@{/js/admin.js}"></script>
 
-
-
-
-	<!-- Jquery DataTable Plugin Js -->
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/jquery.dataTables.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.flash.min.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/extensions/export/jszip.min.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/extensions/export/pdfmake.min.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/extensions/export/vfs_fonts.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.html5.min.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/plugins/jquery-datatable/extensions/export/buttons.print.min.js}"></script>
-
-	<!-- Custom Js -->
-	<script type="text/javascript" th:src="@{/js/admin.js}"></script>
-
-	<script th:src="@{/js/pages/tables/jquery-datatable.js}"></script>
-	<!-- Demo Js -->
-	<script type="text/javascript" th:src="@{/js/demo.js}"></script>
+<script th:src="@{/js/pages/tables/jquery-datatable.js}"></script>
+<!-- Demo Js -->
+<script type="text/javascript" th:src="@{/js/demo.js}"></script>
 </body>
 
 </html>

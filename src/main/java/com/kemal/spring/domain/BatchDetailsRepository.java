@@ -37,9 +37,14 @@ public interface BatchDetailsRepository extends JpaRepository<BatchDetails, Long
 	@Query("select c from BatchDetails c where c.active=1 and (c.batchnumber like lower(concat('%',:keyword,'%')) or c.finobankacknumber like lower(concat('%',:keyword,'%')) or c.userstatus like lower(concat('%',:keyword,'%')))")
 	Page<BatchDetails> findActiveBatch(Pageable paging,@Param("keyword") String keyword);
 
-	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) = cast(:date as date)")
-	Page<BatchDetails> findActiveBatchByDate(Pageable paging, @Param("date") LocalDate date);
+	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) between cast(:fromDate as date) and cast(:toDate as date)")
+	Page<BatchDetails> findActiveBatchByDate(Pageable paging, @Param("fromDate") LocalDate fromDate, LocalDate toDate);
 
-	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) = cast(:date as date)")
-	List<BatchDetails> findActiveBatchByDateForExcel(String date);
+	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) between cast(:fromDate as date) and cast(:toDate as date)")
+	List<BatchDetails> findActiveBatchByDateForExcel(String fromDate, String toDate);
+
+//	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) = cast(:date as date)")
+//	Page<BatchDetails> findActiveBatchByfromDate(Pageable paging, @Param("fromDate") LocalDate fromDate);
+//	@Query("select c from BatchDetails c where c.active = 1 and function('DATE', c.createon) = cast(:date as date)")
+//	Page<BatchDetails> findActiveBatchBytoDate(Pageable paging, @Param("toDate") LocalDate toDate);
 }

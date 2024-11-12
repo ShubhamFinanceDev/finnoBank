@@ -163,7 +163,8 @@ public class IndexController {
 	@GetMapping(value = "/airteldashboard")
 	public String airteldashboard(WebRequest request, Model model, @RequestParam(required = false) String keyword,
 								  @RequestParam(required = false, defaultValue = "0") Long userId, // User ID parameter
-								  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+								  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+								  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
 								  @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -192,11 +193,11 @@ public class IndexController {
 			Page<AirtelBatchDetails> pageTuts;
 			if (keyword == null) {
 
-				pageTuts = airtelBatchService.findApplicationBybatchIdPaging(paging, userId, date);
+				pageTuts = airtelBatchService.findApplicationBybatchIdPaging(paging, userId, fromDate, toDate);
 				list = airtelBatchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
-				pageTuts = airtelBatchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, userId, date);
+				pageTuts = airtelBatchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, userId, fromDate, toDate);
 				model.addAttribute("keyword", keyword);
 				list = airtelBatchService.findApplicationBybatchDto(pageTuts.getContent());
 			}
@@ -243,11 +244,11 @@ public class IndexController {
 			Page<AirtelBatchDetails> pageTuts;
 			if (keyword == null) {
 
-				pageTuts = airtelBatchService.findApplicationBybatchIdPaging(paging, userId, date);
+				pageTuts = airtelBatchService.findApplicationBybatchIdPaging(paging, userId, fromDate, toDate);
 				list = airtelBatchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
-				pageTuts = airtelBatchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, userId, date);
+				pageTuts = airtelBatchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, userId, fromDate, toDate);
 				model.addAttribute("keyword", keyword);
 				list = airtelBatchService.findApplicationBybatchDto(pageTuts.getContent());
 			}
@@ -292,7 +293,8 @@ public class IndexController {
 	public String dashboard(WebRequest request, Model model,
 							@RequestParam(required = false) String keyword,
 							@RequestParam(required = false, defaultValue = "0") Long userId, // User ID parameter
-							@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+							@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+							@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
 							@RequestParam(defaultValue = "1") int page,
 							@RequestParam(defaultValue = "10") int size) {
 		System.out.println(userId + " in controller");
@@ -311,6 +313,7 @@ public class IndexController {
 		activity.setType("LOGIN");
 		activity.setUser(user);
 		activity.setCreateon(new Date());
+
 		activity.setDescription("User Login Successfully");
 		activityService.save(activity);
 		if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_ADMIN")
@@ -321,8 +324,8 @@ public class IndexController {
 
 			Page<BatchDetails> pageTuts;
 
-			if (keyword == null || keyword.isEmpty() && userId != 0 || date != null) {
-				pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId, date);
+			if (keyword == null || keyword.isEmpty() && userId == 0 && fromDate != null && toDate != null) {
+				pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId, fromDate,toDate);
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
@@ -373,8 +376,8 @@ public class IndexController {
 
 			Page<BatchDetails> pageTuts;
 
-			if (keyword == null || keyword.isEmpty() && userId != 0 || date != null) {
-				pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId, date);
+			if (keyword == null || keyword.isEmpty() && userId != 0 || fromDate != null && toDate != null)  {
+				pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId, fromDate, toDate);
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 
 			} else {
@@ -705,7 +708,7 @@ public class IndexController {
 
 			List<batchpagingDto> list = new ArrayList<>();
 
-			list = (batchService.findApplicationBybatchid(null, null));
+			list = (batchService.findApplicationBybatchid(null, null, null ));
 			DashboardDTO dashboardDTO = new DashboardDTO();
 
 			if (list != null && list.size() > 0) {
@@ -735,7 +738,7 @@ public class IndexController {
 			return "website/dashboard";
 		} else if (user.getRoles().get(0).getName().equalsIgnoreCase("ROLE_USER")) {
 			List<batchpagingDto> list = new ArrayList<>();
-			list = (batchService.findApplicationBybatchid(user.getId(), null));
+			list = (batchService.findApplicationBybatchid(user.getId(), null, null));
 			DashboardDTO dashboardDTO = new DashboardDTO();
 
 			if (list != null && list.size() > 0) {
@@ -1101,7 +1104,7 @@ public class IndexController {
 	@GetMapping("/excel/{downloadType}")
 	public ResponseEntity<Resource> downloadExcel(
 			@PathVariable String downloadType,
-			@RequestParam(required = false) String date) {
+			@RequestParam(required = false) String fromDate,@RequestParam(required = false) String toDate) {
 
 		try {
 			System.out.println("Inside excel download---------------------------" + downloadType);
@@ -1155,9 +1158,9 @@ public class IndexController {
 
 				}
 
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && date == null || date.isEmpty()) {
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate == null || fromDate.isEmpty() && toDate == null || toDate.isEmpty()) {
 
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null);
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null, null);
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1213,9 +1216,9 @@ public class IndexController {
 
 				}
 
-			} else if (downloadType.equalsIgnoreCase("Airtelreport") && date == null || date.isEmpty()) {
+			} else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate == null || fromDate.isEmpty() && toDate == null || toDate.isEmpty()) {
 
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null);
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null, null);
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1337,8 +1340,8 @@ public class IndexController {
 						
 
 				}
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && date != null || !date.isEmpty()) {
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, date);
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate != null || !fromDate.isEmpty()&& toDate != null || !toDate.isEmpty()) {
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null,null );
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1394,9 +1397,9 @@ public class IndexController {
 
 				}
 
-			}else if (downloadType.equalsIgnoreCase("Airtelreport") && date != null || !date.isEmpty()) {
+			}else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate != null || !fromDate.isEmpty() && toDate != null || !toDate.isEmpty()) {
 
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, date);
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null, null);
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1478,7 +1481,7 @@ public class IndexController {
 	}
 
 	@GetMapping("/csv/{downloadType}")
-	public ResponseEntity<Resource> downloadCSV(@PathVariable(required = false) String downloadType, @RequestParam(name = "date", required = false) String date) {
+	public ResponseEntity<Resource> downloadCSV(@PathVariable(required = false) String downloadType, @RequestParam(name = "fromDate", required = false) String fromDate,@RequestParam(name = "toDate", required = false) String toDate) {
 
 		try {
 			System.out.println("Inside csv download---------------------------" + downloadType);
@@ -1501,8 +1504,8 @@ public class IndexController {
 							data.getAnswers2(), data.getQuestion3(), data.getAnswers3(), data.getQuestion4(),
 							data.getAnswers4(), data.getQuestion5(), data.getAnswers5(), data.getFeedback() });
 				}
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && date == null || date.isEmpty()) {
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null);
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate == null || fromDate.isEmpty()&& toDate == null || toDate.isEmpty()) {
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null, null);
 				// Write the header row
 				writer.writeNext(new String[] { "ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
@@ -1520,8 +1523,8 @@ public class IndexController {
 							data.getReciptnumber(), data.getPaymentype() });
 				}
 
-			} else if (downloadType.equalsIgnoreCase("Airtelreport") && date == null || date.isEmpty()) {
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null);
+			} else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate == null || fromDate.isEmpty()&& toDate == null || toDate.isEmpty()) {
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null,null);
 				// Write the header row
 				writer.writeNext(new String[] { "ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
@@ -1559,8 +1562,8 @@ public class IndexController {
 							(data.getUpdateOn()!=null?sdf.format(data.getUpdateOn()):"") });
 				}
 
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && date != null) {
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, date);
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate != null && toDate != null) {
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null,null);
 				// Write the header row
 				writer.writeNext(new String[]{"ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
@@ -1577,8 +1580,8 @@ public class IndexController {
 							data.getCustomername(), data.getEmiamount(), data.getTotaldue(), data.getCollectedamount(),
 							data.getReciptnumber(), data.getPaymentype()});
 				}
-			}else if (downloadType.equalsIgnoreCase("Airtelreport") && date != null) {
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, date);
+			}else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate != null && toDate != null) {
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null,null);
 				// Write the header row
 				writer.writeNext(new String[]{"ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
