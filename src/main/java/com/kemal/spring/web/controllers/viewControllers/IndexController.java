@@ -1523,25 +1523,66 @@ public class IndexController {
 							data.getAnswers2(), data.getQuestion3(), data.getAnswers3(), data.getQuestion4(),
 							data.getAnswers4(), data.getQuestion5(), data.getAnswers5(), data.getFeedback() });
 				}
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate == null || fromDate.isEmpty()&& toDate == null || toDate.isEmpty()) {
+			}else if (downloadType.equalsIgnoreCase("FinnoBankreport") && (fromDate == null || fromDate.isEmpty()) && (toDate == null || toDate.isEmpty())) {
 				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null, null);
+
 				// Write the header row
 				writer.writeNext(new String[] { "ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
 						"Deposit On", "Loan Number", "CUSTOMER NAME", "EMI Amount", "Total Dues", "Collected Amount",
-						"Receipt Number", "Receipt Purpose", });
+						"Receipt Number", "Receipt Purpose" });
 
-				// Write the POJO data to the CSV file
+				String previousId = ""; // Track the previous ID to detect duplicates
+				String[] frozenValues = new String[9]; // Store values for columns to reuse on duplicates
+
 				for (batchpagingDto data : dataList) {
-					writer.writeNext(new String[] { String.valueOf(data.getId()), data.getBatchnumber(),
-							data.getFinobankacknumber(), data.getUserstatus(), data.getTotalcollectedamount(),
-							data.getBranchname(), data.getEmpcode(), data.getCreatedby(),
-							(data.getCreateon()!=null?sdf.format(data.getCreateon()):""), 
-							(data.getDepositon()!=null?sdf.format(data.getDepositon()):""), data.getLoannumber(),
-							data.getCustomername(), data.getEmiamount(), data.getTotaldue(), data.getCollectedamount(),
-							data.getReciptnumber(), data.getPaymentype() });
-				}
+					String currentId = String.valueOf(data.getId());
+					String[] rowValues = new String[17]; // Array to hold the row data
 
+					// If currentId is the same as previousId, copy the previous ID into the current row
+					if (currentId.equals(previousId)) {
+						// Duplicate ID - use the previous ID for this row and copy frozen values for columns 1-9
+						rowValues[0] = previousId; // Maintain the same ID for duplicate rows
+						System.arraycopy(frozenValues, 0, rowValues, 1, frozenValues.length);
+					} else {
+						// New ID - populate all fields and update frozen values
+						rowValues[0] = currentId; // Set the new ID
+						rowValues[1] = data.getBatchnumber();
+						rowValues[2] = data.getFinobankacknumber();
+						rowValues[3] = data.getUserstatus();
+						rowValues[4] = data.getTotalcollectedamount();
+						rowValues[5] = data.getBranchname();
+						rowValues[6] = data.getEmpcode();
+						rowValues[7] = data.getCreatedby();
+						rowValues[8] = data.getCreateon() != null ? sdf.format(data.getCreateon()) : "";
+						rowValues[9] = data.getDepositon() != null ? sdf.format(data.getDepositon()) : "";
+
+						// Update frozen values for future duplicates of this ID
+						frozenValues = new String[] {
+								data.getBatchnumber(),
+								data.getFinobankacknumber(),
+								data.getUserstatus(),
+								data.getTotalcollectedamount(),
+								data.getBranchname(),
+								data.getEmpcode(),
+								data.getCreatedby(),
+								data.getCreateon() != null ? sdf.format(data.getCreateon()) : "",
+								data.getDepositon() != null ? sdf.format(data.getDepositon()) : ""
+						};
+					}
+
+					// Populate columns that vary for each row, regardless of duplicate ID
+					rowValues[10] = data.getLoannumber();
+					rowValues[11] = data.getCustomername();
+					rowValues[12] = data.getEmiamount();
+					rowValues[13] = data.getTotaldue();
+					rowValues[14] = data.getCollectedamount();
+					rowValues[15] = data.getReciptnumber();
+					rowValues[16] = data.getPaymentype();
+
+					writer.writeNext(rowValues); // Write the row to the CSV
+					previousId = currentId; // Update the previous ID to the current one
+				}
 			} else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate == null || fromDate.isEmpty()&& toDate == null || toDate.isEmpty()) {
 				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null,null);
 				// Write the header row
