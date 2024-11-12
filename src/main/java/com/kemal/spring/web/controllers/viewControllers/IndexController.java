@@ -33,6 +33,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -327,6 +328,8 @@ public class IndexController {
 			if (keyword == null || keyword.isEmpty() && userId == 0 && fromDate != null && toDate != null) {
 				pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId, fromDate,toDate);
 				list = batchService.findApplicationBybatchDto(pageTuts.getContent());
+				model.addAttribute("fromDate",fromDate.toString());
+				model.addAttribute("toDate",toDate.toString());
 
 			} else {
 //				pageTuts = batchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging, 0);   //add search filter for employee code
@@ -1158,9 +1161,15 @@ public class IndexController {
 
 				}
 
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate != null && !fromDate.isEmpty() && toDate != null && !toDate.isEmpty()) {
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport")){
+				List<batchpagingDto> dataList=new ArrayList<>();
+				if((fromDate==null || fromDate.isEmpty()) || (toDate==null || toDate.isEmpty())) {
+						dataList = batchService.findApplicationBybatchid(null, null, null);
+					}
+					else {
+						 dataList = batchService.findApplicationBybatchid(null, fromDate, toDate);
 
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, fromDate, toDate);
+					}
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				// Define column headers
