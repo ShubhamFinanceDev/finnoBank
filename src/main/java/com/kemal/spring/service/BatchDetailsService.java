@@ -186,13 +186,10 @@ public class BatchDetailsService {
 	}
 
 	public Page<BatchDetails> findApplicationBybatchIdPaging(Pageable paging, long userid, LocalDate fromDate, LocalDate toDate) {
-
 		if (userid != 0) {
 			return batchDetailsRepository.findActiveBatch(paging, userid);
 		}  else if (fromDate != null && toDate != null) {
 			return batchDetailsRepository.findActiveBatchByDate(paging, fromDate, toDate);
-//		}  else if (toDate != null) {
-//			return batchDetailsRepository.findActiveBatchBytoDate(paging, toDate);
 		} else {
 			return batchDetailsRepository.findActiveBatch(paging);
 		}

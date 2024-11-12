@@ -1104,7 +1104,7 @@ public class IndexController {
 	@GetMapping("/excel/{downloadType}")
 	public ResponseEntity<Resource> downloadExcel(
 			@PathVariable String downloadType,
-			@RequestParam(required = false) String fromDate,@RequestParam(required = false) String toDate) {
+			@RequestParam(name = "fromDate") String fromDate,@RequestParam(name = "toDate") String toDate) {
 
 		try {
 			System.out.println("Inside excel download---------------------------" + downloadType);
@@ -1158,9 +1158,9 @@ public class IndexController {
 
 				}
 
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate == null || fromDate.isEmpty() && toDate == null || toDate.isEmpty()) {
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate != null && !fromDate.isEmpty() && toDate != null && !toDate.isEmpty()) {
 
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null, null);
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, fromDate, toDate);
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				// Define column headers
@@ -1235,9 +1235,9 @@ public class IndexController {
 					row.createCell(16).setCellValue(data.getPaymentype());
 				}
 
-			} else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate == null || fromDate.isEmpty() && toDate == null || toDate.isEmpty()) {
+			} else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate == null && fromDate.isEmpty() && toDate == null && toDate.isEmpty()) {
 
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null, null);
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, fromDate, toDate);
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1359,8 +1359,8 @@ public class IndexController {
 						
 
 				}
-			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate != null || !fromDate.isEmpty()&& toDate != null || !toDate.isEmpty()) {
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null,null );
+			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate != null && !fromDate.isEmpty() && toDate != null && !toDate.isEmpty()) {
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, fromDate,toDate );
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1418,7 +1418,7 @@ public class IndexController {
 
 			}else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate != null || !fromDate.isEmpty() && toDate != null || !toDate.isEmpty()) {
 
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null, null);
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, fromDate, toDate);
 				int rowNum = 0;
 				Row rowHeader = sheet.createRow(rowNum++);
 				rowHeader.createCell(0).setCellValue("ID");
@@ -1582,7 +1582,7 @@ public class IndexController {
 				}
 
 			} else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate != null && toDate != null) {
-				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, null,null);
+				List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, fromDate,toDate);
 				// Write the header row
 				writer.writeNext(new String[]{"ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",
@@ -1600,7 +1600,7 @@ public class IndexController {
 							data.getReciptnumber(), data.getPaymentype()});
 				}
 			}else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate != null && toDate != null) {
-				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, null,null);
+				List<batchpagingDto> dataList = airtelBatchService.findApplicationBybatchid(null, fromDate,toDate);
 				// Write the header row
 				writer.writeNext(new String[]{"ID", "Batch Number", "FinnoBank Number", "Status",
 						"Total Collected Amount", "Branch Name", "Employee Code", "Created By", "Created On",

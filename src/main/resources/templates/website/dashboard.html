@@ -506,40 +506,42 @@
 
                         <div class="table-responsive">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <form th:action="@{/dashboard}" id="searchForm">
-                                    <div class="col-md-4">
-                                        <div>
-                                            <div class="mb-1">
-                                                <label for="keyword" class="form-label"></label>
-                                                <input type="text" class="form-control" id="keyword"
-                                                       name="keyword" th:value="${keyword}"
-                                                       placeholder="Enter keyword">
-                                            </div>
-                                            <div>
-                                                <label for="fromDate">From Date:</label>
-                                                <input type="date" class="form-control" id="fromDate"
-                                                       name="date" th:value="${fromDate}"
-                                                       placeholder="Search By fromDate">
-                                            </div>
-                                            <div>
-                                                <label for="toDate">To Date: </label>
-                                                <input type="date" class="form-control" id="toDate"
-                                                       name="date" th:value="${toDate}"
-                                                       placeholder="Search By toDate">
+                                <!--                                <form th:action="@{/dashboard}" id="searchForm">-->
+                                <form th:action="@{/dashboard(keyword=${keyword}, fromDate=${fromDate}, toDate=${toDate})}" id="searchForm">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div style="display: flex;align-items: center; justify-content: start;gap: 8px">
+                                                <div class="mb-1">
+                                                    <label for="keyword" class="form-label"></label>
+                                                    <input type="text" class="form-control" id="keyword"
+                                                           name="keyword" th:value="${keyword}"
+                                                           placeholder="Enter keyword">
+                                                </div>
+                                                <div>
+                                                    <label for="fromDate">From Date:</label>
+                                                    <input type="date" class="form-control" id="fromDate"
+                                                           name="fromDate" th:value="${fromDate}"
+                                                           placeholder="Search By fromDate">
+                                                </div>
+                                                <div>
+                                                    <label for="toDate">To Date: </label>
+                                                    <input type="date" class="form-control" id="toDate"
+                                                           name="toDate" th:value="${toDate}"
+                                                           placeholder="Search By toDate">
+                                                </div>
+
+                                                <div class="input-group-append" style="align-self: end">
+                                                    <button class="btn btn-secondary" type="submit">
+                                                        <i class="fa fa-search"></i>
+                                                    </button>
+                                                    <button class="btn btn-secondary" type="submit">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
 
-                                            <div class="input-group-append">
-                                                <button class="btn btn-secondary" type="submit">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                                <button class="btn btn-secondary" type="submit">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </div>
                                         </div>
-
-                                    </div>
-                                    <div class="col-md-4">
+                                        <!--                                        <div class="col">-->
                                         <!-- ><div class="input-group">
                                             <label class="input-group-text" for="pageSize">Items
                                                 per page:</label>
@@ -552,19 +554,20 @@
                                                 </select>
                                             </div>
                                         </div> -->
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="button-demo">
-                                            <button id="generateExcel" class="btn btn-success waves-effect"
-                                                    type="button">Excel
-                                            </button>
-                                            <button id="generateCsv" class="btn btn-danger waves-effect" type="button">
-                                                CSV
-                                            </button>
+                                        <!--                                        </div>-->
+                                        <div class`="col-md-4">
+                                            <div class="button-demo">
+                                                <button id="generateExcel" class="btn btn-success waves-effect"
+                                                        type="button">Excel
+                                                </button>
+                                                <button id="generateCsv" class="btn btn-danger waves-effect"
+                                                        type="button">
+                                                    CSV
+                                                </button>
+                                            </div>
                                         </div>
+
                                     </div>
-
-
                                 </form>
 
                                 <script>
