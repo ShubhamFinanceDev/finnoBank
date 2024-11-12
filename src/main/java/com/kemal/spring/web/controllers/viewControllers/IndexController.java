@@ -1173,82 +1173,86 @@ public class IndexController {
 
                 }
 
-            } else if (downloadType.equalsIgnoreCase("FinnoBankreport") && fromDate != null && !fromDate.isEmpty() && toDate != null && !toDate.isEmpty()) {
+            } else if (downloadType.equalsIgnoreCase("FinnoBankreport")) {
+                List<batchpagingDto> dataList = new ArrayList<>();
 
-                List<batchpagingDto> dataList = batchService.findApplicationBybatchid(null, fromDate, toDate);
-                int rowNum = 0;
-                Row rowHeader = sheet.createRow(rowNum++);
-                // Define column headers
-                rowHeader.createCell(0).setCellValue("ID");
-                rowHeader.createCell(1).setCellValue("Batch Number");
-                rowHeader.createCell(2).setCellValue("FinnoBank Number");
-                rowHeader.createCell(3).setCellValue("Status");
-                rowHeader.createCell(4).setCellValue("Total Collected Amount");
-                rowHeader.createCell(5).setCellValue("Branch Name");
-                rowHeader.createCell(6).setCellValue("Employee Code");
+              if ( fromDate != null && !fromDate.isEmpty() && toDate != null && !toDate.isEmpty()) {
+                   dataList = batchService.findApplicationBybatchid(null, fromDate, toDate);
+              }else {  dataList = batchService.findApplicationBybatchid(null, null, null);}
 
-                rowHeader.createCell(7).setCellValue("Created By");
-                rowHeader.createCell(8).setCellValue("Created On");
-                rowHeader.createCell(9).setCellValue("Deposit On");
-                rowHeader.createCell(10).setCellValue("Loan Number");
-                rowHeader.createCell(11).setCellValue("CUSTOMER NAME");
-                rowHeader.createCell(12).setCellValue("EMI Amount");
-                rowHeader.createCell(13).setCellValue("Total Dues");
-                rowHeader.createCell(14).setCellValue("Collected Amount");
-                rowHeader.createCell(15).setCellValue("Receipt Number");
-                rowHeader.createCell(16).setCellValue("Receipt Purpose");
+                      int rowNum = 0;
+                      Row rowHeader = sheet.createRow(rowNum++);
+                      // Define column headers
+                      rowHeader.createCell(0).setCellValue("ID");
+                      rowHeader.createCell(1).setCellValue("Batch Number");
+                      rowHeader.createCell(2).setCellValue("FinnoBank Number");
+                      rowHeader.createCell(3).setCellValue("Status");
+                      rowHeader.createCell(4).setCellValue("Total Collected Amount");
+                      rowHeader.createCell(5).setCellValue("Branch Name");
+                      rowHeader.createCell(6).setCellValue("Employee Code");
 
-                String previousId = null; // To keep track of the previous ID
-                int forzenColumnCount = 9;
-                String[] previousValues = new String[forzenColumnCount]; // Array to store the frozen values
+                      rowHeader.createCell(7).setCellValue("Created By");
+                      rowHeader.createCell(8).setCellValue("Created On");
+                      rowHeader.createCell(9).setCellValue("Deposit On");
+                      rowHeader.createCell(10).setCellValue("Loan Number");
+                      rowHeader.createCell(11).setCellValue("CUSTOMER NAME");
+                      rowHeader.createCell(12).setCellValue("EMI Amount");
+                      rowHeader.createCell(13).setCellValue("Total Dues");
+                      rowHeader.createCell(14).setCellValue("Collected Amount");
+                      rowHeader.createCell(15).setCellValue("Receipt Number");
+                      rowHeader.createCell(16).setCellValue("Receipt Purpose");
 
-                for (batchpagingDto data : dataList) {
-                    Row row = sheet.createRow(rowNum++);
-                    String currentId = String.valueOf(data.getId());
+                      String previousId = null; // To keep track of the previous ID
+                      int forzenColumnCount = 9;
+                      String[] previousValues = new String[forzenColumnCount]; // Array to store the frozen values
 
-                    if (currentId.equals(previousId)) {
-                        // For duplicate ID: fill the ID and columns with previous values (frozen values)
-                        row.createCell(0).setCellValue(previousId);  // Repeat the ID for the duplicate row
-                        for (int i = 0; i < previousValues.length; i++) {
-                            row.createCell(i + 1).setCellValue(previousValues[i]); // Fill in the frozen columns with the previous row's data
-                        }
-                    } else {
-                        // New ID: Populate all fields and save values for subsequent duplicate rows
-                        row.createCell(0).setCellValue(currentId);  // ID column
-                        row.createCell(1).setCellValue(data.getBatchnumber());
-                        row.createCell(2).setCellValue(data.getFinobankacknumber());
-                        row.createCell(3).setCellValue(data.getUserstatus());
-                        row.createCell(4).setCellValue(data.getTotalcollectedamount());
-                        row.createCell(5).setCellValue(data.getBranchname());
-                        row.createCell(6).setCellValue(data.getEmpcode());
-                        row.createCell(7).setCellValue(data.getCreatedby());
-                        row.createCell(8).setCellValue(data.getCreateon() != null ? sdf.format(data.getCreateon()) : "");
-                        row.createCell(9).setCellValue(data.getDepositon() != null ? sdf.format(data.getDepositon()) : "");
+                      for (batchpagingDto data : dataList) {
+                          Row row = sheet.createRow(rowNum++);
+                          String currentId = String.valueOf(data.getId());
 
-                        // Save the frozen values for the duplicate rows
-                        previousId = currentId;
-                        previousValues = new String[]{
-                                data.getBatchnumber(),
-                                data.getFinobankacknumber(),
-                                data.getUserstatus(),
-                                data.getTotalcollectedamount(),
-                                data.getBranchname(),
-                                data.getEmpcode(),
-                                data.getCreatedby(),
-                                data.getCreateon() != null ? sdf.format(data.getCreateon()) : "",
-                                data.getDepositon() != null ? sdf.format(data.getDepositon()) : ""
-                        };
-                    }
+                          if (currentId.equals(previousId)) {
+                              // For duplicate ID: fill the ID and columns with previous values (frozen values)
+                              row.createCell(0).setCellValue(previousId);  // Repeat the ID for the duplicate row
+                              for (int i = 0; i < previousValues.length; i++) {
+                                  row.createCell(i + 1).setCellValue(previousValues[i]); // Fill in the frozen columns with the previous row's data
+                              }
+                          } else {
+                              // New ID: Populate all fields and save values for subsequent duplicate rows
+                              row.createCell(0).setCellValue(currentId);  // ID column
+                              row.createCell(1).setCellValue(data.getBatchnumber());
+                              row.createCell(2).setCellValue(data.getFinobankacknumber());
+                              row.createCell(3).setCellValue(data.getUserstatus());
+                              row.createCell(4).setCellValue(data.getTotalcollectedamount());
+                              row.createCell(5).setCellValue(data.getBranchname());
+                              row.createCell(6).setCellValue(data.getEmpcode());
+                              row.createCell(7).setCellValue(data.getCreatedby());
+                              row.createCell(8).setCellValue(data.getCreateon() != null ? sdf.format(data.getCreateon()) : "");
+                              row.createCell(9).setCellValue(data.getDepositon() != null ? sdf.format(data.getDepositon()) : "");
 
-                    // Populate the varying columns (those that change per row)
-                    row.createCell(10).setCellValue(data.getLoannumber());
-                    row.createCell(11).setCellValue(data.getCustomername());
-                    row.createCell(12).setCellValue(data.getEmiamount());
-                    row.createCell(13).setCellValue(data.getTotaldue());
-                    row.createCell(14).setCellValue(data.getCollectedamount());
-                    row.createCell(15).setCellValue(data.getReciptnumber());
-                    row.createCell(16).setCellValue(data.getPaymentype());
-                }
+                              // Save the frozen values for the duplicate rows
+                              previousId = currentId;
+                              previousValues = new String[]{
+                                      data.getBatchnumber(),
+                                      data.getFinobankacknumber(),
+                                      data.getUserstatus(),
+                                      data.getTotalcollectedamount(),
+                                      data.getBranchname(),
+                                      data.getEmpcode(),
+                                      data.getCreatedby(),
+                                      data.getCreateon() != null ? sdf.format(data.getCreateon()) : "",
+                                      data.getDepositon() != null ? sdf.format(data.getDepositon()) : ""
+                              };
+                          }
+
+                          // Populate the varying columns (those that change per row)
+                          row.createCell(10).setCellValue(data.getLoannumber());
+                          row.createCell(11).setCellValue(data.getCustomername());
+                          row.createCell(12).setCellValue(data.getEmiamount());
+                          row.createCell(13).setCellValue(data.getTotaldue());
+                          row.createCell(14).setCellValue(data.getCollectedamount());
+                          row.createCell(15).setCellValue(data.getReciptnumber());
+                          row.createCell(16).setCellValue(data.getPaymentype());
+                      }
 
             } else if (downloadType.equalsIgnoreCase("Airtelreport") && fromDate == null && fromDate.isEmpty() && toDate == null && toDate.isEmpty()) {
 
