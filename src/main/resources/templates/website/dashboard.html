@@ -534,7 +534,7 @@
                                                     <button class="btn btn-secondary" type="submit">
                                                         <i class="fa fa-search"></i>
                                                     </button>
-                                                    <button class="btn btn-secondary" type="submit">
+                                                    <button class="btn btn-secondary" type="button" onclick="clearDate()">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -797,6 +797,23 @@
 <script th:src="@{/js/pages/tables/jquery-datatable.js}"></script>
 <!-- Demo Js -->
 <script type="text/javascript" th:src="@{/js/demo.js}"></script>
+<script>
+
+    function clearDate() {
+        const keywordField = document.getElementById('keyword')
+        const fromDateField = document.getElementById('fromDate');
+        const toDateField = document.getElementById('toDate')
+        if(fromDateField) {
+            fromDateField.value = '';
+        }
+        if(toDateField) {
+            toDateField.value = '';
+        }
+        if(keywordField) {
+            keywordField.value = '';
+        }
+    }
+</script>
 </body>
 
 </html>
