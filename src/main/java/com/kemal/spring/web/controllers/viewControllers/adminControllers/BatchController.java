@@ -85,9 +85,9 @@ public class BatchController {
 	public ModelAndView fetch(ModelAndView modelAndView, @ModelAttribute("batchDto") BatchDTO batchDto,
 			BindingResult bindingResult, HttpServletRequest request, Errors errors) {
 		modelAndView = new ModelAndView("users/batchcreation");
-System.out.println("select * from BBPS_PAYMENT where LOAN_ACCOUNT_NUMBER like '%"+batchDto.getLoannumber()+"%' or APPLICATION_NUMBER like '%"+batchDto.getLoannumber()+"%'");
+System.out.println("select * from bbps_payment where LOAN_ACCOUNT_NUMBER like '%"+batchDto.getLoannumber()+"%' or APPLICATION_NUMBER like '%"+batchDto.getLoannumber()+"%'");
 		List<BatchDTO> strlist = osourceTemplate.query(
-				"select * from BBPS_PAYMENT where LOAN_ACCOUNT_NUMBER like '%"+batchDto.getLoannumber()+"%' or APPLICATION_NUMBER like '%"+batchDto.getLoannumber()+"%'",
+				"select * from bbps_payment where LOAN_ACCOUNT_NUMBER like '%"+batchDto.getLoannumber()+"%' or APPLICATION_NUMBER like '%"+batchDto.getLoannumber()+"%'",
 				//new Object[] { batchDto.getLoannumber(), batchDto.getLoannumber()},
 				new ResultSetExtractor<List<BatchDTO>>() {
 
