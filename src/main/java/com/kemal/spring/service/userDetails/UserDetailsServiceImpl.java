@@ -2,6 +2,8 @@ package com.kemal.spring.service.userDetails;
 
 import com.kemal.spring.domain.User;
 import com.kemal.spring.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,8 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private UserService userService;
-
-    public UserDetailsServiceImpl(UserService userService) {
+@Autowired
+    public UserDetailsServiceImpl(@Lazy UserService userService) {
         this.userService = userService;
     }
 

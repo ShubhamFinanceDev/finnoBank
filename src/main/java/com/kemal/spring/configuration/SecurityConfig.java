@@ -3,8 +3,11 @@ package com.kemal.spring.configuration;
 
 import com.kemal.spring.service.userDetails.UserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,8 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImpl userDetailsServiceImpl;
-
-    public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl) {
+@Autowired
+    public SecurityConfig(@Lazy UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
@@ -84,4 +87,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authProvider());
     }
 
+    @Bean
+    public FilterRegistrationBean<CSPFilter> cspFilter() {
+        FilterRegistrationBean<CSPFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new CSPFilter());
+        registrationBean.addUrlPatterns("/*");  // All URLs
+        registrationBean.setOrder(1);
+
+        return registrationBean;
+    }
 }
