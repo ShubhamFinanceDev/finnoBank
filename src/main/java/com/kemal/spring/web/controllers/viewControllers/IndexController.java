@@ -382,10 +382,15 @@ public class IndexController {
 
             Pageable paging = PageRequest.of(page - 1, size);
 
-            Page<BatchDetails> pageTuts;
+            Page<BatchDetails> pageTuts = null;
 
-            if ((keyword == null || keyword.isEmpty()) && userId != 0 && (fromDate == null && toDate == null)) {
-                pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId);
+            long userId1 = user.getId();
+//            pageTuts = batchService.findApplicationBybatchIdPaging(paging, UserId);
+//            list = batchService.findApplicationBybatchDto(pageTuts.getContent());
+
+            if ((keyword == null || keyword.isEmpty()) && (fromDate == null && toDate == null)) {
+                pageTuts = batchService.findApplicationBybatchIdPaging(paging, userId1);
+                System.out.println("size of pagetuts >>>>>>>>>>>>>>>>>>> "+pageTuts.getSize());
                 list = batchService.findApplicationBybatchDto(pageTuts.getContent());
 
             } else if (fromDate != null && toDate != null) {
@@ -395,7 +400,8 @@ public class IndexController {
                 model.addAttribute("fromDate", fromDate.toString());
                 model.addAttribute("toDate", toDate.toString());
 
-            } else {
+            }
+            else {
 //				pageTuts = batchService.findApplicationBybatchidByTitleContainingIgnoreCase(keyword, paging,   //add search filter for employee code
 //						user.getId());
                 pageTuts = batchService.findApplicationByEmployeeId(keyword, paging);
