@@ -21,11 +21,11 @@ public class AirtelBatchDetailsService {
 	private AirtelBatchDetailsRepository batchDetailsRepository;
 
 	private AirtelApplicationDetailsRepository applicationDetailsRepository;
-	String[] colors = new String[] { /*
-										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
-										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
-										 */
-			"#F8F8F8" };
+	String[] colors = new String[] {
+										  "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
+										  "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
+
+			 };
 
 	public AirtelBatchDetailsService(AirtelBatchDetailsRepository batchDetailsRepository,
 			AirtelApplicationDetailsRepository applicationDetailsRepository) {
