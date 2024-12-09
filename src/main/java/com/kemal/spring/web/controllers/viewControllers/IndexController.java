@@ -91,12 +91,12 @@ import com.poiji.bind.Poiji;
 @RequestMapping("")
 public class IndexController {
 
-    String[] colors = new String[]{ /*
-										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
-										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
-										 */
-            "#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
-            "#DEB887", "#FF69B4"};
+    String[] colors = new String[]{
+										 "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
+										  "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"};
+
+//            "#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
+//            "#DEB887", "#FF69B4"};
     private String surverySMS = "Dear+Customer,+thank+you+for+being+our+valuable+customer.+Here,+we+are+conducting+a+customer+satisfaction+survey,+and+your+response+would+be+appreciated.+Please+click+the+link+to+fill+your+feedback+<link>+We+will+use+your+feedback+to+further+improve+our+service.%0aThank+you.%0aShubham+Housing";
     private String surveySMSHindi = "प्रिय+ग्राहक,+हमारे+मूल्यवान+ग्राहक+होने+के+लिए+धन्यवाद।+यहां,+हम+एक+ग्राहक+संतुष्टि+सर्वेक्षण+कर+रहे+हैं,+और+आपकी+प्रतिक्रिया+की+सराहना+की+जाएगी।+कृपया+अपनी+प्रतिक्रिया+भरने+के+लिए+लिंक+पर+क्लिक+करें+<link>+हम+आपकी+प्रतिक्रिया+का+उपयोग+हमारी+सेवा+को+और+बेहतर+बनाने+में+के+लिए+करेंगे।%0aधन्यवाद।%0aशुभम+हाउसिंग";
 
