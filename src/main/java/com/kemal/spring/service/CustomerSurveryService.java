@@ -29,12 +29,12 @@ public class CustomerSurveryService {
 	private SurveryQuestionRepository surveryQuestionRepository;
 	private SurveryAnswerRepository surveryAnswerRepository;
 
-	String[] colors = new String[] { /*
-										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
-										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
-										 */
-			"#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
-			"#DEB887", "#FF69B4" };
+	String[] colors = new String[] {
+										  "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
+										  "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"};
+
+//			"#FF7F50", "#FF6347", "#FFA500", "#008000", "#3CB371", "#7B68EE", "#8A2BE2", "#FF1493", "#F4A460",
+//			"#DEB887", "#FF69B4" };
 
 	public CustomerSurveryService(SurveryCustomerDetailsRepository surveryCustomerDetailsRepository,
 			SurveryCustomerRepository surveryCustomerRepository, SurveryQuestionRepository surveryQuestionRepository,
