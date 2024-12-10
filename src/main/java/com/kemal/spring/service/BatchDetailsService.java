@@ -22,12 +22,12 @@ public class BatchDetailsService {
 	private BatchDetailsRepository batchDetailsRepository;
 
 	private ApplicationDetailsRepository applicationDetailsRepository;
-	String[] colors = new String[] { /*
-										 * "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
-										 * "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
-										 */
+	String[] colors = new String[] {
+										  "#6495ED", "#FFFACD", "#ADD8E6", "#90EE90", "#FFA07A", "#20B2AA", "#9370DB",
+										  "#7B68EE", "#FFC0CB", "#4682B4", "#40E0D0"
 
-			 "#F8F8F8" };
+
+			  };
 
 	public BatchDetailsService(BatchDetailsRepository batchDetailsRepository,
 			ApplicationDetailsRepository applicationDetailsRepository) {
